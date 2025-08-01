@@ -14,18 +14,32 @@
       --blanco-hueso: #F5F5F5;
       --gris-grafito: #333333;
     }
+    body {
+      background-color: var(--blanco-hueso);
+      color: var(--gris-grafito);
+    }
+    header, footer {
+      background-color: var(--verde-musgo);
+      color: white;
+    }
+    a {
+      color: var(--azul-petroleo);
+    }
+    section {
+      background-color: white;
+    }
   </style>
 </head>
 
-<body class="bg-[var(--blanco-hueso)] font-sans leading-normal tracking-normal text-[var(--gris-grafito)]">
-  <header class="bg-[var(--verde-hoja)] text-white p-6">
+<body class="font-sans leading-normal tracking-normal">
+  <header class="p-6">
     <h1 class="text-3xl font-bold">VitroCorp</h1>
     <p class="text-sm">Cultiva. Educa. Eleva.</p>
   </header>
 
   <!-- Beneficios Directos -->
-  <section id="benefits" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">✅ ¿Por qué elegir VitroCorp?</h2>
+  <section id="benefits" class="p-6 rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4">✅ ¿Por qué elegir VitroCorp?</h2>
     <ul class="list-disc pl-5 space-y-2">
       <li>📘 Aprende biotecnología sin ser científico.</li>
       <li>🍄 Cultiva hongos comestibles y medicinales.</li>
@@ -37,33 +51,33 @@
   </section>
 
   <!-- Testimonios -->
-  <section id="testimonios" class="p-6 bg-[var(--blanco-hueso)] rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">💬 Lo que dicen nuestros lectores</h2>
-    <blockquote class="italic text-gray-700 mb-4">
+  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4" style="background-color: var(--blanco-hueso);">
+    <h2 class="text-2xl font-semibold mb-4">💬 Lo que dicen nuestros lectores</h2>
+    <blockquote class="italic mb-4">
       “Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo.”<br>
       <span class="font-bold">— Ana G., Quito</span>
     </blockquote>
-    <blockquote class="italic text-gray-700">
+    <blockquote class="italic">
       “Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes.”<br>
       <span class="font-bold">— Miguel V., Cuenca</span>
     </blockquote>
   </section>
 
   <!-- Ebooks -->
-  <section id="ebooks" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">📚 Nuestros Ebooks</h2>
+  <section id="ebooks" class="p-6 rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4">📚 Nuestros Ebooks</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 border rounded shadow">Ebook 1 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 2 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 3 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 4 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 5 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 1 - <a href="#">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 2 - <a href="#">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 3 - <a href="#">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 4 - <a href="#">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 5 - <a href="#">Ver más</a></div>
     </div>
   </section>
 
   <!-- Merchandising -->
-  <section id="merch" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">👕 Merchandising</h2>
+  <section id="merch" class="p-6 rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4">👕 Merchandising</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 border rounded shadow">Camisetas "Cultiva. Educa. Eleva."</div>
       <div class="p-4 border rounded shadow">Hoodies edición limitada</div>
@@ -71,7 +85,7 @@
   </section>
 
   <!-- Redes Sociales -->
-  <footer class="bg-[var(--verde-musgo)] text-white text-center p-6">
+  <footer class="text-white text-center p-6">
     <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
     <div class="space-x-4">
       <a href="https://www.facebook.com/vitrocorpec/" target="_blank" class="hover:underline">Facebook</a>
@@ -83,5 +97,4 @@
 </body>
 
 </html>
-
 
