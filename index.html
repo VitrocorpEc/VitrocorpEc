@@ -1,181 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VitroCorp - Biotecnología</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitroCorp - Biotecnología para todos</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-      color: white;
-      text-align: center;
-    }
-    header {
-      padding: 60px 20px 20px;
-    }
-    h1 {
-      font-size: 2.8em;
-      color: #00bfff;
-      font-weight: bold;
-    }
-    p {
-      font-size: 1.2em;
-      color: #ddd;
-    }
-    .btn {
-      margin-top: 30px;
-      padding: 15px 30px;
-      background-color: #00bfff;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 1.1em;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
-      transition: background 0.3s ease;
-    }
-    .btn:hover {
-      background-color: #0099cc;
-    }
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
-    }
-    .social-icons a {
-      color: #fff;
-      text-decoration: none;
-      text-align: center;
-    }
-    .social-icons i {
-      font-size: 2em;
-    }
-    .social-icons small {
-      display: block;
-      margin-top: 5px;
-      font-size: 0.9em;
-    }
-    .hero-img {
-      margin-top: 40px;
-      max-width: 90%;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    }
-    .ebooks-section, .merch-section {
-      margin: 60px 20px;
-    }
-    .ebooks-section h2, .merch-section h2 {
-      font-size: 2em;
-      color: #00bfff;
-      margin-bottom: 30px;
-    }
-    .ebooks-grid, .merch-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 30px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .ebook, .merch-item {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-    .ebook h3, .merch-item h3 {
-      color: #00bfff;
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-    .ebook a, .merch-item a {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #00bfff;
-      color: white;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    .ebook a:hover, .merch-item a:hover {
-      background-color: #0099cc;
+    :root {
+      --verde-hoja: #3DBF77;
+      --verde-musgo: #2E8B57;
+      --azul-petroleo: #125C6C;
+      --blanco-hueso: #F5F5F5;
+      --gris-grafito: #333333;
     }
   </style>
 </head>
-<body>
-  <header>
-    <p>Desde Ecuador para el mundo 🌎</p>
-    <h1>¡CULTIVATE, EDUCATE & ELEVATEec, VitroCorp!</h1>
-    <p>Biotecnología aplicada a la educacion, plantas, hongos.</p>
-    <a href="https://wa.me/593999999999" class="btn" target="_blank">Contáctanos por WhatsApp</a>
-    <img src="https://images.unsplash.com/photo-1607618009729-7fe15f38d36a" alt="Laboratorio" class="hero-img">
+
+<body class="bg-[var(--blanco-hueso)] font-sans leading-normal tracking-normal text-[var(--gris-grafito)]">
+  <header class="bg-[var(--verde-hoja)] text-white p-6">
+    <h1 class="text-3xl font-bold">VitroCorp</h1>
+    <p class="text-sm">Cultiva. Educa. Eleva.</p>
   </header>
 
-  <section class="ebooks-section">
-    <h2>eBooks VitroCorp</h2>
-    <div class="ebooks-grid">
-      <div class="ebook">
-        <h3>Errores Comunes al Empezar</h3>
-        <a href="https://amazon.com/dp/ebook1" target="_blank">Ver en Amazon</a>
-      </div>
-      <div class="ebook">
-        <h3>Cultivo In Vitro de Cannabis</h3>
-        <a href="https://amazon.com/dp/ebook2" target="_blank">Ver en Amazon</a>
-      </div>
-      <div class="ebook">
-        <h3>Guía de Hongos Micológicos</h3>
-        <a href="https://amazon.com/dp/ebook3" target="_blank">Ver en Amazon</a>
-      </div>
-      <div class="ebook">
-        <h3>Biotecnología Aplicada en Casa</h3>
-        <a href="https://amazon.com/dp/ebook4" target="_blank">Ver en Amazon</a>
-      </div>
-      <div class="ebook">
-        <h3>El Futuro del Cultivo Automatizado</h3>
-        <a href="https://amazon.com/dp/ebook5" target="_blank">Ver en Amazon</a>
-      </div>
+  <!-- Beneficios Directos -->
+  <section id="benefits" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">✅ ¿Por qué elegir VitroCorp?</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>📘 Aprende biotecnología sin ser científico.</li>
+      <li>🍄 Cultiva hongos comestibles y medicinales.</li>
+      <li>🧪 Frascos y micelio listos para usar.</li>
+      <li>🧑‍🏫 Ebooks y cursos claros y aplicables.</li>
+      <li>🌿 Multiplica plantas y ahorra en producción.</li>
+      <li>🧠 Conviértete en un productor independiente.</li>
+    </ul>
+  </section>
+
+  <!-- Testimonios -->
+  <section id="testimonios" class="p-6 bg-[var(--blanco-hueso)] rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">💬 Lo que dicen nuestros lectores</h2>
+    <blockquote class="italic text-gray-700 mb-4">
+      “Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo.”<br>
+      <span class="font-bold">— Ana G., Quito</span>
+    </blockquote>
+    <blockquote class="italic text-gray-700">
+      “Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes.”<br>
+      <span class="font-bold">— Miguel V., Cuenca</span>
+    </blockquote>
+  </section>
+
+  <!-- Ebooks -->
+  <section id="ebooks" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">📚 Nuestros Ebooks</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 border rounded shadow">Ebook 1 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 2 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 3 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 4 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
+      <div class="p-4 border rounded shadow">Ebook 5 - <a href="#" class="text-[var(--azul-petroleo)] underline">Ver más</a></div>
     </div>
   </section>
 
-  <section class="merch-section">
-    <h2>Merchandising VitroCorp</h2>
-    <div class="merch-grid">
-      <div class="merch-item">
-        <h3>Camisetas "Cultivate. Educate. Elevate."</h3>
-        <a href="https://wa.me/593999999999" target="_blank">Solicitar</a>
-      </div>
-      <div class="merch-item">
-        <h3>Hoodies Exclusivos</h3>
-        <a href="https://wa.me/593999999999" target="_blank">Solicitar</a>
-      </div>
+  <!-- Merchandising -->
+  <section id="merch" class="p-6 bg-white rounded-xl shadow-md mb-6 mx-4">
+    <h2 class="text-2xl font-semibold mb-4 text-[var(--azul-petroleo)]">👕 Merchandising</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 border rounded shadow">Camisetas "Cultiva. Educa. Eleva."</div>
+      <div class="p-4 border rounded shadow">Hoodies edición limitada</div>
     </div>
   </section>
 
-  <section class="social-section">
-    <h2>Redes Oficiales</h2>
-    <div class="social-icons">
-      <a href="https://www.instagram.com/vitrocorpec/" target="_blank" aria-label="Instagram">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a href="https://www.tiktok.com/@vitrocorpec" target="_blank" aria-label="TikTok">
-        <i class="fab fa-tiktok"></i>
-      </a>
-      <a href="https://x.com/labvitrocorp" target="_blank" aria-label="X (Twitter)">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" aria-label="YouTube">
-        <i class="fab fa-youtube"></i>
-      </a>
-      <a href="https://www.facebook.com/vitrocorpec/" target="_blank" aria-label="Facebook">
-        <i class="fab fa-facebook"></i>
-      </a>
+  <!-- Redes Sociales -->
+  <footer class="bg-[var(--verde-musgo)] text-white text-center p-6">
+    <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
+    <div class="space-x-4">
+      <a href="https://www.facebook.com/vitrocorpec/" target="_blank" class="hover:underline">Facebook</a>
+      <a href="https://www.instagram.com/vitrocorpec/" target="_blank" class="hover:underline">Instagram</a>
+      <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline">YouTube</a>
+      <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline">X (Twitter)</a>
     </div>
-  </section>
+  </footer>
 </body>
+
 </html>
+
 
