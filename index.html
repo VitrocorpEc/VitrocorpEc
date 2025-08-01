@@ -5,6 +5,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VitroCorp - Biotecnología para todos</title>
+  <meta name="description" content="VitroCorp democratiza la biotecnología en Latinoamérica: aprende a cultivar hongos, plantas y más. Ebooks, micelio, frascos y educación científica.">
+  <meta property="og:title" content="VitroCorp - Biotecnología para todos">
+  <meta property="og:description" content="Descubre cómo cultivar hongos, clonar plantas y aprender biotecnología desde casa.">
+  <meta property="og:image" content="URL_DE_TU_IMAGEN_DESTACADA">
+  <meta property="og:url" content="https://vitrocorp.ec">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     :root {
@@ -32,59 +39,80 @@
 </head>
 
 <body class="font-sans leading-normal tracking-normal">
-  <header class="p-6">
+
+  <!-- HEADER -->
+  <header class="p-6 text-center">
     <h1 class="text-3xl font-bold">VitroCorp</h1>
     <p class="text-sm">Cultiva. Educa. Eleva.</p>
+    <div class="mt-4">
+      <a href="#ebooks" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">Empieza tu cultivo hoy</a>
+    </div>
   </header>
 
-  <!-- Beneficios Directos -->
+  <!-- BENEFICIOS -->
   <section id="benefits" class="p-6 rounded-xl shadow-md mb-6 mx-4">
     <h2 class="text-2xl font-semibold mb-4">✅ ¿Por qué elegir VitroCorp?</h2>
-    <ul class="list-disc pl-5 space-y-2">
-      <li>📘 Aprende biotecnología sin ser científico.</li>
-      <li>🍄 Cultiva hongos comestibles y medicinales.</li>
-      <li>🧪 Frascos y micelio listos para usar.</li>
-      <li>🧑‍🏫 Ebooks y cursos claros y aplicables.</li>
-      <li>🌿 Multiplica plantas y ahorra en producción.</li>
-      <li>🧠 Conviértete en un productor independiente.</li>
-    </ul>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>📘 <span class="font-semibold">Aprende biotecnología sin ser científico.</span></div>
+      <div>🍄 <span class="font-semibold">Cultiva hongos comestibles y medicinales.</span></div>
+      <div>🧪 <span class="font-semibold">Frascos y micelio listos para usar.</span></div>
+      <div>🧑‍🏫 <span class="font-semibold">Ebooks y cursos claros y aplicables.</span></div>
+      <div>🌿 <span class="font-semibold">Multiplica plantas y ahorra en producción.</span></div>
+      <div>🧠 <span class="font-semibold">Conviértete en un productor independiente.</span></div>
+    </div>
   </section>
 
-  <!-- Testimonios -->
-  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4" style="background-color: var(--blanco-hueso);">
+  <!-- TESTIMONIOS -->
+  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-white">
     <h2 class="text-2xl font-semibold mb-4">💬 Lo que dicen nuestros lectores</h2>
-    <blockquote class="italic mb-4">
-      “Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo.”<br>
-      <span class="font-bold">— Ana G., Quito</span>
-    </blockquote>
-    <blockquote class="italic">
-      “Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes.”<br>
-      <span class="font-bold">— Miguel V., Cuenca</span>
-    </blockquote>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white p-4 border rounded shadow">
+        <p class="italic">“Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo.”</p>
+        <p class="mt-2 font-bold">— Ana G., Quito</p>
+      </div>
+      <div class="bg-white p-4 border rounded shadow">
+        <p class="italic">“Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes.”</p>
+        <p class="mt-2 font-bold">— Miguel V., Cuenca</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Ebooks -->
+  <!-- EBOOKS -->
   <section id="ebooks" class="p-6 rounded-xl shadow-md mb-6 mx-4">
     <h2 class="text-2xl font-semibold mb-4">📚 Nuestros Ebooks</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 border rounded shadow">Ebook 1 - <a href="#">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 2 - <a href="#">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 3 - <a href="#">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 4 - <a href="#">Ver más</a></div>
-      <div class="p-4 border rounded shadow">Ebook 5 - <a href="#">Ver más</a></div>
+      <div class="p-4 border rounded shadow text-center">
+        <img src="url_ebook1.jpg" alt="Ebook 1" class="mb-2 mx-auto h-40 object-cover">
+        <h3 class="font-bold text-lg mb-2">Cultivo In Vitro Fácil</h3>
+        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+      </div>
+      <div class="p-4 border rounded shadow text-center">
+        <img src="url_ebook2.jpg" alt="Ebook 2" class="mb-2 mx-auto h-40 object-cover">
+        <h3 class="font-bold text-lg mb-2">Micelio y Hongos Medicinales</h3>
+        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+      </div>
+      <!-- Repite para los otros ebooks -->
     </div>
   </section>
 
-  <!-- Merchandising -->
+  <!-- MERCH -->
   <section id="merch" class="p-6 rounded-xl shadow-md mb-6 mx-4">
     <h2 class="text-2xl font-semibold mb-4">👕 Merchandising</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 border rounded shadow">Camisetas "CULTIVATE. EDUCATE. ELEVATE.ec."</div>
-      <div class="p-4 border rounded shadow">Hoodies edición limitada</div>
+      <div class="p-4 border rounded shadow text-center">
+        <img src="url_camiseta.jpg" alt="Camiseta VitroCorp" class="mb-2 mx-auto h-40 object-cover">
+        <h3 class="font-bold text-lg mb-2">Camisetas "CULTIVATE. EDUCATE. ELEVATE.ec."</h3>
+        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
+      </div>
+      <div class="p-4 border rounded shadow text-center">
+        <img src="url_hoodie.jpg" alt="Hoodie VitroCorp" class="mb-2 mx-auto h-40 object-cover">
+        <h3 class="font-bold text-lg mb-2">Hoodies edición limitada</h3>
+        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
+      </div>
     </div>
   </section>
 
-  <!-- Redes Sociales -->
+  <!-- FOOTER -->
   <footer class="text-white text-center p-6">
     <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
     <div class="space-x-4">
@@ -93,8 +121,9 @@
       <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline">YouTube</a>
       <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline">X (Twitter)</a>
     </div>
+    <p class="text-sm mt-4 opacity-80">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
+    <p class="text-xs opacity-70">Este sitio es informativo y educativo. No sustituye asesoramiento técnico o médico.</p>
   </footer>
 </body>
 
 </html>
-
