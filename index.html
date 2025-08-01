@@ -67,6 +67,44 @@
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
+    .ebooks-section, .merch-section {
+      margin: 60px 20px;
+    }
+    .ebooks-section h2, .merch-section h2 {
+      font-size: 2em;
+      color: #00bfff;
+      margin-bottom: 30px;
+    }
+    .ebooks-grid, .merch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .ebook, .merch-item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+    .ebook h3, .merch-item h3 {
+      color: #00bfff;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .ebook a, .merch-item a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00bfff;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .ebook a:hover, .merch-item a:hover {
+      background-color: #0099cc;
+    }
   </style>
 </head>
 <body>
@@ -75,33 +113,68 @@
     <h1>¡CULTIVATE, EDUCATE & ELEVATE con VitroCorp!</h1>
     <p>Biotecnología aplicada a plantas, hongos y conocimiento.</p>
     <a href="https://wa.me/593999999999" class="btn" target="_blank">Contáctanos por WhatsApp</a>
-
     <img src="https://images.unsplash.com/photo-1607618009729-7fe15f38d36a" alt="Laboratorio" class="hero-img">
-
- <section class="social-section">
-  <h2>Redes Oficiales</h2>
-  <div class="social-icons">
-    <a href="https://www.instagram.com/vitrocorpec/" target="_blank" aria-label="Instagram">
-      <i class="fab fa-instagram"></i>
-    </a>
-    <a href="https://www.tiktok.com/@vitrocorpec" target="_blank" aria-label="TikTok">
-      <i class="fab fa-tiktok"></i>
-    </a>
-    <a href="https://x.com/labvitrocorp" target="_blank" aria-label="X (Twitter)">
-      <i class="fab fa-twitter"></i>
-    </a>
-    <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" aria-label="YouTube">
-      <i class="fab fa-youtube"></i>
-    </a>
-    <a href="https://www.facebook.com/vitrocorpec/" target="_blank" aria-label="Facebook">
-      <i class="fab fa-facebook"></i>
-    </a>
-  </div>
-</section>
-
-
-          <i class="fab fa-facebook"></i><small>Facebook</small>
-    </div>
   </header>
+
+  <section class="ebooks-section">
+    <h2>eBooks VitroCorp</h2>
+    <div class="ebooks-grid">
+      <div class="ebook">
+        <h3>Errores Comunes al Empezar</h3>
+        <a href="https://amazon.com/dp/ebook1" target="_blank">Ver en Amazon</a>
+      </div>
+      <div class="ebook">
+        <h3>Cultivo In Vitro de Cannabis</h3>
+        <a href="https://amazon.com/dp/ebook2" target="_blank">Ver en Amazon</a>
+      </div>
+      <div class="ebook">
+        <h3>Guía de Hongos Micológicos</h3>
+        <a href="https://amazon.com/dp/ebook3" target="_blank">Ver en Amazon</a>
+      </div>
+      <div class="ebook">
+        <h3>Biotecnología Aplicada en Casa</h3>
+        <a href="https://amazon.com/dp/ebook4" target="_blank">Ver en Amazon</a>
+      </div>
+      <div class="ebook">
+        <h3>El Futuro del Cultivo Automatizado</h3>
+        <a href="https://amazon.com/dp/ebook5" target="_blank">Ver en Amazon</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="merch-section">
+    <h2>Merchandising VitroCorp</h2>
+    <div class="merch-grid">
+      <div class="merch-item">
+        <h3>Camisetas "Cultivate. Educate. Elevate."</h3>
+        <a href="https://wa.me/593999999999" target="_blank">Solicitar</a>
+      </div>
+      <div class="merch-item">
+        <h3>Hoodies Exclusivos</h3>
+        <a href="https://wa.me/593999999999" target="_blank">Solicitar</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="social-section">
+    <h2>Redes Oficiales</h2>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/vitrocorpec/" target="_blank" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.tiktok.com/@vitrocorpec" target="_blank" aria-label="TikTok">
+        <i class="fab fa-tiktok"></i>
+      </a>
+      <a href="https://x.com/labvitrocorp" target="_blank" aria-label="X (Twitter)">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" aria-label="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://www.facebook.com/vitrocorpec/" target="_blank" aria-label="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </div>
+  </section>
 </body>
 </html>
