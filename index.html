@@ -8,11 +8,14 @@
   <meta name="description" content="VitroCorp democratiza la biotecnología en Latinoamérica: aprende a cultivar hongos, plantas y más. Ebooks, micelio, frascos y educación científica.">
   <meta property="og:title" content="VitroCorp - Biotecnología para todos">
   <meta property="og:description" content="Descubre cómo cultivar hongos, clonar plantas y aprender biotecnología desde casa.">
-  <meta property="og:image" content="URL_DE_TU_IMAGEN_DESTACADA">
+  <meta property="og:image" content="https://vitrocorp.ec/assets/og-image.webp">
   <meta property="og:url" content="https://vitrocorp.ec">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.ico">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Preload Tailwind CSS -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></noscript>
+  <!-- Estilos personalizados -->
   <style>
     :root {
       --verde-hoja: #3DBF77;
@@ -24,6 +27,7 @@
     body {
       background-color: var(--blanco-hueso);
       color: var(--gris-grafito);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     header, footer {
       background-color: var(--verde-musgo);
@@ -35,22 +39,39 @@
     section {
       background-color: white;
     }
+    /* Animaciones */
+    .hover-scale {
+      transition: transform 0.3s ease;
+    }
+    .hover-scale:hover {
+      transform: scale(1.02);
+    }
   </style>
 </head>
 
 <body class="font-sans leading-normal tracking-normal">
+
+  <!-- Banner de Promoción -->
+  <div class="bg-yellow-100 text-yellow-800 text-center p-2 text-sm md:text-base">
+    🚀 ¡Oferta! 20% OFF en ebooks hasta el 30/06. Usa el código: <strong class="font-bold">VITRO20</strong>
+  </div>
 
   <!-- HEADER -->
   <header class="p-6 text-center">
     <h1 class="text-3xl font-bold">VitroCorp</h1>
     <p class="text-sm">Cultiva. Educa. Eleva.</p>
     <div class="mt-4">
-      <a href="#ebooks" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">Empieza tu cultivo hoy</a>
+      <a href="#ebooks" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition hover-scale" aria-label="Explora nuestros ebooks sobre cultivo">Empieza tu cultivo hoy</a>
     </div>
   </header>
 
+  <!-- Breadcrumbs -->
+  <nav class="text-sm py-2 px-6 bg-gray-50">
+    <a href="/" class="hover:underline">Inicio</a> > <span class="text-gray-600">Biotecnología DIY</span>
+  </nav>
+
   <!-- BENEFICIOS -->
-  <section id="benefits" class="p-6 rounded-xl shadow-md mb-6 mx-4">
+  <section id="benefits" class="p-6 rounded-xl shadow-md mb-6 mx-4 hover-scale">
     <h2 class="text-2xl font-semibold mb-4">✅ ¿Por qué elegir VitroCorp?</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>📘 <span class="font-semibold">Aprende biotecnología sin ser científico.</span></div>
@@ -63,7 +84,7 @@
   </section>
 
   <!-- TESTIMONIOS -->
-  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-white">
+  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-white hover-scale">
     <h2 class="text-2xl font-semibold mb-4">💬 Lo que dicen nuestros lectores</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="bg-white p-4 border rounded shadow">
@@ -80,55 +101,133 @@
   <!-- EBOOKS -->
   <section id="ebooks" class="p-6 rounded-xl shadow-md mb-6 mx-4">
     <h2 class="text-2xl font-semibold mb-4">📚 Nuestros Ebooks</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 border rounded shadow text-center">
-        <img src="url_ebook1.jpg" alt="Ebook 1" class="mb-2 mx-auto h-40 object-cover">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="p-4 border rounded shadow text-center hover-scale">
+        <img 
+          src="assets/ebook-cultivo-in-vitro.webp" 
+          alt="Portada del ebook Cultivo In Vitro Para Principiantes" 
+          width="300" 
+          height="400"
+          loading="lazy"
+          class="mb-2 mx-auto h-40 object-cover rounded"
+        >
         <h3 class="font-bold text-lg mb-2">Cultivo In Vitro Para Principiantes</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 inline-block" aria-label="Comprar ebook Cultivo In Vitro">Ver más</a>
       </div>
-      <div class="p-4 border rounded shadow text-center">
-        <img src="url_ebook2.jpg" alt="Ebook 2" class="mb-2 mx-auto h-40 object-cover">
+      <div class="p-4 border rounded shadow text-center hover-scale">
+        <img 
+          src="assets/ebook-hongos-medicinales.webp" 
+          alt="Portada del ebook Cultivo de Hongos Medicinales" 
+          width="300" 
+          height="400"
+          loading="lazy"
+          class="mb-2 mx-auto h-40 object-cover rounded"
+        >
         <h3 class="font-bold text-lg mb-2">Cultivo de Hongos Medicinales</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 inline-block" aria-label="Comprar ebook Hongos Medicinales">Ver más</a>
       </div>
-        <div class="p-4 border rounded shadow text-center">
-        <img src="url_ebook3.jpg" alt="Ebook 3" class="mb-2 mx-auto h-40 object-cover">
+      <div class="p-4 border rounded shadow text-center hover-scale">
+        <img 
+          src="assets/ebook-biomaker.webp" 
+          alt="Portada del ebook Biomaker" 
+          width="300" 
+          height="400"
+          loading="lazy"
+          class="mb-2 mx-auto h-40 object-cover rounded"
+        >
         <h3 class="font-bold text-lg mb-2">Biomaker</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 inline-block" aria-label="Comprar ebook Biomaker">Ver más</a>
       </div>
-      <!-- Repite para los otros ebooks -->
     </div>
   </section>
 
   <!-- MERCH -->
   <section id="merch" class="p-6 rounded-xl shadow-md mb-6 mx-4">
     <h2 class="text-2xl font-semibold mb-4">👕 Merchandising</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 border rounded shadow text-center">
-        <img src="url_camiseta.jpg" alt="Camiseta VitroCorp" class="mb-2 mx-auto h-40 object-cover">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="p-4 border rounded shadow text-center hover-scale">
+        <img 
+          src="assets/camiseta-vitrocorp.webp" 
+          alt="Camiseta VitroCorp con diseño de micelio" 
+          width="300" 
+          height="300"
+          loading="lazy"
+          class="mb-2 mx-auto h-40 object-cover rounded"
+        >
         <h3 class="font-bold text-lg mb-2">Camisetas "CULTIVATE. EDUCATE. ELEVATE.ec."</h3>
-        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
+        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800 inline-block" aria-label="Comprar camiseta VitroCorp">Comprar</a>
       </div>
-      <div class="p-4 border rounded shadow text-center">
-        <img src="url_hoodie.jpg" alt="Hoodie VitroCorp" class="mb-2 mx-auto h-40 object-cover">
+      <div class="p-4 border rounded shadow text-center hover-scale">
+        <img 
+          src="assets/hoodie-vitrocorp.webp" 
+          alt="Hoodie VitroCorp edición limitada" 
+          width="300" 
+          height="300"
+          loading="lazy"
+          class="mb-2 mx-auto h-40 object-cover rounded"
+        >
         <h3 class="font-bold text-lg mb-2">Hoodies edición limitada</h3>
-        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
+        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800 inline-block" aria-label="Comprar hoodie VitroCorp">Comprar</a>
       </div>
     </div>
   </section>
 
+  <!-- NEWSLETTER -->
+  <section id="newsletter" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-blue-50">
+    <h2 class="text-2xl font-semibold mb-4 text-center">📩 ¿Quieres más contenido científico?</h2>
+    <p class="text-center mb-4">Suscríbete para recibir guías gratuitas y ofertas exclusivas.</p>
+    <form class="max-w-md mx-auto flex">
+      <input 
+        type="email" 
+        placeholder="tu@email.com" 
+        class="px-3 py-2 rounded-l flex-grow border focus:outline-none focus:ring-2 focus:ring-green-500"
+        aria-label="Ingresa tu email para suscribirte"
+        required
+      >
+      <button 
+        type="submit" 
+        class="bg-green-600 text-white px-4 py-2 rounded-r hover:bg-green-700 transition"
+      >
+        Suscribirme
+      </button>
+    </form>
+  </section>
+
   <!-- FOOTER -->
   <footer class="text-white text-center p-6">
-    <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
-    <div class="space-x-4">
-      <a href="https://www.facebook.com/vitrocorpec/" target="_blank" class="hover:underline">Facebook</a>
-      <a href="https://www.instagram.com/vitrocorpec/" target="_blank" class="hover:underline">Instagram</a>
-      <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline">YouTube</a>
-      <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline">X (Twitter)</a>
+    <div class="max-w-4xl mx-auto">
+      <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
+      <div class="flex justify-center space-x-4 mb-4">
+        <a href="https://www.facebook.com/vitrocorpec/" target="_blank" class="hover:underline" aria-label="Facebook de VitroCorp">Facebook</a>
+        <a href="https://www.instagram.com/vitrocorpec/" target="_blank" class="hover:underline" aria-label="Instagram de VitroCorp">Instagram</a>
+        <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline" aria-label="YouTube de VitroCorp">YouTube</a>
+        <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline" aria-label="Twitter/X de VitroCorp">X (Twitter)</a>
+      </div>
+      <div class="mt-6">
+        <p class="text-sm opacity-80">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
+        <p class="text-xs opacity-70 mt-1">Este sitio es informativo y educativo. No sustituye asesoramiento técnico o médico.</p>
+      </div>
     </div>
-    <p class="text-sm mt-4 opacity-80">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
-    <p class="text-xs opacity-70">Este sitio es informativo y educativo. No sustituye asesoramiento técnico o médico.</p>
   </footer>
+
+  <!-- Botón Flotante de WhatsApp -->
+  <a href="https://wa.me/593XXXXXXXXX" 
+     class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition"
+     aria-label="Contactar a VitroCorp por WhatsApp"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- Google Analytics (opcional) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXX');
+  </script>
 </body>
 
 </html>
