@@ -46,6 +46,24 @@
     .hover-scale:hover {
       transform: scale(1.02);
     }
+    /* Estilos para el modal de términos */
+    #termsModal {
+      transition: opacity 0.3s ease;
+    }
+    #termsModal:not(.hidden) {
+      opacity: 1;
+    }
+    #termsModal.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* Estilo para el contenido de términos */
+    .prose-sm h4 {
+      font-weight: 600;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      color: var(--verde-musgo);
+    }
   </style>
 </head>
 
@@ -88,11 +106,11 @@
     <h2 class="text-2xl font-semibold mb-4">💬 Lo que dicen nuestros lectores</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="bg-white p-4 border rounded shadow">
-        <p class="italic">“Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo.”</p>
+        <p class="italic">"Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo."</p>
         <p class="mt-2 font-bold">— Ana G., Quito</p>
       </div>
       <div class="bg-white p-4 border rounded shadow">
-        <p class="italic">“Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes.”</p>
+        <p class="italic">"Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes."</p>
         <p class="mt-2 font-bold">— Miguel V., Cuenca</p>
       </div>
     </div>
@@ -203,9 +221,12 @@
         <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline" aria-label="YouTube de VitroCorp">YouTube</a>
         <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline" aria-label="Twitter/X de VitroCorp">X (Twitter)</a>
       </div>
-      <div class="mt-6">
-        <p class="text-sm opacity-80">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
-        <p class="text-xs opacity-70 mt-1">Este sitio es informativo y educativo. No sustituye asesoramiento técnico o médico.</p>
+      <div class="mt-6 pt-4 border-t border-white border-opacity-20">
+        <p class="text-xs opacity-70">
+          © 2025 VitroCorp EC. 
+          <a href="#" onclick="openTerms(); return false;" class="underline hover:no-underline">Términos y Condiciones</a> | 
+          <a href="#" onclick="openTerms(); return false;" class="underline hover:no-underline">Política de Privacidad</a>
+        </p>
       </div>
     </div>
   </footer>
@@ -220,6 +241,39 @@
     </svg>
   </a>
 
+  <!-- Modal de Términos y Condiciones -->
+  <div id="termsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-800">Términos y Condiciones</h3>
+        <button onclick="closeTerms()" class="text-gray-500 hover:text-gray-700 text-2xl">
+          ✕
+        </button>
+      </div>
+      <div class="prose prose-sm text-gray-700">
+        <h4 class="text-green-700">1. PROPIEDAD INTELECTUAL</h4>
+        <p>Todo el contenido en vitrocorp.ec es propiedad de VitroCorp y está protegido por leyes de derechos de autor. Prohibida la reproducción, distribución o venta sin autorización expresa.</p>
+        
+        <h4 class="text-green-700">2. USO EDUCATIVO</h4>
+        <p>Nuestros materiales son solo para fines educativos. No constituyen asesoramiento profesional. Consulte a un especialista antes de aplicar técnicas de cultivo o consumo.</p>
+        
+        <h4 class="text-green-700">3. LIMITACIÓN DE RESPONSABILIDAD</h4>
+        <p>VitroCorp no se hace responsable por daños derivados del uso de la información proporcionada. Los resultados pueden variar según condiciones ambientales y técnica del usuario.</p>
+        
+        <h4 class="text-green-700">4. COMPRAS Y PRODUCTOS</h4>
+        <p>Ebooks y cursos digitales no son reembolsables. Productos físicos pueden devolverse en 15 días si presentan defectos de fabricación.</p>
+        
+        <h4 class="text-green-700">5. PRIVACIDAD</h4>
+        <p>Protegemos tus datos personales y solo los usamos para procesar compras y enviar contenido educativo. No compartimos información con terceros.</p>
+        
+        <h4 class="text-green-700">6. ACEPTACIÓN</h4>
+        <p>Al usar este sitio o comprar nuestros productos, aceptas estos términos y condiciones en su totalidad.</p>
+        
+        <p class="text-sm mt-6"><strong>Contacto legal:</strong> legal@vitrocorp.ec</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Google Analytics (opcional) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
   <script>
@@ -227,6 +281,22 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-XXXXXX');
+  </script>
+
+  <!-- Script para el modal -->
+  <script>
+    function openTerms() {
+      document.getElementById('termsModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeTerms() {
+      document.getElementById('termsModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+    // Cerrar al hacer clic fuera del contenido
+    document.getElementById('termsModal').addEventListener('click', function(e) {
+      if (e.target === this) closeTerms();
+    });
   </script>
 </body>
 
