@@ -2,39 +2,43 @@
 <html lang="es">
 
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-TBMV99K3');</script>
-  <!-- End Google Tag Manager -->
+  <!-- Metadatos optimizados -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitroCorp - Biotecnología para todos</title>
+  <meta name="description" content="Aprende cultivo in vitro, cultivo de hongos y biotecnología DIY con VitroCorp. Ebooks, cursos y kits para cultivos científicos en casa.">
   
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vitrocorpec.github.io/VitrocorpEc/">
+  <meta property="og:title" content="VitroCorp - Biotecnología para todos">
+  <meta property="og:description" content="Aprende técnicas de cultivo científico en casa con nuestros ebooks y kits especializados.">
+  <meta property="og:image" content="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://vitrocorpec.github.io/VitrocorpEc/">
+  <meta property="twitter:title" content="VitroCorp - Biotecnología para todos">
+  <meta property="twitter:description" content="Aprende técnicas de cultivo científico en casa con nuestros ebooks y kits especializados.">
+  <meta property="twitter:image" content="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Preload CSS -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></noscript>
+
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TU_ID_ANALYTICS"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-REEMPLAZA_CON_TU_ID"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-WCHHN7LFW7');
+    gtag('config', 'G-WCHHN7LFW');
   </script>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VitroCorp - Biotecnología para todos</title>
-  <meta name="description" content="VitroCorp democratiza la biotecnología en Latinoamérica: aprende a cultivar hongos, plantas y más. Ebooks, micelio, frascos y educación científica.">
-  <meta property="og:title" content="VitroCorp - Biotecnología para todos">
-  <meta property="og:description" content="Descubre cómo cultivar hongos, clonar plantas y aprender biotecnología desde casa.">
-  <meta property="og:image" content="https://vitrocorp.ec/assets/og-image.webp">
-  <meta property="og:url" content="https://vitrocorp.ec">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="favicon.ico">
-  
-  <!-- Preload Tailwind CSS -->
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></noscript>
-  
-  <!-- Estilos personalizados -->
+  <!-- Estilos inline críticos -->
   <style>
     :root {
       --verde-hoja: #3DBF77;
@@ -44,412 +48,366 @@
       --gris-grafito: #333333;
     }
     body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background-color: var(--blanco-hueso);
       color: var(--gris-grafito);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
     }
-    header, footer {
-      background-color: var(--verde-musgo);
-      color: white;
-    }
-    a {
-      color: var(--azul-petroleo);
-    }
-    section {
-      background-color: white;
-    }
-    /* Animaciones */
     .hover-scale {
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
     }
     .hover-scale:hover {
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
-    /* Estilos para el modal de términos */
     #termsModal {
-      transition: opacity 0.3s ease;
-    }
-    #termsModal:not(.hidden) {
-      opacity: 1;
+      transition: opacity 0.2s ease, visibility 0.2s;
     }
     #termsModal.hidden {
       opacity: 0;
-      pointer-events: none;
-    }
-    /* Estilo para el contenido de términos */
-    .prose-sm h4 {
-      font-weight: 600;
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
-      color: var(--verde-musgo);
+      visibility: hidden;
     }
   </style>
 </head>
 
-<body class="font-sans leading-normal tracking-normal">
+<body class="min-h-screen flex flex-col">
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TBMV99K3"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TBMV99K3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-  <!-- Banner de Promoción -->
-  <div class="bg-yellow-100 text-yellow-800 text-center p-2 text-sm md:text-base">
-    🚀 ¡Oferta! 20% OFF en ebooks hasta el 30/06. Usa el código: <strong class="font-bold">VITRO20</strong>
+  <!-- Banner promocional -->
+  <div class="bg-yellow-100 text-yellow-800 text-center py-2 px-4 text-sm md:text-base">
+    🚀 ¡Oferta! 20% OFF en ebooks hasta el 30/06. Usa el código: <strong>VITRO20</strong>
   </div>
 
-  <!-- HEADER -->
-  <header class="p-6 text-center">
-    <h1 class="text-3xl font-bold">VitroCorp</h1>
-    <p class="text-sm">Cultiva. Educa. Eleva.</p>
-    <div class="mt-4">
-      <a href="#ebooks" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition hover-scale" aria-label="Explora nuestros ebooks sobre cultivo">Empieza tu cultivo hoy</a>
+  <!-- Header -->
+  <header class="bg-green-700 text-white py-6 text-center">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold">VitroCorp</h1>
+      <p class="text-sm mt-1">Cultiva. Educa. Eleva.</p>
+      <a href="#ebooks" class="inline-block bg-green-600 hover:bg-green-800 text-white px-6 py-2 rounded-lg mt-4 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50" aria-label="Explora nuestros ebooks sobre cultivo">
+        Empieza tu cultivo hoy
+      </a>
     </div>
   </header>
 
-  <!-- Breadcrumbs -->
-  <nav class="text-sm py-2 px-6 bg-gray-50">
-    <a href="#" class="hover:underline">Inicio</a> > <span class="text-gray-600">Biotecnología DIY</span>
+  <!-- Navegación -->
+  <nav class="bg-gray-50 py-2 px-6 text-sm">
+    <div class="container mx-auto">
+      <a href="#" class="text-gray-700 hover:text-gray-900">Inicio</a> 
+      <span class="text-gray-400 mx-1">></span>
+      <span class="text-gray-600">Biotecnología DIY</span>
+    </div>
   </nav>
 
-  <!-- BENEFICIOS -->
-  <section id="benefits" class="p-6 rounded-xl shadow-md mb-6 mx-4 hover-scale">
-    <h2 class="text-2xl font-semibold mb-4">✅ ¿Por qué elegir VitroCorp?</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>📘 <span class="font-semibold">Aprende biotecnología sin ser científico.</span></div>
-      <div>🍄 <span class="font-semibold">Cultiva hongos comestibles y medicinales.</span></div>
-      <div>🧪 <span class="font-semibold">Frascos y micelio listos para usar.</span></div>
-      <div>🧑‍🏫 <span class="font-semibold">Ebooks y cursos claros y aplicables.</span></div>
-      <div>🌿 <span class="font-semibold">Multiplica plantas y ahorra en producción.</span></div>
-      <div>🧠 <span class="font-semibold">Conviértete en un productor independiente.</span></div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIOS -->
-  <section id="testimonios" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-white hover-scale">
-    <h2 class="text-2xl font-semibold mb-4">💬 Lo que dicen nuestros lectores</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white p-4 border rounded shadow">
-        <p class="italic">"Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo."</p>
-        <p class="mt-2 font-bold">— Ana G., Quito</p>
-      </div>
-      <div class="bg-white p-4 border rounded shadow">
-        <p class="italic">"Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes."</p>
-        <p class="mt-2 font-bold">— Miguel V., Cuenca</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- EBOOKS -->
-  <section id="ebooks" class="p-6 rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4">📚 Nuestros Ebooks</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="p-4 border rounded shadow text-center hover-scale">
-        <img 
-          src="https://i.ibb.co/nNH8bwp0/20250607-2058-Cultivo-In-Vitro-simple-compose-01jx6m3dxvehtv44x2mn1ttfxp.jpg" 
-          alt="Ebook Cultivo In Vitro Para Principiantes"
-          width="300"
-          height="400"
-          loading="lazy"
-          class="mb-2 mx-auto h-40 object-cover rounded"
-        >
-        <h3 class="font-bold text-lg mb-2">Cultivo In Vitro Para Principiantes</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
-      </div>
-      <div class="p-4 border rounded shadow text-center hover-scale">
-        <img 
-          src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png" 
-          alt="Ebook Cultivo de Hongos Medicinales"
-          width="300"
-          height="400"
-          loading="lazy"
-          class="mb-2 mx-auto h-40 object-cover rounded"
-        >
-        <h3 class="font-bold text-lg mb-2">Cultivo de Hongos Medicinales</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
-      </div>
-      <div class="p-4 border rounded shadow text-center hover-scale">
-        <img 
-          src="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png" 
-          alt="Ebook Biomaker"
-          width="300"
-          height="400"
-          loading="lazy"
-          class="mb-2 mx-auto h-40 object-cover rounded"
-        >
-        <h3 class="font-bold text-lg mb-2">Biomaker</h3>
-        <a href="#" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Ver más</a>
+  <!-- Sección Beneficios -->
+  <section id="benefits" class="py-8 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-semibold text-center mb-6">✅ ¿Por qué elegir VitroCorp?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">📘</span>
+          <p class="font-medium mt-1">Aprende biotecnología sin ser científico.</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">🍄</span>
+          <p class="font-medium mt-1">Cultiva hongos comestibles y medicinales.</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">🧪</span>
+          <p class="font-medium mt-1">Frascos y micelio listos para usar.</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">🧑‍🏫</span>
+          <p class="font-medium mt-1">Ebooks y cursos claros y aplicables.</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">🌿</span>
+          <p class="font-medium mt-1">Multiplica plantas y ahorra en producción.</p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg">
+          <span class="text-lg">🧠</span>
+          <p class="font-medium mt-1">Conviértete en un productor independiente.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- MERCH -->
-  <section id="merch" class="p-6 rounded-xl shadow-md mb-6 mx-4">
-    <h2 class="text-2xl font-semibold mb-4">👕 Merchandising</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="p-4 border rounded shadow text-center hover-scale">
-        <img 
-          src="https://i.ibb.co/zh0X3wt1/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png" 
-          alt="Camiseta VitroCorp - Cultiva, Educa, Eleva"
-          width="300"
-          height="300"
-          loading="lazy"
-          class="mb-2 mx-auto h-40 object-cover rounded"
-        >
-        <h3 class="font-bold text-lg mb-2">Camiseta "Cultiva. Educa. Eleva."</h3>
-        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
-      </div>
-      <div class="p-4 border rounded shadow text-center hover-scale">
-        <img 
-          src="https://i.ibb.co/vxK3N8Mb/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png" 
-          alt="Hoodie VitroCorp edición limitada"
-          width="300"
-          height="300"
-          loading="lazy"
-          class="mb-2 mx-auto h-40 object-cover rounded"
-        >
-        <h3 class="font-bold text-lg mb-2">Hoodies edición limitada</h3>
-        <a href="#" class="text-white bg-green-700 px-4 py-2 rounded hover:bg-green-800">Comprar</a>
+  <!-- Sección Testimonios -->
+  <section id="testimonios" class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-semibold text-center mb-6">💬 Lo que dicen nuestros lectores</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale">
+          <blockquote class="italic text-gray-700">"Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo."</blockquote>
+          <p class="font-bold mt-3 text-green-700">— Ana G., Quito</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale">
+          <blockquote class="italic text-gray-700">"Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes."</blockquote>
+          <p class="font-bold mt-3 text-green-700">— Miguel V., Cuenca</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- NEWSLETTER -->
-  <section id="newsletter" class="p-6 rounded-xl shadow-md mb-6 mx-4 bg-blue-50">
-    <h2 class="text-2xl font-semibold mb-4 text-center">📩 ¿Quieres más contenido científico?</h2>
-    <p class="text-center mb-4">Suscríbete para recibir guías gratuitas y ofertas exclusivas.</p>
-    <form class="max-w-md mx-auto flex">
-      <input 
-        type="email" 
-        placeholder="tu@email.com" 
-        class="px-3 py-2 rounded-l flex-grow border focus:outline-none focus:ring-2 focus:ring-green-500"
-        aria-label="Ingresa tu email para suscribirte"
-        required
-      >
-      <button 
-        type="submit" 
-        class="bg-green-600 text-white px-4 py-2 rounded-r hover:bg-green-700 transition"
-      >
-        Suscribirme
-      </button>
-    </form>
-  </section>
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VitroCorp - Ebooks y Cultivo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #F5F5F5;
-      color: #333333;
-    }
-
-    header {
-      background-color: #125C6C;
-      padding: 20px;
-      color: white;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    .main-content {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .benefits, .bonuses {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      margin-bottom: 30px;
-    }
-
-    .benefits h2, .bonuses h2 {
-      color: #125C6C;
-    }
-
-    .benefits ul, .bonuses ul {
-      padding-left: 20px;
-    }
-
-    .benefits li, .bonuses li {
-      margin-bottom: 12px;
-      line-height: 1.6;
-    }
-
-    .price-box {
-      background: #fff;
-      padding: 30px;
-      text-align: center;
-      border: 2px solid #3DBF77;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-
-    .price-box .total {
-      color: red;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .price-box .final {
-      font-size: 1.8rem;
-      color: #3DBF77;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .price-box button {
-      background-color: #E60023;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #777;
-    }
-  </style>
-</head>
-
-<body>
-  <header>
-    <h1>VitroCorp: Aprende, Cultiva, Emprende</h1>
-  </header>
-
-  <div class="main-content">
-    <section class="benefits">
-      <h2>✅ Beneficios directos</h2>
-      <ul>
-        <li>📘 Aprende biotecnología sin ser científico.</li>
-        <li>🍄 Cultiva hongos comestibles y medicinales.</li>
-        <li>🧪 Frascos y micelio listos para usar.</li>
-        <li>🧑‍🏫 Ebooks y cursos claros y aplicables.</li>
-        <li>🌿 Multiplica plantas y ahorra en producción.</li>
-        <li>🧠 Conviértete en un productor independiente.</li>
-      </ul>
-    </section>
-
-    <section class="bonuses">
-      <h2>🎁 Todo lo que recibirás al inscribirte HOY</h2>
-      <ul>
-        <li>✅ <strong>Sistema de Ebooks y Guías VitroCorp</strong><br><small>Accede a guías digitales prácticas sobre cultivo in vitro, cannabis, hongos y más.<br>Valor: $149 USD</small></li>
-        <li>✅ <strong>Lista de proveedores confiables de insumos</strong><br><small>Tiendas seguras para comprar esporas, extractos, frascos y herramientas.<br>Valor: $29 USD</small></li>
-        <li>✅ <strong>Bitácora descargable de cultivo</strong><br><small>Organiza tus lotes, fechas, contaminación, resultados y notas.<br>Valor: $19 USD</small></li>
-        <li>✅ <strong>Checklist para montaje de tu lab casero</strong><br><small>Herramientas, pasos y recomendaciones para montar tu espacio.<br>Valor: $37 USD</small></li>
-        <li>✅ <strong>Certificado digital de participación</strong><br><small>Reconoce tu aprendizaje con un diploma descargable.<br>Valor: $25 USD</small></li>
-        <li>✅ <strong>Actualizaciones de por vida</strong><br><small>Nuevas guías, bonos y contenido sin costo adicional.<br>Valor: $37 USD</small></li>
-      </ul>
-    </section>
-
-    <div class="price-box">
-      <div class="total">Valor total: $296 USD</div>
-      <div class="final">Hoy por solo: $14.97 USD</div>
-      <button>¡SÍ, QUIERO ACCEDER AHORA!</button>
-    </div>
-  </div>
-
-  <footer>
-    © 2025 VitroCorp. Todos los derechos reservados.
-  </footer>
-</body>
-
-</html>
-
-  <!-- FOOTER -->
-  <footer class="text-white text-center p-6">
-    <div class="max-w-4xl mx-auto">
-      <h3 class="text-lg font-semibold mb-2">Síguenos en redes:</h3>
-      <div class="flex justify-center space-x-4 mb-4">
-        <a href="https://www.facebook.com/vitrocorpec/" target="_blank" class="hover:underline" aria-label="Facebook de VitroCorp">Facebook</a>
-        <a href="https://www.instagram.com/vitrocorpec/" target="_blank" class="hover:underline" aria-label="Instagram de VitroCorp">Instagram</a>
-        <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" class="hover:underline" aria-label="YouTube de VitroCorp">YouTube</a>
-        <a href="https://x.com/labvitrocorp" target="_blank" class="hover:underline" aria-label="Twitter/X de VitroCorp">X (Twitter)</a>
+  <!-- Sección Ebooks -->
+  <section id="ebooks" class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-semibold text-center mb-8">📚 Nuestros Ebooks</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Ebook 1 -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover-scale transition-all duration-300">
+          <img src="https://i.ibb.co/nNH8bwp0/20250607-2058-Cultivo-In-Vitro-simple-compose-01jx6m3dxvehtv44x2mn1ttfxp.jpg" 
+               alt="Portada del ebook Cultivo In Vitro Para Principiantes" 
+               width="400" height="533"
+               class="w-full h-48 object-cover"
+               loading="lazy">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Cultivo In Vitro Para Principiantes</h3>
+            <p class="text-gray-600 mb-4">Domina las técnicas básicas de cultivo de tejidos vegetales desde cero.</p>
+            <a href="https://paypal.me/vitrocorpec/25" 
+               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 w-full text-center"
+               target="_blank"
+               rel="noopener noreferrer">
+              Comprar por $25
+            </a>
+          </div>
+        </div>
+        
+        <!-- Ebook 2 -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover-scale transition-all duration-300">
+          <img src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png" 
+               alt="Portada del ebook Cultivo de Hongos Medicinales" 
+               width="400" height="533"
+               class="w-full h-48 object-cover"
+               loading="lazy">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Cultivo de Hongos Medicinales</h3>
+            <p class="text-gray-600 mb-4">Aprende a cultivar especies medicinales como reishi y cordyceps en casa.</p>
+            <a href="https://paypal.me/vitrocorpec/30" 
+               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 w-full text-center"
+               target="_blank"
+               rel="noopener noreferrer">
+              Comprar por $30
+            </a>
+          </div>
+        </div>
+        
+        <!-- Ebook 3 -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover-scale transition-all duration-300">
+          <img src="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png" 
+               alt="Portada del ebook Biomaker" 
+               width="400" height="533"
+               class="w-full h-48 object-cover"
+               loading="lazy">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Biomaker: Laboratorio en Casa</h3>
+            <p class="text-gray-600 mb-4">Construye tu propio equipo de laboratorio low-cost.</p>
+            <a href="https://paypal.me/vitrocorpec/35" 
+               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 w-full text-center"
+               target="_blank"
+               rel="noopener noreferrer">
+              Comprar por $35
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="mt-6 pt-4 border-t border-white border-opacity-20">
-        <p class="text-xs opacity-70">
-          © 2025 VitroCorp EC. 
-          <a href="#" onclick="openTerms(); return false;" class="underline hover:no-underline">Términos y Condiciones</a> | 
-          <a href="#" onclick="openTerms(); return false;" class="underline hover:no-underline">Política de Privacidad</a>
-        </p>
+    </div>
+  </section>
+
+  <!-- Sección Merchandising -->
+  <section id="merch" class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl font-semibold text-center mb-8">👕 Merchandising</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <!-- Producto 1 -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover-scale transition-all duration-300">
+          <img src="https://i.ibb.co/zh0X3wt1/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png" 
+               alt="Camiseta VitroCorp - Cultiva, Educa, Eleva" 
+               width="600" height="600"
+               class="w-full h-64 object-contain bg-white p-4"
+               loading="lazy">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Camiseta "Cultiva. Educa. Eleva."</h3>
+            <p class="text-gray-600 mb-4">Algodón 100% orgánico. Talles S a XXL.</p>
+            <a href="https://paypal.me/vitrocorpec/20" 
+               class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 w-full text-center"
+               target="_blank"
+               rel="noopener noreferrer">
+              Comprar por $20
+            </a>
+          </div>
+        </div>
+        
+        <!-- Producto 2 -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover-scale transition-all duration-300">
+          <img src="https://i.ibb.co/vxK3N8Mb/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png" 
+               alt="Hoodie VitroCorp edición limitada" 
+               width="600" height="600"
+               class="w-full h-64 object-contain bg-white p-4"
+               loading="lazy">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Hoodie edición limitada</h3>
+            <p class="text-gray-600 mb-4">Prenda abrigada con capucha. Talles M a XL.</p>
+            <a href="https://paypal.me/vitrocorpec/45" 
+               class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 w-full text-center"
+               target="_blank"
+               rel="noopener noreferrer">
+              Comprar por $45
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section id="newsletter" class="py-12 bg-blue-50">
+    <div class="container mx-auto px-4 max-w-2xl">
+      <div class="bg-white p-8 rounded-xl shadow-md text-center">
+        <h2 class="text-2xl font-semibold mb-2">📩 ¿Quieres más contenido científico?</h2>
+        <p class="text-gray-600 mb-6">Suscríbete para recibir guías gratuitas y ofertas exclusivas.</p>
+        
+        <form action="https://formsubmit.co/scienceyapa@gmail.com" method="POST" class="flex flex-col sm:flex-row gap-2">
+          <input type="hidden" name="_subject" value="Nuevo suscriptor de VitroCorp">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://vitrocorpec.github.io/VitrocorpEc/gracias.html">
+          
+          <input type="email" 
+                 name="email"
+                 placeholder="tu@email.com" 
+                 required
+                 class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+          
+          <button type="submit" 
+                  class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
+            Suscribirme
+          </button>
+        </form>
+        
+        <p class="text-xs text-gray-500 mt-3">Respetamos tu privacidad. Nunca compartiremos tu email.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-green-700 text-white py-8">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <h3 class="text-lg font-semibold mb-2">VitroCorp</h3>
+          <p class="text-sm opacity-80">Biotecnología accesible para todos</p>
+        </div>
+        
+        <div class="flex flex-col items-center md:items-end">
+          <div class="flex space-x-4 mb-4">
+            <a href="https://www.facebook.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
+              <span class="sr-only">Facebook</span>
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
+              <span class="sr-only">Instagram</span>
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
+              </svg>
+            </a>
+            <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
+              <span class="sr-only">YouTube</span>
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path>
+              </svg>
+            </a>
+            <a href="https://x.com/labvitrocorp" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">
+              <span class="sr-only">X (Twitter)</span>
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61782L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823ZM11.5541 13.0956L10.8574 12.0991L5.31391 4.16971H7.70053L12.1742 10.5689L12.8709 11.5655L18.6861 19.8835H16.2995L11.5541 13.096V13.0956Z"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <div class="text-center md:text-right">
+            <p class="text-sm opacity-80 mb-1">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
+            <div class="flex justify-center md:justify-end space-x-3 text-xs opacity-70">
+              <a href="#" onclick="openTerms(); return false;" class="hover:underline">Términos</a>
+              <span>|</span>
+              <a href="#" onclick="openTerms(); return false;" class="hover:underline">Privacidad</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
 
-  <!-- Botón Flotante de WhatsApp -->
+  <!-- Botón WhatsApp -->
   <a href="https://wa.me/593983559460" 
-     class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition"
+     class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
      aria-label="Contactar a VitroCorp por WhatsApp"
-  >
+     target="_blank"
+     rel="noopener noreferrer">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path>
     </svg>
   </a>
 
-  <!-- Modal de Términos y Condiciones -->
+  <!-- Modal Términos -->
   <div id="termsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
-      <div class="flex justify-between items-center mb-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
+      <div class="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
         <h3 class="text-xl font-bold text-gray-800">Términos y Condiciones</h3>
-        <button onclick="closeTerms()" class="text-gray-500 hover:text-gray-700 text-2xl">
+        <button onclick="closeTerms()" class="text-gray-500 hover:text-gray-700 text-2xl focus:outline-none">
           ✕
         </button>
       </div>
-      <div class="prose prose-sm text-gray-700">
-        <h4 class="text-green-700">1. PROPIEDAD INTELECTUAL</h4>
+      <div class="p-6 prose prose-sm max-w-none">
+        <h4 class="text-green-600 font-semibold">1. PROPIEDAD INTELECTUAL</h4>
         <p>Todo el contenido en vitrocorp.ec es propiedad de VitroCorp y está protegido por leyes de derechos de autor. Prohibida la reproducción, distribución o venta sin autorización expresa.</p>
         
-        <h4 class="text-green-700">2. USO EDUCATIVO</h4>
+        <h4 class="text-green-600 font-semibold mt-6">2. USO EDUCATIVO</h4>
         <p>Nuestros materiales son solo para fines educativos. No constituyen asesoramiento profesional. Consulte a un especialista antes de aplicar técnicas de cultivo o consumo.</p>
         
-        <h4 class="text-green-700">3. LIMITACIÓN DE RESPONSABILIDAD</h4>
+        <h4 class="text-green-600 font-semibold mt-6">3. LIMITACIÓN DE RESPONSABILIDAD</h4>
         <p>VitroCorp no se hace responsable por daños derivados del uso de la información proporcionada. Los resultados pueden variar según condiciones ambientales y técnica del usuario.</p>
         
-        <h4 class="text-green-700">4. COMPRAS Y PRODUCTOS</h4>
+        <h4 class="text-green-600 font-semibold mt-6">4. COMPRAS Y PRODUCTOS</h4>
         <p>Ebooks y cursos digitales no son reembolsables. Productos físicos pueden devolverse en 15 días si presentan defectos de fabricación.</p>
         
-        <h4 class="text-green-700">5. PRIVACIDAD</h4>
+        <h4 class="text-green-600 font-semibold mt-6">5. PRIVACIDAD</h4>
         <p>Protegemos tus datos personales y solo los usamos para procesar compras y enviar contenido educativo. No compartimos información con terceros.</p>
         
-        <h4 class="text-green-700">6. ACEPTACIÓN</h4>
+        <h4 class="text-green-600 font-semibold mt-6">6. ACEPTACIÓN</h4>
         <p>Al usar este sitio o comprar nuestros productos, aceptas estos términos y condiciones en su totalidad.</p>
         
-        <p class="text-sm mt-6"><strong>Contacto legal:</strong> scienceyapa@gmail.com</p>
+        <div class="bg-gray-50 p-4 rounded-lg mt-8">
+          <p class="text-sm font-medium"><span class="text-green-600">Contacto legal:</span> scienceyapa@gmail.com</p>
+          <p class="text-xs text-gray-600 mt-1">Última actualización: 15 de julio, 2025</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Script para el modal -->
+  <!-- Scripts -->
   <script>
+    // Gestión del modal
     function openTerms() {
       document.getElementById('termsModal').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
+    
     function closeTerms() {
       document.getElementById('termsModal').classList.add('hidden');
       document.body.style.overflow = 'auto';
     }
+    
     // Cerrar al hacer clic fuera del contenido
     document.getElementById('termsModal').addEventListener('click', function(e) {
       if (e.target === this) closeTerms();
+    });
+    
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !document.getElementById('termsModal').classList.contains('hidden')) {
+        closeTerms();
+      }
     });
   </script>
 </body>
