@@ -117,6 +117,41 @@
         <div class="bg-green-50 p-4 rounded-lg">
           <span class="text-lg">📘</span>
 <a href="https://go.hotmart.com/E101190469F?dp=1" 
+  <!-- Contador de descuento -->
+<div class="mt-6 p-4 bg-red-100 border border-red-300 rounded-lg text-center">
+  <p class="text-red-700 font-bold text-sm mb-2">🚨 OFERTA RELÁMPAGO - TERMINA EN:</p>
+  <div id="countdown" class="flex justify-center space-x-2 text-2xl font-bold text-red-800">
+    <div>23</div><div>:</div>
+    <div>59</div><div>:</div>
+    <div>59</div>
+  </div>
+  <p class="text-red-600 text-xs mt-2">¡Solo hoy! Precio regresa a $296 USD</p>
+</div>
+
+<script>
+  // Contador regresivo
+  function updateCountdown() {
+    const now = new Date();
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Hoy a media noche
+    
+    const diff = endOfDay - now;
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    document.getElementById("countdown").innerHTML = `
+      <div>${hours.toString().padStart(2, '0')}</div><div>:</div>
+      <div>${minutes.toString().padStart(2, '0')}</div><div>:</div>
+      <div>${seconds.toString().padStart(2, '0')}</div>
+    `;
+  }
+  
+  // Actualizar cada segundo
+  setInterval(updateCountdown, 1000);
+  updateCountdown(); // Iniciar inmediatamente
+</script>
    class="inline-block bg-white text-[#2e8b57] font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors duration-200"
    target="_blank">
    🛒 OBTENER COMBO AHORA - 95% OFF
@@ -578,6 +613,7 @@
 </body>
 
 </html>
+
 
 
 
