@@ -1,535 +1,542 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VitroCorp EC - Cultivo In Vitro Profesional en Casa</title>
   <meta name="description" content="Aprende cultivo in vitro, cultivo de hongos y biotecnología DIY con VitroCorp. Ebooks, cursos y kits para cultivos científicos en casa.">
-
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://vitrocorpec.github.io/VitrocorpEc/">
   <meta property="og:title" content="VitroCorp EC - Cultivo In Vitro Profesional en Casa">
   <meta property="og:description" content="Aprende a montar tu laboratorio low-cost con guías prácticas y kits especializados.">
   <meta property="og:image" content="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png">
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://vitrocorpec.github.io/VitrocorpEc/">
-  <meta name="twitter:title" content="VitroCorp EC - Cultivo In Vitro Profesional en Casa">
-  <meta name="twitter:description" content="Aprende a montar tu laboratorio low-cost con guías prácticas y kits especializados.">
   <meta name="twitter:image" content="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png">
-
   <link rel="icon" href="favicon.ico">
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-  <!-- Google Analytics -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WCHHN7LFW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WCHHN7LFW');
-  </script>
-
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WCHHN7LFW');</script>
   <style>
-    :root {
-      --verde-hoja: #3DBF77;
-      --verde-musgo: #2E8B57;
-      --azul-petroleo: #125C6C;
-      --blanco-hueso: #F5F5F5;
-      --gris-grafito: #333333;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --ink:#0D1A12;--forest:#1B4332;--moss:#2D6A4F;--leaf:#40916C;
+      --mint:#74C69D;--pale:#D8F3DC;--cream:#F8FAF4;--white:#FFFFFF;
+      --accent:#E63946;--gold:#D4A017;--gray-2:#F2F4F0;--gray-5:#C8CCC4;
+      --gray-7:#6B7068;--radius-sm:8px;--radius-md:14px;--radius-lg:22px;
     }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: var(--blanco-hueso);
-      color: var(--gris-grafito);
-      line-height: 1.6;
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.65;font-size:16px;}
+    h1,h2,h3,h4{font-family:'Syne',sans-serif;line-height:1.15;}
+    a{color:inherit;text-decoration:none;}
+    img{display:block;max-width:100%;}
+    .container{max-width:1100px;margin:0 auto;padding:0 24px;}
+    .container-sm{max-width:760px;margin:0 auto;padding:0 24px;}
+    .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:99px;background:var(--pale);color:var(--forest);border:1px solid var(--mint);}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;padding:14px 28px;border-radius:var(--radius-sm);border:none;cursor:pointer;text-decoration:none;transition:transform .15s ease,filter .15s ease;}
+    .btn:hover{transform:translateY(-2px);filter:brightness(1.08);}
+    .btn:active{transform:translateY(0);}
+    .btn-cta{background:var(--accent);color:#fff;}
+    .btn-dark{background:var(--forest);color:#fff;}
+    .btn-white{background:#fff;color:var(--forest);}
+    .btn-lg{font-size:1.05rem;padding:17px 36px;}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;background:rgba(248,250,244,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-5);}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:58px;gap:24px;}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--forest);letter-spacing:-.02em;}
+    .nav-logo span{color:var(--leaf);}
+    .nav-links{display:flex;gap:20px;}
+    .nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-7);transition:color .15s;}
+    .nav-links a:hover{color:var(--forest);}
+
+    /* HERO */
+    .hero{background:var(--forest);color:#fff;padding:80px 0 0;overflow:hidden;position:relative;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 40%,rgba(64,145,108,.35) 0%,transparent 70%);pointer-events:none;}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;position:relative;z-index:1;}
+    .hero-left{padding-bottom:80px;}
+    .hero-eyebrow{margin-bottom:20px;}
+    .hero h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;margin-bottom:20px;letter-spacing:-.03em;}
+    .hero h1 em{font-style:normal;color:var(--mint);}
+    .hero-sub{font-size:1.05rem;opacity:.85;max-width:440px;margin-bottom:32px;line-height:1.7;}
+    .hero-proof{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:36px;}
+    .hero-proof-item{display:flex;align-items:center;gap:8px;font-size:.85rem;opacity:.75;}
+    .hero-proof-item::before{content:'✓';color:var(--mint);font-weight:700;}
+    .price-card{background:#fff;color:var(--ink);border-radius:var(--radius-lg);padding:32px;max-width:360px;}
+    .price-card-label{font-size:.8rem;color:var(--gray-7);margin-bottom:4px;}
+    .price-was{font-size:.9rem;color:var(--gray-5);text-decoration:line-through;margin-bottom:2px;}
+    .price-now{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--forest);line-height:1;margin-bottom:4px;}
+    .price-note{font-size:.8rem;color:var(--gray-7);margin-bottom:20px;}
+    .price-card .btn{width:100%;margin-bottom:12px;}
+    .price-trust{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .price-trust span{font-size:.75rem;color:var(--gray-7);display:flex;align-items:center;gap:4px;}
+    .hero-right{display:flex;align-items:flex-end;justify-content:center;}
+    .hero-books{display:flex;align-items:flex-end;padding-bottom:0;}
+    .hero-book{border-radius:var(--radius-md) var(--radius-md) 0 0;overflow:hidden;flex-shrink:0;box-shadow:0 -8px 40px rgba(0,0,0,.35);transition:transform .3s ease;}
+    .hero-book img{width:140px;height:195px;object-fit:cover;display:block;}
+    .hero-book:nth-child(1){transform:rotate(-4deg) translateX(20px);z-index:1;}
+    .hero-book:nth-child(2){transform:rotate(0deg);z-index:3;}
+    .hero-book:nth-child(2) img{width:160px;height:224px;}
+    .hero-book:nth-child(3){transform:rotate(4deg) translateX(-20px);z-index:1;}
+    .hero-book:hover{transform:translateY(-16px) rotate(0deg) !important;z-index:10;}
+    .countdown-bar{background:rgba(0,0,0,.25);border-top:1px solid rgba(255,255,255,.1);padding:12px 0;text-align:center;position:relative;z-index:2;}
+    .countdown-inner{display:inline-flex;align-items:center;gap:16px;font-size:.85rem;color:rgba(255,255,255,.8);}
+    #countdown-hero{display:inline-flex;gap:4px;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff;}
+    #countdown-hero .colon{opacity:.5;}
+
+    /* TRUST BAR */
+    .trust-bar{background:var(--white);border-bottom:1px solid var(--gray-5);padding:18px 0;}
+    .trust-items{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;}
+    .trust-item{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--gray-7);}
+    .trust-icon{width:32px;height:32px;border-radius:50%;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+    /* SECTIONS */
+    section{padding:80px 0;}
+    .section-header{text-align:center;margin-bottom:52px;}
+    .section-header .tag{margin-bottom:16px;}
+    .section-header h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;margin-bottom:12px;}
+    .section-header p{font-size:1rem;color:var(--gray-7);max-width:520px;margin:0 auto;}
+
+    /* BENEFITS */
+    .benefits-section{background:var(--white);}
+    .benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .benefit-card{padding:28px;border-radius:var(--radius-md);border:1.5px solid var(--gray-5);background:var(--cream);transition:border-color .2s,transform .2s;}
+    .benefit-card:hover{border-color:var(--mint);transform:translateY(-3px);}
+    .benefit-icon{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;}
+    .benefit-card h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
+    .benefit-card p{font-size:.88rem;color:var(--gray-7);line-height:1.6;}
+
+    /* COMBO */
+    .combo-section{background:var(--cream);}
+    .combo-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+    .combo-list{list-style:none;}
+    .combo-list li{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--gray-5);gap:16px;}
+    .combo-list li:last-child{border-bottom:none;}
+    .combo-item-info h4{font-size:.95rem;font-weight:600;margin-bottom:3px;}
+    .combo-item-info p{font-size:.8rem;color:var(--gray-7);}
+    .combo-item-price{font-size:.85rem;color:var(--gray-5);text-decoration:line-through;white-space:nowrap;}
+    .combo-total{background:var(--forest);color:#fff;border-radius:var(--radius-lg);padding:32px;text-align:center;}
+    .combo-total-label{font-size:.85rem;opacity:.7;margin-bottom:4px;}
+    .combo-total-was{font-size:.9rem;opacity:.5;text-decoration:line-through;margin-bottom:4px;}
+    .combo-total-price{font-family:'Syne',sans-serif;font-weight:800;font-size:3.5rem;line-height:1;margin-bottom:8px;color:var(--mint);}
+    .combo-total-note{font-size:.8rem;opacity:.65;margin-bottom:24px;}
+    .combo-total .btn{width:100%;margin-bottom:16px;}
+    .combo-guarantees{display:flex;flex-direction:column;gap:8px;}
+    .combo-guarantee{display:flex;align-items:center;gap:8px;font-size:.8rem;opacity:.7;}
+    .combo-guarantee::before{content:'✓';color:var(--mint);font-weight:700;}
+
+    /* EBOOKS */
+    .ebooks-section{background:var(--white);}
+    .ebooks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+    .ebook-card{border-radius:var(--radius-md);overflow:hidden;border:1.5px solid var(--gray-5);background:var(--cream);transition:transform .2s,border-color .2s;}
+    .ebook-card:hover{transform:translateY(-4px);border-color:var(--mint);}
+    .ebook-card img{width:100%;height:200px;object-fit:cover;}
+    .ebook-card-body{padding:20px;}
+    .ebook-card-body h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
+    .ebook-card-body p{font-size:.85rem;color:var(--gray-7);margin-bottom:16px;line-height:1.55;}
+    .ebook-price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .ebook-price{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:var(--forest);}
+    .ebook-btn{font-size:.8rem;padding:8px 16px;background:var(--forest);color:#fff;border-radius:var(--radius-sm);font-weight:600;transition:background .15s;}
+    .ebook-btn:hover{background:var(--moss);}
+
+    /* TESTIMONIALS */
+    .testimonials-section{background:var(--forest);color:#fff;}
+    .testimonials-section .section-header h2{color:#fff;}
+    .testimonials-section .section-header p{color:var(--mint);}
+    .testimonials-section .tag{background:rgba(116,198,157,.15);color:var(--mint);border-color:rgba(116,198,157,.3);}
+    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .testimonial-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-md);padding:28px;}
+    .testimonial-stars{color:var(--gold);font-size:1rem;margin-bottom:16px;letter-spacing:2px;}
+    .testimonial-quote{font-size:.9rem;line-height:1.7;color:rgba(255,255,255,.85);font-style:italic;margin-bottom:20px;}
+    .testimonial-quote::before{content:'"';}
+    .testimonial-quote::after{content:'"';}
+    .testimonial-author{display:flex;align-items:center;gap:12px;}
+    .testimonial-avatar{width:40px;height:40px;border-radius:50%;background:var(--leaf);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0;}
+    .testimonial-name{font-weight:600;font-size:.9rem;}
+    .testimonial-loc{font-size:.78rem;color:var(--mint);opacity:.8;}
+
+    /* MERCH */
+    .merch-section{background:var(--cream);}
+    .merch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:740px;margin:0 auto;}
+    .merch-card{border-radius:var(--radius-md);overflow:hidden;border:1.5px solid var(--gray-5);background:var(--white);transition:transform .2s,border-color .2s;}
+    .merch-card:hover{transform:translateY(-4px);border-color:var(--mint);}
+    .merch-img{width:100%;height:240px;object-fit:contain;background:var(--gray-2);padding:20px;}
+    .merch-img-placeholder{width:100%;height:240px;background:var(--gray-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gray-7);font-size:.85rem;}
+    .merch-card-body{padding:20px;}
+    .merch-card-body h3{font-size:1rem;font-weight:700;margin-bottom:4px;}
+    .merch-card-body p{font-size:.85rem;color:var(--gray-7);margin-bottom:16px;}
+    .merch-price-row{display:flex;align-items:center;justify-content:space-between;}
+    .merch-price{font-family:'Syne',sans-serif;font-weight:700;color:var(--forest);font-size:1.1rem;}
+
+    /* CTA FINAL */
+    .cta-final{background:var(--ink);color:#fff;text-align:center;padding:96px 0;}
+    .cta-final .tag{background:rgba(116,198,157,.1);color:var(--mint);border-color:rgba(116,198,157,.2);margin-bottom:24px;}
+    .cta-final h2{font-size:clamp(2rem,4.5vw,3rem);font-weight:800;margin-bottom:16px;}
+    .cta-final h2 em{font-style:normal;color:var(--mint);}
+    .cta-final p{font-size:1rem;opacity:.7;margin-bottom:36px;}
+
+    /* NEWSLETTER */
+    .newsletter-section{background:var(--pale);padding:64px 0;}
+    .newsletter-box{background:var(--white);border-radius:var(--radius-lg);padding:48px;text-align:center;max-width:580px;margin:0 auto;border:1.5px solid var(--mint);}
+    .newsletter-box h2{font-size:1.6rem;margin-bottom:8px;}
+    .newsletter-box p{font-size:.9rem;color:var(--gray-7);margin-bottom:24px;}
+    .newsletter-form{display:flex;gap:8px;flex-wrap:wrap;}
+    .newsletter-form input[type="email"]{flex:1;min-width:200px;padding:12px 16px;border:1.5px solid var(--gray-5);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:.9rem;background:var(--cream);color:var(--ink);outline:none;transition:border-color .15s;}
+    .newsletter-form input[type="email"]:focus{border-color:var(--leaf);}
+    .newsletter-form button{padding:12px 24px;background:var(--forest);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;transition:background .15s;}
+    .newsletter-form button:hover{background:var(--moss);}
+    .newsletter-privacy{font-size:.75rem;color:var(--gray-7);margin-top:12px;}
+
+    /* FOOTER */
+    footer{background:var(--ink);color:rgba(255,255,255,.7);padding:48px 0 32px;}
+    .footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;margin-bottom:40px;}
+    .footer-brand p{font-size:.85rem;opacity:.6;max-width:240px;margin-top:8px;}
+    .footer-social{display:flex;gap:12px;margin-top:16px;}
+    .footer-social a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:background .15s;}
+    .footer-social a:hover{background:var(--leaf);}
+    .footer-social svg{width:16px;height:16px;fill:#fff;}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.8rem;}
+    .footer-links{display:flex;gap:16px;}
+    .footer-links a{opacity:.5;transition:opacity .15s;}
+    .footer-links a:hover{opacity:1;}
+
+    /* WHATSAPP */
+    .whatsapp-btn{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;z-index:200;}
+    .whatsapp-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.5);}
+    .whatsapp-btn svg{width:28px;height:28px;fill:#fff;}
+
+    /* MODAL */
+    #termsModal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;}
+    #termsModal.open{opacity:1;visibility:visible;}
+    .modal-box{background:#fff;border-radius:var(--radius-lg);max-width:600px;width:100%;max-height:85vh;overflow-y:auto;}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--gray-5);position:sticky;top:0;background:#fff;}
+    .modal-header h3{font-size:1.1rem;font-weight:700;}
+    .modal-close{background:none;border:none;cursor:pointer;font-size:1.4rem;color:var(--gray-7);line-height:1;}
+    .modal-body{padding:24px;}
+    .modal-body h4{font-size:.9rem;font-weight:700;color:var(--forest);margin:20px 0 6px;}
+    .modal-body h4:first-child{margin-top:0;}
+    .modal-body p{font-size:.88rem;color:var(--gray-7);line-height:1.6;}
+    .modal-contact{background:var(--cream);padding:16px;border-radius:var(--radius-sm);margin-top:20px;}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr;}
+      .hero-right{display:none;}
+      .hero-left{padding-bottom:48px;}
+      .benefits-grid{grid-template-columns:1fr 1fr;}
+      .combo-layout{grid-template-columns:1fr;}
+      .ebooks-grid{grid-template-columns:1fr 1fr;}
+      .testimonials-grid{grid-template-columns:1fr;}
     }
-    .hover-scale {
-      transition: transform 0.2s ease;
-    }
-    .hover-scale:hover {
-      transform: scale(1.03);
-    }
-    .btn-primary {
-      display: inline-block;
-      background-color: #E60023;
-      color: white;
-      font-weight: 700;
-      padding: 14px 28px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .btn-primary:hover {
-      background-color: #c0001e;
-      transform: scale(1.02);
-    }
-    .btn-secondary {
-      display: inline-block;
-      background-color: #2E8B57;
-      color: white;
-      font-weight: 700;
-      padding: 14px 28px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.2s ease;
-    }
-    .btn-secondary:hover {
-      background-color: #236b43;
-    }
-    #termsModal {
-      transition: opacity 0.2s ease, visibility 0.2s;
-    }
-    #termsModal.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+    @media(max-width:600px){
+      .benefits-grid{grid-template-columns:1fr;}
+      .ebooks-grid{grid-template-columns:1fr;}
+      .merch-grid{grid-template-columns:1fr;}
+      .nav-links{display:none;}
+      .trust-items{gap:16px;}
     }
   </style>
 </head>
+<body>
 
-<body class="min-h-screen flex flex-col">
-
-  <!-- ====== HEADER / HERO ====== -->
-  <header class="bg-green-700 py-10 text-white text-center">
-    <div class="container mx-auto px-4 max-w-3xl">
-      <h1 class="text-4xl font-bold mb-1 tracking-tight">VITROCORP EC</h1>
-      <p class="text-lg opacity-90 mb-6">Biotecnología DIY · Cultivo In Vitro · Hongos Medicinales</p>
-
-      <h2 class="text-2xl font-bold mb-3">¿Pierdes cultivos por contaminación?</h2>
-      <p class="text-lg mb-2 opacity-90">Monta tu propio laboratorio in vitro <strong>con menos de $100</strong> siguiendo nuestras guías paso a paso.</p>
-      <p class="text-base opacity-80 mb-6">Sin ser científico. Sin equipo caro. Desde tu casa.</p>
-
-      <!-- Oferta destacada -->
-      <div class="bg-white text-gray-800 rounded-xl p-6 mb-6 inline-block w-full max-w-md mx-auto">
-        <p class="text-sm text-gray-500 mb-1">Combo completo VitroCorp</p>
-        <p class="text-gray-400 line-through text-sm mb-1">Valor total: $149 USD</p>
-        <p class="text-3xl font-bold text-green-700 mb-1">$19.99 USD</p>
-        <p class="text-xs text-gray-500 mb-4">Precio especial de lanzamiento · Acceso inmediato</p>
-        <a href="https://go.hotmart.com/E101190469F?dp=1"
-           class="btn-primary w-full text-center block"
-           target="_blank" rel="noopener noreferrer">
-          🛒 OBTENER COMBO AHORA
-        </a>
-      </div>
-
-      <!-- Contador regresivo -->
-      <div class="bg-red-100 border border-red-300 rounded-lg p-4 text-center max-w-md mx-auto">
-        <p class="text-red-700 font-bold text-sm mb-2">🚨 Oferta válida hasta medianoche:</p>
-        <div id="countdown" class="flex justify-center space-x-2 text-2xl font-bold text-red-800">
-          <div>--</div><div>:</div><div>--</div><div>:</div><div>--</div>
-        </div>
-      </div>
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-logo">Vitro<span>Corp</span> EC</div>
+    <div class="nav-links">
+      <a href="#benefits">Beneficios</a>
+      <a href="#ebooks">Ebooks</a>
+      <a href="#testimonios">Testimonios</a>
+      <a href="#merch">Merch</a>
+      <a href="#newsletter">Newsletter</a>
     </div>
-  </header>
+    <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta" target="_blank" rel="noopener noreferrer" style="padding:10px 20px;font-size:.85rem;">Comprar — $19.99</a>
+  </div>
+</nav>
 
-  <!-- ====== NAVEGACIÓN ====== -->
-  <nav class="bg-gray-50 border-b border-gray-200 py-2 px-6 text-sm sticky top-0 z-40">
-    <div class="container mx-auto flex gap-4 flex-wrap">
-      <a href="#benefits" class="text-gray-700 hover:text-green-700 transition-colors">Beneficios</a>
-      <a href="#ebooks" class="text-gray-700 hover:text-green-700 transition-colors">Ebooks</a>
-      <a href="#testimonios" class="text-gray-700 hover:text-green-700 transition-colors">Testimonios</a>
-      <a href="#merch" class="text-gray-700 hover:text-green-700 transition-colors">Merchandising</a>
-      <a href="#newsletter" class="text-gray-700 hover:text-green-700 transition-colors">Suscribirse</a>
-    </div>
-  </nav>
-
-  <!-- ====== BENEFICIOS ====== -->
-  <section id="benefits" class="py-12 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-semibold text-center mb-2">¿Por qué elegir VitroCorp?</h2>
-      <p class="text-center text-gray-500 mb-8 text-sm">Todo lo que necesitas para empezar a cultivar como un profesional</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">📘</span>
-          <h3 class="font-semibold mt-2 mb-1">Aprende sin ser científico</h3>
-          <p class="text-sm text-gray-600">Guías claras escritas para principiantes totales.</p>
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-eyebrow"><span class="tag">🌿 Biotecnología DIY · Ecuador</span></div>
+        <h1>Tu laboratorio<br>in vitro en casa,<br><em>desde $100</em></h1>
+        <p class="hero-sub">Aprende a cultivar hongos medicinales y tejidos vegetales sin ser científico ni tener equipo costoso. Guías paso a paso y soporte real.</p>
+        <div class="hero-proof">
+          <div class="hero-proof-item">Sin experiencia previa</div>
+          <div class="hero-proof-item">Menos de $100 de inversión</div>
+          <div class="hero-proof-item">Acceso inmediato</div>
         </div>
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">🍄</span>
-          <h3 class="font-semibold mt-2 mb-1">Hongos comestibles y medicinales</h3>
-          <p class="text-sm text-gray-600">Reishi, cordyceps, ostra y más desde tu hogar.</p>
-        </div>
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">🧪</span>
-          <h3 class="font-semibold mt-2 mb-1">Lab casero por menos de $100</h3>
-          <p class="text-sm text-gray-600">Lista de materiales accesibles y dónde conseguirlos.</p>
-        </div>
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">🌿</span>
-          <h3 class="font-semibold mt-2 mb-1">Multiplica plantas</h3>
-          <p class="text-sm text-gray-600">Técnicas de cultivo in vitro para producción vegetal.</p>
-        </div>
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">🧠</span>
-          <h3 class="font-semibold mt-2 mb-1">Produce de forma independiente</h3>
-          <p class="text-sm text-gray-600">Convierte tu conocimiento en un ingreso real.</p>
-        </div>
-        <div class="bg-green-50 border border-green-100 p-5 rounded-xl">
-          <span class="text-2xl">🔄</span>
-          <h3 class="font-semibold mt-2 mb-1">Actualizaciones de por vida</h3>
-          <p class="text-sm text-gray-600">Nuevas guías y contenido sin costo adicional.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== QUÉ INCLUYE EL COMBO ====== -->
-  <section class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4 max-w-3xl">
-      <h2 class="text-2xl font-semibold text-center mb-2">🎁 Todo lo que recibes hoy</h2>
-      <p class="text-center text-gray-500 mb-8 text-sm">Acceso inmediato tras la compra</p>
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
-        <div class="p-5 flex justify-between items-center">
-          <div>
-            <p class="font-semibold">Sistema de Ebooks y Guías VitroCorp</p>
-            <p class="text-sm text-gray-500">Cultivo in vitro, hongos, cannabis y más</p>
-          </div>
-          <span class="text-gray-400 line-through text-sm">$149</span>
-        </div>
-        <div class="p-5 flex justify-between items-center">
-          <div>
-            <p class="font-semibold">Bitácora de cultivo descargable</p>
-            <p class="text-sm text-gray-500">Organiza lotes, fechas y resultados</p>
-          </div>
-          <span class="text-gray-400 line-through text-sm">$19</span>
-        </div>
-        <div class="p-5 flex justify-between items-center">
-          <div>
-            <p class="font-semibold">Checklist para montaje de laboratorio</p>
-            <p class="text-sm text-gray-500">Qué comprar, dónde y cómo instalarlo</p>
-          </div>
-          <span class="text-gray-400 line-through text-sm">$37</span>
-        </div>
-        <div class="p-5 flex justify-between items-center">
-          <div>
-            <p class="font-semibold">Certificado digital de participación</p>
-            <p class="text-sm text-gray-500">Diploma descargable de VitroCorp</p>
-          </div>
-          <span class="text-gray-400 line-through text-sm">$25</span>
-        </div>
-        <div class="p-5 bg-green-50 rounded-b-xl flex justify-between items-center">
-          <p class="font-bold text-green-700 text-lg">Total hoy:</p>
-          <p class="font-bold text-green-700 text-xl">$19.99 USD</p>
-        </div>
-      </div>
-      <div class="text-center mt-6">
-        <a href="https://go.hotmart.com/E101190469F?dp=1"
-           class="btn-primary"
-           target="_blank" rel="noopener noreferrer">
-          ✅ SÍ, QUIERO ACCEDER AHORA
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== EBOOKS ====== -->
-  <section id="ebooks" class="py-12 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-semibold text-center mb-2">📚 Nuestros Ebooks</h2>
-      <p class="text-center text-gray-500 mb-8 text-sm">También disponibles por separado</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover-scale">
-          <img src="https://i.ibb.co/nNH8bwp0/20250607-2058-Cultivo-In-Vitro-simple-compose-01jx6m3dxvehtv44x2mn1ttfxp.jpg"
-               alt="Ebook: Cultivo In Vitro Para Principiantes"
-               class="w-full h-48 object-cover" loading="lazy">
-          <div class="p-5">
-            <h3 class="font-bold text-base mb-2">Cultivo In Vitro Para Principiantes</h3>
-            <p class="text-gray-600 text-sm mb-4">Domina las técnicas básicas de cultivo de tejidos vegetales desde cero.</p>
-            <a href="https://javiermedinat-jm.systeme.io/280465"
-               class="btn-secondary w-full text-center block text-sm"
-               target="_blank" rel="noopener noreferrer">
-              Comprar por $9.99
-            </a>
-          </div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover-scale">
-          <img src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png"
-               alt="Ebook: Cultivo de Hongos Medicinales"
-               class="w-full h-48 object-cover" loading="lazy">
-          <div class="p-5">
-            <h3 class="font-bold text-base mb-2">Cultivo de Hongos Medicinales</h3>
-            <p class="text-gray-600 text-sm mb-4">Aprende a cultivar reishi y cordyceps en casa.</p>
-            <a href="https://javiermedinat-jm.systeme.io/280465"
-               class="btn-secondary w-full text-center block text-sm"
-               target="_blank" rel="noopener noreferrer">
-              Comprar por $7.99
-            </a>
-          </div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover-scale">
-          <img src="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png"
-               alt="Ebook: Biomaker - Laboratorio en Casa"
-               class="w-full h-48 object-cover" loading="lazy">
-          <div class="p-5">
-            <h3 class="font-bold text-base mb-2">Biomaker: Laboratorio en Casa</h3>
-            <p class="text-gray-600 text-sm mb-4">Construye tu propio equipo de laboratorio low-cost.</p>
-            <a href="https://javiermedinat-jm.systeme.io/280465"
-               class="btn-secondary w-full text-center block text-sm"
-               target="_blank" rel="noopener noreferrer">
-              Comprar por $12.81
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== TESTIMONIOS ====== -->
-  <section id="testimonios" class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-semibold text-center mb-2">💬 Lo que dicen nuestros estudiantes</h2>
-      <p class="text-center text-gray-500 mb-8 text-sm">Resultados reales de personas como tú</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        <div class="bg-white p-6 rounded-xl border border-gray-200 hover-scale">
-          <div class="flex mb-3">
-            <span class="text-yellow-400">★★★★★</span>
-          </div>
-          <blockquote class="italic text-gray-700 text-sm mb-4">"Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo a entender los pasos sin equipo costoso."</blockquote>
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm">AG</div>
-            <div>
-              <p class="font-semibold text-sm">Ana G.</p>
-              <p class="text-xs text-gray-500">Quito, Ecuador</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl border border-gray-200 hover-scale">
-          <div class="flex mb-3">
-            <span class="text-yellow-400">★★★★★</span>
-          </div>
-          <blockquote class="italic text-gray-700 text-sm mb-4">"Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes locales. En 3 meses recuperé la inversión."</blockquote>
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm">MV</div>
-            <div>
-              <p class="font-semibold text-sm">Miguel V.</p>
-              <p class="text-xs text-gray-500">Cuenca, Ecuador</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white p-6 rounded-xl border border-gray-200 hover-scale">
-          <div class="flex mb-3">
-            <span class="text-yellow-400">★★★★★</span>
-          </div>
-          <blockquote class="italic text-gray-700 text-sm mb-4">"Logré mi primer cultivo estable en menos de un mes. Las guías son muy claras y el soporte por WhatsApp es excelente."</blockquote>
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm">CR</div>
-            <div>
-              <p class="font-semibold text-sm">Camila R.</p>
-              <p class="text-xs text-gray-500">Guayaquil, Ecuador</p>
-            </div>
+        <div class="price-card">
+          <p class="price-card-label">Combo completo VitroCorp</p>
+          <p class="price-was">Valor total: $230 USD</p>
+          <p class="price-now">$19.99</p>
+          <p class="price-note">Precio especial de lanzamiento · Un solo pago</p>
+          <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta btn-lg" target="_blank" rel="noopener noreferrer">🛒 Obtener combo ahora</a>
+          <div class="price-trust">
+            <span>🔒 Pago seguro</span>
+            <span>📦 Acceso inmediato</span>
+            <span>🎓 Garantía incluida</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ====== MERCHANDISING ====== -->
-  <section id="merch" class="py-12 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-semibold text-center mb-2">👕 Merchandising</h2>
-      <p class="text-center text-gray-500 mb-8 text-sm">Muestra tu pasión por la biotecnología</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover-scale">
-          <img src="https://i.ibb.co/zh0X3wt1/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png"
-               alt="Camiseta VitroCorp - Cultiva, Educa, Eleva"
-               class="w-full h-56 object-contain bg-gray-50 p-4" loading="lazy">
-          <div class="p-5">
-            <h3 class="font-bold text-base mb-1">Camiseta "Cultiva. Educa. Eleva."</h3>
-            <p class="text-gray-600 text-sm mb-4">Algodón 100% orgánico. Tallas S a XXL.</p>
-            <a href="https://javiermedinat-jm.systeme.io/280465"
-               class="btn-secondary w-full text-center block text-sm"
-               target="_blank" rel="noopener noreferrer">
-              Comprar por $9.99
-            </a>
-          </div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover-scale">
-          <div class="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
-            Imagen próximamente
-          </div>
-          <div class="p-5">
-            <h3 class="font-bold text-base mb-1">Hoodie VitroCorp — Edición Limitada</h3>
-            <p class="text-gray-600 text-sm mb-4">Diseño exclusivo. Tallas S a XXL.</p>
-            <a href="https://javiermedinat-jm.systeme.io/280465"
-               class="btn-secondary w-full text-center block text-sm"
-               target="_blank" rel="noopener noreferrer">
-              Comprar por $30.00
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== CTA FINAL ====== -->
-  <section class="py-16 bg-green-700 text-white text-center">
-    <div class="container mx-auto px-4 max-w-2xl">
-      <h2 class="text-3xl font-bold mb-3">¿Listo para empezar a cultivar?</h2>
-      <p class="text-lg opacity-90 mb-6">Únete a cientos de estudiantes que ya tienen su laboratorio en casa.</p>
-      <a href="https://go.hotmart.com/E101190469F?dp=1"
-         class="inline-block bg-white text-green-700 font-bold py-4 px-10 rounded-xl text-lg hover:bg-gray-100 transition-colors"
-         target="_blank" rel="noopener noreferrer">
-        🛒 OBTENER COMBO — $19.99 USD
-      </a>
-      <p class="text-sm opacity-70 mt-4">Acceso inmediato · Pago seguro · Garantía incluida</p>
-    </div>
-  </section>
-
-  <!-- ====== NEWSLETTER ====== -->
-  <section id="newsletter" class="py-12 bg-blue-50">
-    <div class="container mx-auto px-4 max-w-2xl">
-      <div class="bg-white p-8 rounded-xl border border-blue-100 text-center">
-        <h2 class="text-2xl font-semibold mb-2">📩 ¿Quieres contenido gratuito?</h2>
-        <p class="text-gray-600 mb-6 text-sm">Suscríbete y recibe guías, tips y ofertas exclusivas.</p>
-        <form action="https://formsubmit.co/scienceyapa@gmail.com" method="POST" class="flex flex-col sm:flex-row gap-2">
-          <input type="hidden" name="_subject" value="Nuevo suscriptor de VitroCorp">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_next" value="https://vitrocorpec.github.io/VitrocorpEc/gracias.html">
-          <input type="email" name="email" placeholder="tu@email.com" required
-                 class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-          <button type="submit"
-                  class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
-            Suscribirme
-          </button>
-        </form>
-        <p class="text-xs text-gray-400 mt-3">Respetamos tu privacidad. Sin spam, nunca.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== FOOTER ====== -->
-  <footer class="bg-green-800 text-white py-8">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-        <div>
-          <h3 class="text-lg font-bold">VitroCorp EC</h3>
-          <p class="text-sm opacity-70">Biotecnología accesible para todos</p>
-        </div>
-        <div class="flex space-x-4">
-          <a href="https://www.facebook.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="hover:opacity-80 transition-opacity">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path></svg>
-          </a>
-          <a href="https://www.instagram.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-80 transition-opacity">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path></svg>
-          </a>
-          <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="hover:opacity-80 transition-opacity">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path></svg>
-          </a>
-          <a href="https://x.com/labvitrocorp" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="hover:opacity-80 transition-opacity">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61782L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823Z"></path></svg>
-          </a>
-        </div>
-        <div class="text-center md:text-right">
-          <p class="text-sm opacity-70 mb-1">© 2025 VitroCorp EC. Todos los derechos reservados.</p>
-          <div class="flex justify-center md:justify-end space-x-3 text-xs opacity-60">
-            <a href="#" onclick="openTerms(); return false;" class="hover:underline">Términos</a>
-            <span>|</span>
-            <a href="#" onclick="openTerms(); return false;" class="hover:underline">Privacidad</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ====== BOTÓN WHATSAPP ====== -->
-  <a href="https://wa.me/593983559460?text=¡Hola!%20Quiero%20información%20sobre%20VitroCorp"
-     class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all hover:scale-110 z-50"
-     aria-label="Contactar a VitroCorp por WhatsApp"
-     target="_blank" rel="noopener noreferrer">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-  </a>
-
-  <!-- ====== MODAL TÉRMINOS ====== -->
-  <div id="termsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-2xl w-full max-h-screen overflow-y-auto shadow-xl">
-      <div class="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
-        <h3 class="text-xl font-bold">Términos y Condiciones</h3>
-        <button onclick="closeTerms()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">✕</button>
-      </div>
-      <div class="p-6 text-sm text-gray-700 space-y-4">
-        <div>
-          <h4 class="font-semibold text-green-700 mb-1">1. Propiedad intelectual</h4>
-          <p>Todo el contenido es propiedad de VitroCorp EC. Prohibida la reproducción sin autorización expresa.</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-green-700 mb-1">2. Uso educativo</h4>
-          <p>Nuestros materiales son exclusivamente para fines educativos. Consulte a un especialista antes de aplicar técnicas de cultivo.</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-green-700 mb-1">3. Limitación de responsabilidad</h4>
-          <p>Los resultados pueden variar según condiciones ambientales y técnica del usuario.</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-green-700 mb-1">4. Compras y devoluciones</h4>
-          <p>Productos digitales no son reembolsables. Productos físicos pueden devolverse en 15 días por defectos de fabricación.</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-green-700 mb-1">5. Privacidad</h4>
-          <p>Protegemos tus datos y no los compartimos con terceros.</p>
-        </div>
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <p class="font-medium">Contacto: <a href="mailto:scienceyapa@gmail.com" class="text-green-700">scienceyapa@gmail.com</a></p>
-          <p class="text-xs text-gray-500 mt-1">Última actualización: julio 2025</p>
+      <div class="hero-right">
+        <div class="hero-books">
+          <div class="hero-book"><img src="https://i.ibb.co/nNH8bwp0/20250607-2058-Cultivo-In-Vitro-simple-compose-01jx6m3dxvehtv44x2mn1ttfxp.jpg" alt="Ebook Cultivo In Vitro"></div>
+          <div class="hero-book"><img src="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png" alt="Ebook Biomaker"></div>
+          <div class="hero-book"><img src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png" alt="Ebook Hongos"></div>
         </div>
       </div>
     </div>
   </div>
+  <div class="countdown-bar">
+    <div class="countdown-inner">
+      <span>🚨 Oferta de lanzamiento termina en:</span>
+      <div id="countdown-hero">
+        <span id="ch">--</span><span class="colon">:</span><span id="cm">--</span><span class="colon">:</span><span id="cs">--</span>
+      </div>
+      <span style="opacity:.5">· Precio sube tras el lanzamiento</span>
+    </div>
+  </div>
+</header>
 
-  <!-- ====== SCRIPTS ====== -->
-  <script>
-    // Contador regresivo hasta medianoche
-    function updateCountdown() {
-      const now = new Date();
-      const end = new Date();
-      end.setHours(23, 59, 59, 999);
-      const diff = end - now;
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('countdown').innerHTML =
-        `<span>${String(h).padStart(2,'0')}</span><span>:</span><span>${String(m).padStart(2,'0')}</span><span>:</span><span>${String(s).padStart(2,'0')}</span>`;
-    }
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-items">
+      <div class="trust-item"><div class="trust-icon">📘</div>3 ebooks especializados</div>
+      <div class="trust-item"><div class="trust-icon">📋</div>Bitácora + checklist</div>
+      <div class="trust-item"><div class="trust-icon">🎓</div>Certificado digital</div>
+      <div class="trust-item"><div class="trust-icon">🔄</div>Actualizaciones de por vida</div>
+      <div class="trust-item"><div class="trust-icon">💬</div>Soporte por WhatsApp</div>
+    </div>
+  </div>
+</div>
 
-    // Modal términos
-    function openTerms() {
-      document.getElementById('termsModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeTerms() {
-      document.getElementById('termsModal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-    document.getElementById('termsModal').addEventListener('click', function(e) {
-      if (e.target === this) closeTerms();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeTerms();
-    });
-  </script>
+<!-- BENEFITS -->
+<section id="benefits" class="benefits-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">Por qué VitroCorp</span>
+      <h2>Todo lo que necesitas para empezar</h2>
+      <p>Sin tecnicismos. Sin equipo costoso. Sin excusas.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card"><div class="benefit-icon">📘</div><h3>Aprende sin ser científico</h3><p>Guías escritas en lenguaje claro para personas sin formación técnica.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🍄</div><h3>Hongos comestibles y medicinales</h3><p>Reishi, cordyceps, ostra y más. Técnicas aplicables desde tu hogar.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🧪</div><h3>Lab casero por menos de $100</h3><p>Lista exacta de materiales, dónde conseguirlos y cómo instalarlos.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🌿</div><h3>Multiplica plantas in vitro</h3><p>Técnicas de propagación vegetal para producción eficiente y económica.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🧠</div><h3>Conviértete en productor independiente</h3><p>De estudiante a emprendedor. Convierte tu conocimiento en ingresos reales.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🔄</div><h3>Actualizaciones de por vida</h3><p>Nuevas guías, protocolos y bonos sin costo adicional, siempre.</p></div>
+    </div>
+  </div>
+</section>
 
+<!-- COMBO -->
+<section class="combo-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">🎁 Qué incluye</span>
+      <h2>Todo lo que recibes hoy</h2>
+      <p>Acceso inmediato tras la compra</p>
+    </div>
+    <div class="combo-layout">
+      <ul class="combo-list">
+        <li><div class="combo-item-info"><h4>Sistema de Ebooks y Guías VitroCorp</h4><p>Cultivo in vitro, hongos, cannabis y más</p></div><span class="combo-item-price">$149</span></li>
+        <li><div class="combo-item-info"><h4>Bitácora de cultivo descargable</h4><p>Organiza lotes, fechas y resultados</p></div><span class="combo-item-price">$19</span></li>
+        <li><div class="combo-item-info"><h4>Checklist para montaje de laboratorio</h4><p>Qué comprar, dónde y cómo instalarlo</p></div><span class="combo-item-price">$37</span></li>
+        <li><div class="combo-item-info"><h4>Certificado digital de participación</h4><p>Diploma descargable de VitroCorp EC</p></div><span class="combo-item-price">$25</span></li>
+        <li><div class="combo-item-info"><h4>Actualizaciones de por vida</h4><p>Nuevas guías sin costo adicional</p></div><span class="combo-item-price">$37</span></li>
+      </ul>
+      <div class="combo-total">
+        <p class="combo-total-label">Precio normal</p>
+        <p class="combo-total-was">$230 USD</p>
+        <p class="combo-total-price">$19.99</p>
+        <p class="combo-total-note">Precio especial de lanzamiento · Un solo pago</p>
+        <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta btn-lg" target="_blank" rel="noopener noreferrer">✅ Sí, quiero acceder ahora</a>
+        <div class="combo-guarantees">
+          <div class="combo-guarantee">Pago 100% seguro vía Hotmart</div>
+          <div class="combo-guarantee">Acceso inmediato tras la compra</div>
+          <div class="combo-guarantee">Soporte por WhatsApp incluido</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EBOOKS -->
+<section id="ebooks" class="ebooks-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">📚 Ebooks</span>
+      <h2>También disponibles por separado</h2>
+      <p>O consíguelos todos con el combo a precio especial</p>
+    </div>
+    <div class="ebooks-grid">
+      <div class="ebook-card">
+        <img src="https://i.ibb.co/nNH8bwp0/20250607-2058-Cultivo-In-Vitro-simple-compose-01jx6m3dxvehtv44x2mn1ttfxp.jpg" alt="Ebook Cultivo In Vitro Para Principiantes" loading="lazy">
+        <div class="ebook-card-body"><h3>Cultivo In Vitro Para Principiantes</h3><p>Domina las técnicas básicas de cultivo de tejidos vegetales desde cero.</p><div class="ebook-price-row"><span class="ebook-price">$9.99</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
+      </div>
+      <div class="ebook-card">
+        <img src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png" alt="Ebook Cultivo de Hongos Medicinales" loading="lazy">
+        <div class="ebook-card-body"><h3>Cultivo de Hongos Medicinales</h3><p>Aprende a cultivar reishi, cordyceps y hongos ostra en casa.</p><div class="ebook-price-row"><span class="ebook-price">$7.99</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
+      </div>
+      <div class="ebook-card">
+        <img src="https://i.ibb.co/8DyXC28H/20250608-1916-Portada-Bio-Maker-Ebook-simple-compose-01jx90mnryfenab5xsh13g43rq.png" alt="Ebook Biomaker Laboratorio en Casa" loading="lazy">
+        <div class="ebook-card-body"><h3>Biomaker: Laboratorio en Casa</h3><p>Construye tu propio equipo de laboratorio low-cost paso a paso.</p><div class="ebook-price-row"><span class="ebook-price">$12.81</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section id="testimonios" class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">💬 Testimonios</span>
+      <h2>Lo que dicen nuestros estudiantes</h2>
+      <p>Resultados reales de personas como tú</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">Nunca imaginé que podía hacer esto desde mi cocina. El ebook me ayudó muchísimo a entender los pasos sin equipo costoso.</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">AG</div><div><p class="testimonial-name">Ana G.</p><p class="testimonial-loc">Quito, Ecuador</p></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">Gracias a VitroCorp ahora tengo mi propio cultivo de hongos y vendo a restaurantes locales. En 3 meses recuperé la inversión.</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">MV</div><div><p class="testimonial-name">Miguel V.</p><p class="testimonial-loc">Cuenca, Ecuador</p></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">Logré mi primer cultivo estable en menos de un mes. Las guías son muy claras y el soporte por WhatsApp es excelente.</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">CR</div><div><p class="testimonial-name">Camila R.</p><p class="testimonial-loc">Guayaquil, Ecuador</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MERCH -->
+<section id="merch" class="merch-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">👕 Merchandising</span>
+      <h2>Muestra tu pasión por la biotecnología</h2>
+      <p>Prendas de calidad para la comunidad VitroCorp</p>
+    </div>
+    <div class="merch-grid">
+      <div class="merch-card">
+        <img class="merch-img" src="https://i.ibb.co/zh0X3wt1/20250610-1213-Camisetas-con-Mensaje-Positivo-simple-compose-01jxdd8h2yf6mtjdhq1qgmhwwy.png" alt="Camiseta VitroCorp" loading="lazy">
+        <div class="merch-card-body"><h3>Camiseta "Cultiva. Educa. Eleva."</h3><p>Algodón 100% orgánico. Tallas S a XXL.</p><div class="merch-price-row"><span class="merch-price">$9.99</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
+      </div>
+      <div class="merch-card">
+        <div class="merch-img-placeholder"><span style="font-size:2rem;opacity:.4;">👕</span><span>Imagen próximamente</span></div>
+        <div class="merch-card-body"><h3>Hoodie VitroCorp — Edición Limitada</h3><p>Diseño exclusivo. Tallas S a XXL.</p><div class="merch-price-row"><span class="merch-price">$30.00</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="container-sm">
+    <span class="tag">🚀 Oferta de lanzamiento</span>
+    <h2>¿Listo para empezar<br>a <em>cultivar de verdad</em>?</h2>
+    <p>Únete a cientos de estudiantes que ya tienen su laboratorio en casa.</p>
+    <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta btn-lg" target="_blank" rel="noopener noreferrer">🛒 Obtener combo — $19.99 USD</a>
+    <p style="margin-top:16px;font-size:.8rem;opacity:.4;">Acceso inmediato · Pago seguro · Sin suscripción</p>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter" class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-box">
+      <h2>📩 Contenido gratuito cada semana</h2>
+      <p>Guías, protocolos y tips de biotecnología DIY directamente en tu correo.</p>
+      <form action="https://formsubmit.co/scienceyapa@gmail.com" method="POST" class="newsletter-form">
+        <input type="hidden" name="_subject" value="Nuevo suscriptor VitroCorp">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://vitrocorpec.github.io/VitrocorpEc/gracias.html">
+        <input type="email" name="email" placeholder="tu@email.com" required>
+        <button type="submit">Suscribirme</button>
+      </form>
+      <p class="newsletter-privacy">Sin spam. Puedes darte de baja en cualquier momento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo">Vitro<span>Corp</span> EC</div>
+        <p>Biotecnología accesible para todos. Aprende, cultiva, emprende.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg></a>
+          <a href="https://www.instagram.com/vitrocorpec/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg></a>
+          <a href="https://www.youtube.com/@VitrocorpEc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 01-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 01-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 011.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"/></svg></a>
+          <a href="https://x.com/labvitrocorp" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24"><path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61782L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 VitroCorp EC. Todos los derechos reservados.</span>
+      <div class="footer-links">
+        <a href="#" onclick="openTerms();return false;">Términos</a>
+        <a href="#" onclick="openTerms();return false;">Privacidad</a>
+        <a href="mailto:scienceyapa@gmail.com">Contacto</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/593983559460?text=¡Hola!%20Quiero%20información%20sobre%20VitroCorp" class="whatsapp-btn" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- MODAL TÉRMINOS -->
+<div id="termsModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Términos y Condiciones</h3>
+      <button class="modal-close" onclick="closeTerms()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h4>1. Propiedad intelectual</h4><p>Todo el contenido es propiedad de VitroCorp EC. Prohibida la reproducción sin autorización expresa.</p>
+      <h4>2. Uso educativo</h4><p>Materiales exclusivamente para fines educativos. Consulte a un especialista antes de aplicar técnicas de cultivo.</p>
+      <h4>3. Limitación de responsabilidad</h4><p>Los resultados pueden variar según condiciones ambientales y técnica del usuario.</p>
+      <h4>4. Compras y devoluciones</h4><p>Productos digitales no son reembolsables. Físicos pueden devolverse en 15 días por defectos de fabricación.</p>
+      <h4>5. Privacidad</h4><p>Protegemos tus datos y no los compartimos con terceros.</p>
+      <div class="modal-contact">
+        <p>Contacto: <a href="mailto:scienceyapa@gmail.com" style="color:var(--forest);">scienceyapa@gmail.com</a></p>
+        <p style="font-size:.75rem;color:var(--gray-7);margin-top:4px;">Última actualización: julio 2025</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function updateCountdown(){
+    const now=new Date(),end=new Date();
+    end.setHours(23,59,59,999);
+    const d=end-now;
+    const pad=n=>String(Math.max(0,n)).padStart(2,'0');
+    document.getElementById('ch').textContent=pad(Math.floor(d/3600000));
+    document.getElementById('cm').textContent=pad(Math.floor((d%3600000)/60000));
+    document.getElementById('cs').textContent=pad(Math.floor((d%60000)/1000));
+  }
+  setInterval(updateCountdown,1000);
+  updateCountdown();
+
+  function openTerms(){document.getElementById('termsModal').classList.add('open');document.body.style.overflow='hidden';}
+  function closeTerms(){document.getElementById('termsModal').classList.remove('open');document.body.style.overflow='';}
+  document.getElementById('termsModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeTerms();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTerms();});
+</script>
 </body>
 </html>
