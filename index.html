@@ -219,6 +219,51 @@
     .modal-body p{font-size:.88rem;color:var(--gray-7);line-height:1.6;}
     .modal-contact{background:var(--cream);padding:16px;border-radius:var(--radius-sm);margin-top:20px;}
 
+    /* COURSES */
+    .courses-section{background:var(--ink);color:#fff;padding:80px 0;}
+    .courses-section .section-header h2{color:#fff;}
+    .courses-section .section-header p{color:rgba(255,255,255,.6);}
+    .courses-section .tag{background:rgba(116,198,157,.12);color:var(--mint);border-color:rgba(116,198,157,.25);}
+    .courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:32px;}
+    .course-card{border-radius:var(--radius-lg);overflow:hidden;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);transition:transform .2s,border-color .2s;display:flex;flex-direction:column;}
+    .course-card:hover{transform:translateY(-4px);border-color:var(--mint);}
+    .course-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;}
+    .badge-live{background:rgba(230,57,70,.2);color:#ff6b75;border:1px solid rgba(230,57,70,.3);}
+    .badge-soon{background:rgba(212,160,23,.2);color:#f0c040;border:1px solid rgba(212,160,23,.3);}
+    .course-header{padding:28px 28px 20px;position:relative;}
+    .course-header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+    .course-icon{font-size:2rem;}
+    .course-header h3{font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#fff;}
+    .course-header p{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.6;}
+    .course-modules{padding:0 28px 20px;}
+    .course-modules-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mint);margin-bottom:10px;}
+    .course-modules ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .course-modules ul li{font-size:.83rem;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:8px;}
+    .course-modules ul li::before{content:'▸';color:var(--mint);font-size:.7rem;flex-shrink:0;}
+    .course-footer{margin-top:auto;padding:20px 28px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .course-price-block{}
+    .course-price-label{font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:2px;}
+    .course-price{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:#fff;}
+    .course-price-old{font-size:.8rem;color:rgba(255,255,255,.3);text-decoration:line-through;margin-left:6px;}
+    .btn-course{background:var(--leaf);color:#fff;padding:11px 22px;font-size:.85rem;}
+    .btn-course:hover{background:var(--moss);}
+    .btn-waitlist{background:rgba(212,160,23,.15);color:#f0c040;border:1px solid rgba(212,160,23,.35);padding:11px 22px;font-size:.85rem;}
+    .btn-waitlist:hover{background:rgba(212,160,23,.25);}
+
+    /* Preventa banner */
+    .preventa-card{border-radius:var(--radius-lg);border:1px dashed rgba(212,160,23,.4);background:rgba(212,160,23,.06);padding:32px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;}
+    .preventa-icon{font-size:3rem;flex-shrink:0;}
+    .preventa-body{flex:1;min-width:240px;}
+    .preventa-body h3{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:8px;}
+    .preventa-body p{font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:16px;}
+    .preventa-form{display:flex;gap:8px;flex-wrap:wrap;}
+    .preventa-form input[type="email"]{flex:1;min-width:180px;padding:10px 14px;border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);background:rgba(255,255,255,.07);color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .15s;}
+    .preventa-form input[type="email"]::placeholder{color:rgba(255,255,255,.35);}
+    .preventa-form input[type="email"]:focus{border-color:var(--gold);}
+    .preventa-form button{padding:10px 20px;background:var(--gold);color:var(--ink);border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:filter .15s;}
+    .preventa-form button:hover{filter:brightness(1.1);}
+    .preventa-note{font-size:.75rem;color:rgba(255,255,255,.35);margin-top:8px;}
+
     /* RESPONSIVE */
     @media(max-width:900px){
       .hero-grid{grid-template-columns:1fr;}
@@ -229,7 +274,8 @@
       .ebooks-grid{grid-template-columns:1fr 1fr;}
       .testimonials-grid{grid-template-columns:1fr;}
     }
-    @media(max-width:600px){
+    @media(max-width:900px){.courses-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:600px){.courses-grid{grid-template-columns:1fr;}
       .benefits-grid{grid-template-columns:1fr;}
       .ebooks-grid{grid-template-columns:1fr;}
       .merch-grid{grid-template-columns:1fr;}
@@ -247,6 +293,7 @@
     <div class="nav-links">
       <a href="#benefits">Beneficios</a>
       <a href="#ebooks">Ebooks</a>
+      <a href="#cursos">Cursos</a>
       <a href="#testimonios">Testimonios</a>
       <a href="#merch">Merch</a>
       <a href="#newsletter">Newsletter</a>
@@ -387,6 +434,113 @@
         <div class="ebook-card-body"><h3>Biomaker: Laboratorio en Casa</h3><p>Construye tu propio equipo de laboratorio low-cost paso a paso.</p><div class="ebook-price-row"><span class="ebook-price">$12.81</span><a href="https://javiermedinat-jm.systeme.io/280465" class="ebook-btn" target="_blank" rel="noopener noreferrer">Comprar</a></div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- CURSOS -->
+<section id="cursos" class="courses-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">🎓 Cursos en video</span>
+      <h2>Aprende a tu ritmo, desde casa</h2>
+      <p>Cursos grabados con acceso de por vida y soporte incluido</p>
+    </div>
+
+    <!-- Cursos disponibles -->
+    <div class="courses-grid">
+
+      <!-- Curso 1 — Disponible -->
+      <div class="course-card">
+        <div class="course-header">
+          <div class="course-header-top">
+            <div class="course-icon">🧪</div>
+            <span class="course-badge badge-soon">⏳ Próximamente</span>
+          </div>
+          <h3>Cultivo In Vitro desde Cero</h3>
+          <p>De absoluto principiante a tu primer cultivo exitoso sin contaminación. Aprende esterilización, preparación de medios, siembra y control de resultados.</p>
+        </div>
+        <div class="course-modules">
+          <div class="course-modules-label">Módulos incluidos</div>
+          <ul>
+            <li>Introducción al laboratorio casero</li>
+            <li>Esterilización y control de contaminación</li>
+            <li>Preparación de medios de cultivo</li>
+            <li>Técnicas de siembra aséptica</li>
+            <li>Seguimiento y registro de cultivos</li>
+            <li>Errores comunes y cómo evitarlos</li>
+          </ul>
+        </div>
+        <div class="course-footer">
+          <div class="course-price-block">
+            <div class="course-price-label">Precio de lanzamiento</div>
+            <div><span class="course-price">$15</span></div>
+          </div>
+          <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-waitlist" target="_blank" rel="noopener noreferrer">Avisenme cuando abra →</a>
+        </div>
+      </div>
+
+      <!-- Curso 2 — Disponible -->
+      <div class="course-card">
+        <div class="course-header">
+          <div class="course-header-top">
+            <div class="course-icon">🚀</div>
+            <span class="course-badge badge-soon">⏳ Próximamente</span>
+          </div>
+          <h3>BioEmprendedor: Monta tu Negocio</h3>
+          <p>Convierte tus cultivos en un ingreso real. Desde el modelo de negocio hasta tus primeros clientes locales, con estrategias probadas para Ecuador y Latinoamérica.</p>
+        </div>
+        <div class="course-modules">
+          <div class="course-modules-label">Módulos incluidos</div>
+          <ul>
+            <li>Qué cultivos tienen más mercado</li>
+            <li>Costos, precios y márgenes reales</li>
+            <li>Cómo conseguir tus primeros clientes</li>
+            <li>Marketing local y redes sociales</li>
+            <li>Escalado y automatización básica</li>
+            <li>Casos de éxito reales en Ecuador</li>
+          </ul>
+        </div>
+        <div class="course-footer">
+          <div class="course-price-block">
+            <div class="course-price-label">Precio de lanzamiento</div>
+            <div><span class="course-price">$49</span></div>
+          </div>
+          <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-waitlist" target="_blank" rel="noopener noreferrer">Avisenme cuando abra →</a>
+        </div>
+      </div>
+
+      <!-- Curso 3 — Próximamente -->
+      <div class="course-card">
+        <div class="course-header">
+          <div class="course-header-top">
+            <div class="course-icon">🍄</div>
+            <span class="course-badge badge-soon">⏳ Próximamente</span>
+          </div>
+          <h3>Cultivo Avanzado de Hongos Medicinales</h3>
+          <p>Producción a escala, inoculación en sustrato, fructificación controlada y post-cosecha. Para quienes ya tienen sus primeros cultivos y quieren escalar.</p>
+        </div>
+        <div class="course-modules">
+          <div class="course-modules-label">Módulos previstos</div>
+          <ul>
+            <li>Selección de sustratos avanzados</li>
+            <li>Inoculación y colonización</li>
+            <li>Control de fructificación</li>
+            <li>Post-cosecha y conservación</li>
+            <li>Producción a escala doméstica</li>
+            <li>Canales de venta y clientes</li>
+          </ul>
+        </div>
+        <div class="course-footer">
+          <div class="course-price-block">
+            <div class="course-price-label">Lista de espera gratuita</div>
+            <div><span class="course-price" style="font-size:1.1rem;color:var(--mint);">Próximo lanzamiento</span></div>
+          </div>
+          <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-waitlist" target="_blank" rel="noopener noreferrer">Avisarme →</a>
+        </div>
+      </div>
+
+    </div><!-- fin courses-grid -->
+
   </div>
 </section>
 
