@@ -48,6 +48,8 @@
     .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--forest);letter-spacing:-.02em;}
     .nav-logo span{color:var(--leaf);}
     .nav-links{display:flex;gap:20px;}
+    .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--gray-5);border-radius:8px;background:#fff;color:var(--forest);font-size:1.35rem;cursor:pointer;}
+    .nav-toggle:focus-visible,.nav-links a:focus-visible{outline:3px solid var(--mint);outline-offset:3px;}
     .nav-links a{font-size:.85rem;font-weight:500;color:var(--gray-7);transition:color .15s;}
     .nav-links a:hover{color:var(--forest);}
 
@@ -275,11 +277,18 @@
       .testimonials-grid{grid-template-columns:1fr;}
     }
     @media(max-width:900px){.courses-grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:600px){.courses-grid{grid-template-columns:1fr;}
+    @media(max-width:600px){
+      .courses-grid{grid-template-columns:1fr;}
       .benefits-grid{grid-template-columns:1fr;}
       .ebooks-grid{grid-template-columns:1fr;}
       .merch-grid{grid-template-columns:1fr;}
-      .nav-links{display:none;}
+      .nav-inner{position:relative;min-height:58px;height:auto;flex-wrap:wrap;gap:10px;padding-top:8px;padding-bottom:8px;}
+      .nav-toggle{display:inline-flex;margin-left:auto;}
+      .nav-inner>.btn{padding:9px 12px!important;font-size:.75rem!important;}
+      .nav-links{display:none;position:absolute;top:100%;left:0;right:0;z-index:150;flex-direction:column;gap:0;padding:8px 24px 14px;background:var(--cream);border-top:1px solid var(--gray-5);border-bottom:1px solid var(--gray-5);box-shadow:0 12px 18px rgba(13,26,18,.10);}
+      .nav-links.is-open{display:flex;}
+      .nav-links a{padding:11px 4px;border-bottom:1px solid var(--gray-2);font-size:.95rem;}
+      .nav-links a:last-child{border-bottom:0;}
       .trust-items{gap:16px;}
     }
   </style>
@@ -290,7 +299,8 @@
 <nav>
   <div class="container nav-inner">
     <div class="nav-logo">Vitro<span>Corp</span> EC</div>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="site-navigation">☰</button>
+    <div class="nav-links" id="site-navigation">
       <a href="#benefits">Beneficios</a>
       <a href="#ebooks">Ebooks</a>
       <a href="#cursos">Cursos</a>
@@ -317,7 +327,7 @@
         </div>
         <div class="price-card">
           <p class="price-card-label">Combo completo VitroCorp</p>
-          <p class="price-was">Valor total: $230 USD</p>
+          <p class="price-was">Valor total: $267 USD</p>
           <p class="price-now">$19.99</p>
           <p class="price-note">Precio especial de lanzamiento · Un solo pago</p>
           <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta btn-lg" target="_blank" rel="noopener noreferrer">🛒 Obtener combo ahora</a>
@@ -398,7 +408,7 @@
       </ul>
       <div class="combo-total">
         <p class="combo-total-label">Precio normal</p>
-        <p class="combo-total-was">$230 USD</p>
+        <p class="combo-total-was">$267 USD</p>
         <p class="combo-total-price">$19.99</p>
         <p class="combo-total-note">Precio especial de lanzamiento · Un solo pago</p>
         <a href="https://go.hotmart.com/E101190469F?dp=1" class="btn btn-cta btn-lg" target="_blank" rel="noopener noreferrer">✅ Sí, quiero acceder ahora</a>
@@ -690,6 +700,26 @@
   }
   setInterval(updateCountdown,1000);
   updateCountdown();
+
+  const navToggle=document.querySelector('.nav-toggle');
+  const siteNavigation=document.getElementById('site-navigation');
+  function closeMobileNav(){
+    if(!navToggle||!siteNavigation)return;
+    navToggle.setAttribute('aria-expanded','false');
+    navToggle.setAttribute('aria-label','Abrir menú de navegación');
+    siteNavigation.classList.remove('is-open');
+  }
+  if(navToggle&&siteNavigation){
+    navToggle.addEventListener('click',()=>{
+      const isOpen=navToggle.getAttribute('aria-expanded')==='true';
+      navToggle.setAttribute('aria-expanded',String(!isOpen));
+      navToggle.setAttribute('aria-label',isOpen?'Abrir menú de navegación':'Cerrar menú de navegación');
+      siteNavigation.classList.toggle('is-open',!isOpen);
+    });
+    siteNavigation.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMobileNav));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileNav();});
+    window.addEventListener('resize',()=>{if(window.innerWidth>600)closeMobileNav();});
+  }
 
   function openTerms(){document.getElementById('termsModal').classList.add('open');document.body.style.overflow='hidden';}
   function closeTerms(){document.getElementById('termsModal').classList.remove('open');document.body.style.overflow='';}
