@@ -274,7 +274,7 @@
     /* RESPONSIVE */
     @media(max-width:900px){
       .hero-grid{grid-template-columns:1fr;}
-      .hero-right{display:none;}
+      .hero-right{display:flex;margin-top:-24px;justify-content:center;}
       .hero-left{padding-bottom:48px;}
       .benefits-grid{grid-template-columns:1fr 1fr;}
       .combo-layout{grid-template-columns:1fr;}
@@ -295,6 +295,9 @@
       .nav-links a{padding:11px 4px;border-bottom:1px solid var(--gray-2);font-size:.95rem;}
       .nav-links a:last-child{border-bottom:0;}
       .trust-items{gap:16px;}
+      .hero-books{transform:scale(.78);transform-origin:top center;margin-bottom:-42px;}
+      .hero-book img{width:112px;height:156px;}
+      .hero-book:nth-child(2) img{width:128px;height:179px;}
     }
   </style>
 </head>
@@ -350,15 +353,6 @@
           <div class="hero-book"><img src="https://i.ibb.co/0VFJqdS9/20250607-1954-Portada-de-Ebook-Hongos-simple-compose-01jx6ger9vfbctv4tv77g502at.png" alt="Ebook Hongos"></div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="countdown-bar">
-    <div class="countdown-inner">
-      <span>🚨 Oferta de lanzamiento termina en:</span>
-      <div id="countdown-hero">
-        <span id="ch">--</span><span class="colon">:</span><span id="cm">--</span><span class="colon">:</span><span id="cs">--</span>
-      </div>
-      <span style="opacity:.5">· Precio sube tras el lanzamiento</span>
     </div>
   </div>
 </header>
@@ -677,18 +671,6 @@
 </a>
 
 <script>
-  function updateCountdown(){
-    const now=new Date(),end=new Date();
-    end.setHours(23,59,59,999);
-    const d=end-now;
-    const pad=n=>String(Math.max(0,n)).padStart(2,'0');
-    document.getElementById('ch').textContent=pad(Math.floor(d/3600000));
-    document.getElementById('cm').textContent=pad(Math.floor((d%3600000)/60000));
-    document.getElementById('cs').textContent=pad(Math.floor((d%60000)/1000));
-  }
-  setInterval(updateCountdown,1000);
-  updateCountdown();
-
   const navToggle=document.querySelector('.nav-toggle');
   const siteNavigation=document.getElementById('site-navigation');
   function closeMobileNav(){
