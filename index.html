@@ -261,6 +261,7 @@
   }
 </script>
 
+
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const SUPABASE_URL = 'https://saxwbaiebvqfltumuqqo.supabase.co';
@@ -277,7 +278,7 @@
       .order('id', { ascending: true });
     if (error) {
       console.error('No se pudo cargar el catálogo de VitroCorp desde Supabase:', error.message);
-      return; // Conserva las tarjetas existentes como respaldo.
+      return;
     }
     if (!Array.isArray(data) || data.length === 0) return;
 
@@ -285,30 +286,31 @@
     data.forEach((ebook) => {
       const card = document.createElement('article');
       card.className = 'ebook-card';
-
+      const addPlaceholder = () => {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'ebook-placeholder';
+        placeholder.setAttribute('role', 'img');
+        placeholder.setAttribute('aria-label', 'Portada de ' + ebook.nombre);
+        const brand = document.createElement('span');
+        brand.textContent = 'VITROCORP EC';
+        const title = document.createElement('strong');
+        title.textContent = ebook.nombre;
+        const type = document.createElement('b');
+        type.textContent = 'BIOTECNOLOGÍA';
+        const caption = document.createElement('small');
+        caption.textContent = 'Publicación digital';
+        placeholder.append(brand, title, type, caption);
+        return placeholder;
+      };
       if (ebook.imagen_url) {
         const img = document.createElement('img');
         img.src = ebook.imagen_url;
         img.alt = 'Portada de ' + ebook.nombre;
         img.loading = 'lazy';
-        img.onerror = () => {
-          const placeholder = document.createElement('div');
-          placeholder.className = 'ebook-placeholder';
-          placeholder.setAttribute('role', 'img');
-          placeholder.setAttribute('aria-label', 'Portada de ' + ebook.nombre);
-          placeholder.innerHTML = '<span>VITROCORP EC</span><strong></strong><b>BIOTECNOLOGÍA</b><small>Publicación digital</small>';
-          placeholder.querySelector('strong').textContent = ebook.nombre;
-          img.replaceWith(placeholder);
-        };
+        img.onerror = () => img.replaceWith(addPlaceholder());
         card.appendChild(img);
       } else {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'ebook-placeholder';
-        placeholder.setAttribute('role', 'img');
-        placeholder.setAttribute('aria-label', 'Portada de ' + ebook.nombre);
-        placeholder.innerHTML = '<span>VITROCORP EC</span><strong></strong><b>BIOTECNOLOGÍA</b><small>Publicación digital</small>';
-        placeholder.querySelector('strong').textContent = ebook.nombre;
-        card.appendChild(placeholder);
+        card.appendChild(addPlaceholder());
       }
 
       const body = document.createElement('div');
@@ -322,6 +324,31 @@
       const price = document.createElement('span');
       price.className = 'ebook-price';
       price.textContent = '
+</html>
+ + Number(ebook.precio).toFixed(2);
+      row.appendChild(price);
+
+      if (ebook.enlace_compra) {
+        const link = document.createElement('a');
+        link.className = 'ebook-btn';
+        link.href = ebook.enlace_compra;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Ver en Amazon';
+        row.appendChild(link);
+      }
+
+      body.append(title, description, row);
+      card.appendChild(body);
+      fragment.appendChild(card);
+    });
+    grid.replaceChildren(fragment);
+  }
+
+  loadEbooks();
+</script>
+
+</body>
 </html>
 
       <div class="ebook-card">
@@ -585,6 +612,28 @@
     window.addEventListener('resize',()=>{if(window.innerWidth>760)closeMobileNav();});
   }
 </script>
+</body>
+</html>
+ + Number(ebook.precio).toFixed(2);
+      row.appendChild(price);
+      if (ebook.enlace_compra) {
+        const link = document.createElement('a');
+        link.className = 'ebook-btn';
+        link.href = ebook.enlace_compra;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Ver en Amazon';
+        row.appendChild(link);
+      }
+      body.append(title, description, row);
+      card.appendChild(body);
+      fragment.appendChild(card);
+    });
+    grid.replaceChildren(fragment);
+  }
+  loadEbooks();
+</script>
+
 </body>
 </html>
  + Number(ebook.precio).toFixed(2);
