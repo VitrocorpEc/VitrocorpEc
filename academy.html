@@ -55,12 +55,14 @@
     .dash-empty{background:#f5f8f4;border-radius:12px;padding:18px;color:#68786e;line-height:1.6}
     .logout{border:1px solid #d8e1d8;background:white;color:#2d6a4f;border-radius:10px;padding:10px 14px;font:600 .9rem 'DM Sans';cursor:pointer}
     .dash-status{font-size:.8rem;font-weight:700;color:#2d6a4f;background:#edf8f0;padding:6px 9px;border-radius:99px;white-space:nowrap}
-    .admin-panel{display:grid;gap:18px;background:#fff;border:1px solid #cfe2d4;border-radius:18px;padding:24px}
+    @media(max-width:760px){.dash-grid{grid-template-columns:1fr}.dash-section{padding:18px}.dash-item{align-items:flex-start;flex-direction:column}}
+    @media(max-width:760px){main{grid-template-columns:1fr;gap:26px;padding:20px 0 44px}.intro{text-align:center}.intro p{margin-inline:auto}.features{display:none}.panel{padding:24px}}
+  
+    .admin-panel{display:grid;gap:18px;background:#fff;border:1px solid #cfe2d4;border-radius:18px;padding:24px;margin-top:24px}
     .admin-panel[hidden]{display:none}
-    .admin-panel h2{margin:0 0 8px}
     .admin-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .admin-form .full{grid-column:1/-1}
-    .admin-form label{margin:4px 0 6px}
+    .admin-form label{display:block;margin:4px 0 6px}
     .admin-form textarea,.admin-form select{width:100%;border:1px solid #d8e1d8;border-radius:10px;padding:12px;font:inherit;background:#fff;color:#173326}
     .admin-actions{display:flex;gap:10px;flex-wrap:wrap}
     .admin-button{border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:11px 15px;font:600 .9rem 'DM Sans';cursor:pointer}
@@ -72,11 +74,8 @@
     .admin-course button{border:1px solid #d8e1d8;background:#fff;color:#2d6a4f;border-radius:8px;padding:8px 11px;cursor:pointer}
     .admin-checks{display:flex;gap:18px;flex-wrap:wrap;color:#50685a;font-size:.9rem}
     .admin-checks label{display:flex;align-items:center;gap:7px;margin:0}
-    .admin-checks input{width:auto}
     @media(max-width:600px){.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}.admin-course{align-items:flex-start;flex-direction:column}}
-    @media(max-width:760px){.dash-grid{grid-template-columns:1fr}.dash-section{padding:18px}.dash-item{align-items:flex-start;flex-direction:column}}
-    @media(max-width:760px){main{grid-template-columns:1fr;gap:26px;padding:20px 0 44px}.intro{text-align:center}.intro p{margin-inline:auto}.features{display:none}.panel{padding:24px}}
-  </style>
+</style>
 </head>
 <body>
   <header>
@@ -138,37 +137,25 @@
         <div class="dash-list" id="available-courses"><div class="dash-empty">Consultando el catálogo…</div></div>
       </section>
       <p class="small">El acceso a las clases y materiales se habilitará cuando publiquemos los cursos y activemos las matrículas correspondientes.</p>
-    </section>
+
     <section class="admin-panel" id="admin-dashboard" hidden aria-label="Panel administrativo">
-      <div>
-        <div class="eyebrow">Administración privada</div>
-        <h2>Gestión de VitroCorp Academy</h2>
-        <p class="dash-muted">Crea cursos, edita su información y controla cuándo aparecen en el catálogo público.</p>
-      </div>
+      <div><div class="eyebrow">Administración privada</div><h2>Gestión de VitroCorp Academy</h2><p class="dash-muted">Crea cursos, edita su información y controla su publicación.</p></div>
       <form id="course-form" class="admin-form">
         <input type="hidden" id="course-id">
-        <div class="full"><label for="course-title">Nombre del curso</label><input id="course-title" required maxlength="160" placeholder="Ej. Cultivo in vitro para principiantes"></div>
-        <div><label for="course-slug">Identificador (slug)</label><input id="course-slug" required maxlength="180" placeholder="cultivo-in-vitro-principiantes"></div>
+        <div class="full"><label for="course-title">Nombre del curso</label><input id="course-title" required maxlength="160" placeholder="Nombre del curso"></div>
+        <div><label for="course-slug">Identificador (slug)</label><input id="course-slug" required maxlength="180" placeholder="nombre-del-curso"></div>
         <div><label for="course-price">Precio (USD)</label><input id="course-price" type="number" min="0" step="0.01" value="0" required></div>
-        <div class="full"><label for="course-short">Descripción breve</label><input id="course-short" maxlength="240" placeholder="Resumen que verá el estudiante"></div>
-        <div class="full"><label for="course-description">Descripción completa</label><textarea id="course-description" rows="4" placeholder="Temario, objetivos y contenido del curso"></textarea></div>
+        <div class="full"><label for="course-short">Descripción breve</label><input id="course-short" maxlength="240"></div>
+        <div class="full"><label for="course-description">Descripción completa</label><textarea id="course-description" rows="4"></textarea></div>
         <div><label for="course-duration">Duración del acceso (días)</label><input id="course-duration" type="number" min="1" step="1" value="90" required></div>
-        <div><label for="course-status">Estado</label><select id="course-status"><option value="draft">Borrador (no visible)</option><option value="published">Publicado (visible)</option><option value="archived">Archivado</option></select></div>
+        <div><label for="course-status">Estado</label><select id="course-status"><option value="draft">Borrador</option><option value="published">Publicado</option><option value="archived">Archivado</option></select></div>
         <div class="full"><label for="course-cover">URL de portada (opcional)</label><input id="course-cover" type="url" placeholder="https://..."></div>
-        <div class="full admin-checks">
-          <label><input id="course-renewal" type="checkbox"> Permitir renovación</label>
-          <label><input id="course-repurchase" type="checkbox" checked> Permitir nueva compra</label>
-        </div>
-        <div class="full admin-actions">
-          <button class="admin-button" id="course-save" type="submit">Guardar curso</button>
-          <button class="admin-button secondary" id="course-cancel" type="button" hidden>Cancelar edición</button>
-        </div>
+        <div class="full admin-checks"><label><input id="course-renewal" type="checkbox"> Permitir renovación</label><label><input id="course-repurchase" type="checkbox" checked> Permitir nueva compra</label></div>
+        <div class="full admin-actions"><button class="admin-button" id="course-save" type="submit">Guardar curso</button><button class="admin-button secondary" id="course-cancel" type="button" hidden>Cancelar edición</button></div>
       </form>
-      <div>
-        <h2>Cursos registrados</h2>
-        <div class="admin-course-list" id="admin-course-list"><div class="dash-empty">Cargando cursos…</div></div>
-      </div>
+      <div><h2>Cursos registrados</h2><div class="admin-course-list" id="admin-course-list"><div class="dash-empty">Cargando cursos…</div></div></div>
       <div class="message" id="admin-message" role="status" aria-live="polite"></div>
+    </section>
     </section>
   </main>
   <footer>© VitroCorp EC · VitroCorp Academy</footer>
@@ -243,15 +230,6 @@
       document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
       document.getElementById('dash-email').textContent = user.email || 'Correo no disponible';
 
-      const { data: adminStatus, error: adminStatusError } = await supabase.rpc('is_current_user_admin');
-      const adminDashboard = document.getElementById('admin-dashboard');
-      if (!adminStatusError && adminStatus === true) {
-        adminDashboard.hidden = false;
-        await loadAdminCourses();
-      } else {
-        adminDashboard.hidden = true;
-      }
-
       const myCourses = document.getElementById('my-courses');
       const availableCourses = document.getElementById('available-courses');
       myCourses.replaceChildren();
@@ -303,203 +281,57 @@
           addCourseItem(availableCourses, course.title, (course.short_description || 'Curso de VitroCorp Academy') + ' · Acceso: ' + course.access_duration_days + ' días', 'Publicado');
         });
       }
+      const { data: adminStatus, error: adminStatusError } = await supabase.rpc('is_current_user_admin');
+      const adminDashboard = document.getElementById('admin-dashboard');
+      if (!adminStatusError && adminStatus === true) {
+        adminDashboard.hidden = false;
+        await loadAdminCourses();
+      } else {
+        adminDashboard.hidden = true;
+      }
     }
+
 
     const adminCourseForm = document.getElementById('course-form');
     const adminCourseList = document.getElementById('admin-course-list');
     const adminMessage = document.getElementById('admin-message');
     const courseCancel = document.getElementById('course-cancel');
-
-    function showAdminMessage(text, kind='success') {
-      adminMessage.textContent = text;
-      adminMessage.className = 'message show ' + kind;
-    }
-
+    function showAdminMessage(text, kind='success') { adminMessage.textContent=text; adminMessage.className='message show '+kind; }
     function resetCourseForm() {
-      adminCourseForm.reset();
-      document.getElementById('course-id').value = '';
-      document.getElementById('course-price').value = '0';
-      document.getElementById('course-duration').value = '90';
-      document.getElementById('course-repurchase').checked = true;
-      document.getElementById('course-status').value = 'draft';
-      document.getElementById('course-save').textContent = 'Guardar curso';
-      courseCancel.hidden = true;
+      adminCourseForm.reset(); document.getElementById('course-id').value='';
+      document.getElementById('course-price').value='0'; document.getElementById('course-duration').value='90';
+      document.getElementById('course-repurchase').checked=true; document.getElementById('course-status').value='draft';
+      document.getElementById('course-save').textContent='Guardar curso'; courseCancel.hidden=true;
     }
-
     async function loadAdminCourses() {
       adminCourseList.replaceChildren();
-      const { data, error } = await supabase.from('courses')
-        .select('id,title,slug,price,access_duration_days,status,short_description,description,cover_image_url,allow_renewal,allow_repurchase')
-        .order('created_at', { ascending: false });
-      if (error) {
-        const box = document.createElement('div');
-        box.className = 'dash-empty';
-        box.textContent = 'No se pudieron cargar los cursos. Actualiza la página e inténtalo nuevamente.';
-        adminCourseList.append(box);
-        return;
-      }
-      if (!data?.length) {
-        const box = document.createElement('div');
-        box.className = 'dash-empty';
-        box.textContent = 'Todavía no hay cursos registrados. Puedes crear el primero con el formulario.';
-        adminCourseList.append(box);
-        return;
-      }
-      data.forEach(course => {
-        const item = document.createElement('div');
-        item.className = 'admin-course';
-        const info = document.createElement('div');
-        const name = document.createElement('strong');
-        name.textContent = course.title;
-        const details = document.createElement('small');
-        details.textContent = course.slug + ' · 
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        showMessage('No se pudo cerrar la sesión. Inténtalo nuevamente.', 'error');
-        return;
-      }
-      dashboard.hidden = true;
-      document.getElementById('admin-dashboard').hidden = true;
-      main.classList.remove('dashboard-mode');
-      document.querySelector('.intro').hidden = false;
-      document.querySelector('.panel').hidden = false;
-      setMode('login');
-      submit.textContent = 'Iniciar sesión';
-      showMessage('Has cerrado sesión correctamente.', 'success');
-    });
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      submit.disabled = true;
-      submit.textContent = 'Procesando…';
-      message.className = 'message';
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      try {
-        if (mode === 'signup') {
-          const fullName = nameInput.value.trim();
-          if (!fullName) throw new Error('Escribe tu nombre completo.');
-          const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: { full_name: fullName },
-              emailRedirectTo: 'https://vitrocorp-academy.vercel.app/academy.html'
-            }
-          });
-          if (error) throw error;
-          if (data.session) {
-            showMessage('Tu cuenta se creó correctamente. Ya puedes iniciar sesión en Academy.', 'success');
-            setMode('login');
-          } else {
-            showMessage('Registro iniciado. Revisa tu correo y confirma la dirección antes de iniciar sesión. Después vuelve a VitroCorp Academy.', 'success');
-          }
-        } else {
-          const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-
-          // Create the student's own profile on first successful login.
-          const user = signInData.user;
-          const { data: existingProfile, error: profileReadError } = await supabase
-            .from('student_profiles')
-            .select('user_id')
-            .eq('user_id', user.id)
-            .maybeSingle();
-          if (profileReadError) throw profileReadError;
-
-          if (!existingProfile) {
-            const { error: profileInsertError } = await supabase
-              .from('student_profiles')
-              .insert({
-                user_id: user.id,
-                full_name: user.user_metadata?.full_name || null
-              });
-            if (profileInsertError) throw profileInsertError;
-          }
-
-          await renderDashboard(user);
-          submit.textContent = 'Sesión iniciada';
-        }
-      } catch (error) {
-        const friendly = {
-          'Invalid login credentials': 'Correo o contraseña incorrectos.',
-          'Email not confirmed': 'Primero confirma tu correo desde el mensaje que te enviamos.',
-          'User already registered': 'Este correo ya tiene una cuenta. Inicia sesión.'
-        };
-        showMessage(friendly[error.message] || error.message || 'No se pudo completar la operación. Inténtalo nuevamente.', 'error');
-      } finally {
-        submit.disabled = false;
-        if (mode === 'signup') submit.textContent = 'Crear mi cuenta';
-        else if (!supabase.auth.getSession) submit.textContent = 'Iniciar sesión';
-        else if (submit.textContent === 'Procesando…') submit.textContent = 'Iniciar sesión';
-      }
-    });
-
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (sessionData.session?.user) {
-      await renderDashboard(sessionData.session.user);
-    }
-  </script>
-</body>
-</html> + Number(course.price).toFixed(2) + ' · ' + course.access_duration_days + ' días · ' + course.status;
-        info.append(name, details);
-        const edit = document.createElement('button');
-        edit.type = 'button';
-        edit.textContent = 'Editar';
-        edit.addEventListener('click', () => {
-          document.getElementById('course-id').value = course.id;
-          document.getElementById('course-title').value = course.title || '';
-          document.getElementById('course-slug').value = course.slug || '';
-          document.getElementById('course-price').value = course.price ?? 0;
-          document.getElementById('course-duration').value = course.access_duration_days || 90;
-          document.getElementById('course-status').value = course.status || 'draft';
-          document.getElementById('course-short').value = course.short_description || '';
-          document.getElementById('course-description').value = course.description || '';
-          document.getElementById('course-cover').value = course.cover_image_url || '';
-          document.getElementById('course-renewal').checked = Boolean(course.allow_renewal);
-          document.getElementById('course-repurchase').checked = Boolean(course.allow_repurchase);
-          document.getElementById('course-save').textContent = 'Actualizar curso';
-          courseCancel.hidden = false;
-          adminCourseForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-        item.append(info, edit);
-        adminCourseList.append(item);
+      const {data,error}=await supabase.from('courses').select('id,title,slug,price,access_duration_days,status,short_description,description,cover_image_url,allow_renewal,allow_repurchase').order('created_at',{ascending:false});
+      if(error){const e=document.createElement('div');e.className='dash-empty';e.textContent='No se pudieron cargar los cursos.';adminCourseList.append(e);return;}
+      if(!data?.length){const e=document.createElement('div');e.className='dash-empty';e.textContent='Todavía no hay cursos registrados. Puedes crear el primero con el formulario.';adminCourseList.append(e);return;}
+      data.forEach(course=>{
+        const item=document.createElement('div');item.className='admin-course';const info=document.createElement('div');
+        const name=document.createElement('strong');name.textContent=course.title;
+        const details=document.createElement('small');details.textContent=course.slug+' · $'+Number(course.price).toFixed(2)+' · '+course.access_duration_days+' días · '+course.status;info.append(name,details);
+        const edit=document.createElement('button');edit.type='button';edit.textContent='Editar';
+        edit.addEventListener('click',()=>{
+          document.getElementById('course-id').value=course.id;document.getElementById('course-title').value=course.title||'';
+          document.getElementById('course-slug').value=course.slug||'';document.getElementById('course-price').value=course.price??0;
+          document.getElementById('course-duration').value=course.access_duration_days||90;document.getElementById('course-status').value=course.status||'draft';
+          document.getElementById('course-short').value=course.short_description||'';document.getElementById('course-description').value=course.description||'';
+          document.getElementById('course-cover').value=course.cover_image_url||'';document.getElementById('course-renewal').checked=Boolean(course.allow_renewal);
+          document.getElementById('course-repurchase').checked=Boolean(course.allow_repurchase);document.getElementById('course-save').textContent='Actualizar curso';
+          courseCancel.hidden=false;adminCourseForm.scrollIntoView({behavior:'smooth',block:'start'});
+        });item.append(info,edit);adminCourseList.append(item);
       });
     }
-
-    adminCourseForm.addEventListener('submit', async event => {
-      event.preventDefault();
-      const saveButton = document.getElementById('course-save');
-      saveButton.disabled = true;
-      const courseId = document.getElementById('course-id').value;
-      const payload = {
-        title: document.getElementById('course-title').value.trim(),
-        slug: document.getElementById('course-slug').value.trim().toLowerCase(),
-        price: Number(document.getElementById('course-price').value),
-        access_duration_days: Number(document.getElementById('course-duration').value),
-        short_description: document.getElementById('course-short').value.trim() || null,
-        description: document.getElementById('course-description').value.trim() || null,
-        cover_image_url: document.getElementById('course-cover').value.trim() || null,
-        status: document.getElementById('course-status').value,
-        allow_renewal: document.getElementById('course-renewal').checked,
-        allow_repurchase: document.getElementById('course-repurchase').checked
-      };
-      try {
-        const result = courseId
-          ? await supabase.from('courses').update(payload).eq('id', courseId)
-          : await supabase.from('courses').insert(payload);
-        if (result.error) throw result.error;
-        resetCourseForm();
-        showAdminMessage(courseId ? 'Curso actualizado correctamente.' : 'Curso creado correctamente.');
-        await loadAdminCourses();
-      } catch (error) {
-        showAdminMessage(error.message || 'No se pudo guardar el curso.', 'error');
-      } finally {
-        saveButton.disabled = false;
-      }
+    adminCourseForm.addEventListener('submit',async event=>{
+      event.preventDefault();const saveButton=document.getElementById('course-save');saveButton.disabled=true;
+      const courseId=document.getElementById('course-id').value;
+      const payload={title:document.getElementById('course-title').value.trim(),slug:document.getElementById('course-slug').value.trim().toLowerCase(),price:Number(document.getElementById('course-price').value),access_duration_days:Number(document.getElementById('course-duration').value),short_description:document.getElementById('course-short').value.trim()||null,description:document.getElementById('course-description').value.trim()||null,cover_image_url:document.getElementById('course-cover').value.trim()||null,status:document.getElementById('course-status').value,allow_renewal:document.getElementById('course-renewal').checked,allow_repurchase:document.getElementById('course-repurchase').checked};
+      try{const result=courseId?await supabase.from('courses').update(payload).eq('id',courseId):await supabase.from('courses').insert(payload);if(result.error)throw result.error;resetCourseForm();showAdminMessage(courseId?'Curso actualizado correctamente.':'Curso creado correctamente.');await loadAdminCourses();}
+      catch(error){showAdminMessage(error.message||'No se pudo guardar el curso.','error');}finally{saveButton.disabled=false;}
     });
-
-    courseCancel.addEventListener('click', resetCourseForm);
+    courseCancel.addEventListener('click',resetCourseForm);
 
     document.getElementById('logout-button').addEventListener('click', async () => {
       const { error } = await supabase.auth.signOut();
@@ -508,6 +340,7 @@
         return;
       }
       dashboard.hidden = true;
+      document.getElementById('admin-dashboard').hidden = true;
       main.classList.remove('dashboard-mode');
       document.querySelector('.intro').hidden = false;
       document.querySelector('.panel').hidden = false;
