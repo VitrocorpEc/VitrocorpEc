@@ -36,6 +36,25 @@
     .message.show{display:block}.message.error{background:#fff0ee;color:#a33327}.message.success{background:#edf8f0;color:#245d3a}
     .small{font-size:.78rem;color:#849087;line-height:1.5;margin:16px 0 0}
     footer{text-align:center;color:#8a958d;font-size:.8rem;padding:20px}
+    main.dashboard-mode{display:block;max-width:1100px}
+    .dashboard{display:grid;gap:22px}
+    .dash-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .dash-head h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:0}
+    .dash-muted{color:#718078;line-height:1.6}
+    .dash-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .dash-card{background:#fff;border:1px solid #e1e9e1;border-radius:16px;padding:20px}
+    .dash-card h3{font:700 1rem Syne,sans-serif;margin:0 0 10px;color:#214b37}
+    .dash-card p{margin:0;color:#718078;line-height:1.6;font-size:.92rem;overflow-wrap:anywhere}
+    .dash-section{background:#fff;border:1px solid #e1e9e1;border-radius:18px;padding:24px}
+    .dash-section h2{font-size:1.35rem;margin-bottom:16px}
+    .dash-list{display:grid;gap:12px}
+    .dash-item{border:1px solid #e7ede7;border-radius:12px;padding:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+    .dash-item strong{display:block;color:#214b37;margin-bottom:5px}
+    .dash-item small{color:#718078;line-height:1.5}
+    .dash-empty{background:#f5f8f4;border-radius:12px;padding:18px;color:#68786e;line-height:1.6}
+    .logout{border:1px solid #d8e1d8;background:white;color:#2d6a4f;border-radius:10px;padding:10px 14px;font:600 .9rem 'DM Sans';cursor:pointer}
+    .dash-status{font-size:.8rem;font-weight:700;color:#2d6a4f;background:#edf8f0;padding:6px 9px;border-radius:99px;white-space:nowrap}
+    @media(max-width:760px){.dash-grid{grid-template-columns:1fr}.dash-section{padding:18px}.dash-item{align-items:flex-start;flex-direction:column}}
     @media(max-width:760px){main{grid-template-columns:1fr;gap:26px;padding:20px 0 44px}.intro{text-align:center}.intro p{margin-inline:auto}.features{display:none}.panel{padding:24px}}
   </style>
 </head>
@@ -75,6 +94,30 @@
       </form>
       <div class="message" id="message" role="status" aria-live="polite"></div>
       <p class="small">Al crear una cuenta, recibirás un correo para confirmar tu dirección. No compartas tu contraseña con nadie.</p>
+    </section>
+    <section class="dashboard" id="student-dashboard" hidden aria-label="Panel del estudiante">
+      <div class="dash-head">
+        <div>
+          <div class="eyebrow">Campus virtual</div>
+          <h1>Mi espacio de aprendizaje</h1>
+          <p class="dash-muted">Consulta tu perfil, tus matrículas y la oferta académica de VitroCorp.</p>
+        </div>
+        <button type="button" class="logout" id="logout-button">Cerrar sesión</button>
+      </div>
+      <div class="dash-grid">
+        <article class="dash-card"><h3>Estudiante</h3><p id="dash-name">Cargando…</p></article>
+        <article class="dash-card"><h3>Correo de acceso</h3><p id="dash-email">Cargando…</p></article>
+        <article class="dash-card"><h3>Estado de cuenta</h3><p>Cuenta activa</p></article>
+      </div>
+      <section class="dash-section">
+        <h2>Mis cursos</h2>
+        <div class="dash-list" id="my-courses"><div class="dash-empty">Consultando tus matrículas…</div></div>
+      </section>
+      <section class="dash-section">
+        <h2>Cursos disponibles</h2>
+        <div class="dash-list" id="available-courses"><div class="dash-empty">Consultando el catálogo…</div></div>
+      </section>
+      <p class="small">El acceso a las clases y materiales se habilitará cuando publiquemos los cursos y activemos las matrículas correspondientes.</p>
     </section>
   </main>
   <footer>© VitroCorp EC · VitroCorp Academy</footer>
@@ -118,6 +161,104 @@
     }
     loginTab.addEventListener('click', () => setMode('login'));
     signupTab.addEventListener('click', () => setMode('signup'));
+
+    const dashboard = document.getElementById('student-dashboard');
+    const main = document.querySelector('main');
+
+    function addCourseItem(container, titleText, descriptionText, statusText) {
+      const item = document.createElement('div');
+      item.className = 'dash-item';
+      const info = document.createElement('div');
+      const titleNode = document.createElement('strong');
+      titleNode.textContent = titleText || 'Curso';
+      const description = document.createElement('small');
+      description.textContent = descriptionText || 'Información del curso no disponible.';
+      info.append(titleNode, description);
+      item.append(info);
+      if (statusText) {
+        const status = document.createElement('span');
+        status.className = 'dash-status';
+        status.textContent = statusText;
+        item.append(status);
+      }
+      container.append(item);
+    }
+
+    async function renderDashboard(user) {
+      main.classList.add('dashboard-mode');
+      document.querySelector('.intro').hidden = true;
+      document.querySelector('.panel').hidden = true;
+      dashboard.hidden = false;
+      document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
+      document.getElementById('dash-email').textContent = user.email || 'Correo no disponible';
+
+      const myCourses = document.getElementById('my-courses');
+      const availableCourses = document.getElementById('available-courses');
+      myCourses.replaceChildren();
+      availableCourses.replaceChildren();
+
+      const [profileResult, enrollmentResult, courseResult] = await Promise.all([
+        supabase.from('student_profiles').select('full_name,country').eq('user_id', user.id).maybeSingle(),
+        supabase.from('enrollments').select('id,status,starts_at,expires_at,courses(title,short_description)').eq('user_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('courses').select('id,title,short_description,access_duration_days').eq('status', 'published').order('created_at', { ascending: false })
+      ]);
+
+      if (profileResult.error) {
+        document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
+      } else if (profileResult.data?.full_name) {
+        document.getElementById('dash-name').textContent = profileResult.data.full_name;
+      }
+
+      if (enrollmentResult.error) {
+        const errorBox = document.createElement('div');
+        errorBox.className = 'dash-empty';
+        errorBox.textContent = 'No pudimos consultar tus matrículas en este momento. Intenta actualizar la página.';
+        myCourses.append(errorBox);
+      } else if (!enrollmentResult.data?.length) {
+        const empty = document.createElement('div');
+        empty.className = 'dash-empty';
+        empty.textContent = 'Todavía no tienes cursos matriculados. Cuando se habiliten las inscripciones, tus cursos aparecerán aquí.';
+        myCourses.append(empty);
+      } else {
+        enrollmentResult.data.forEach(enrollment => {
+          const course = enrollment.courses;
+          const expiry = enrollment.expires_at ? ' · Acceso hasta: ' + new Date(enrollment.expires_at).toLocaleDateString('es-EC') : '';
+          const statusLabels = { active: 'Matrícula activa', pending: 'Pendiente', expired: 'Acceso vencido', revoked: 'Matrícula revocada' };
+          addCourseItem(myCourses, course?.title || 'Curso', (course?.short_description || 'Matrícula registrada') + expiry, statusLabels[enrollment.status] || enrollment.status);
+        });
+      }
+
+      if (courseResult.error) {
+        const errorBox = document.createElement('div');
+        errorBox.className = 'dash-empty';
+        errorBox.textContent = 'No pudimos cargar el catálogo de cursos. Intenta actualizar la página.';
+        availableCourses.append(errorBox);
+      } else if (!courseResult.data?.length) {
+        const empty = document.createElement('div');
+        empty.className = 'dash-empty';
+        empty.textContent = 'Estamos preparando los primeros cursos de VitroCorp Academy. Próximamente encontrarás aquí la oferta formativa.';
+        availableCourses.append(empty);
+      } else {
+        courseResult.data.forEach(course => {
+          addCourseItem(availableCourses, course.title, (course.short_description || 'Curso de VitroCorp Academy') + ' · Acceso: ' + course.access_duration_days + ' días', 'Publicado');
+        });
+      }
+    }
+
+    document.getElementById('logout-button').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        showMessage('No se pudo cerrar la sesión. Inténtalo nuevamente.', 'error');
+        return;
+      }
+      dashboard.hidden = true;
+      main.classList.remove('dashboard-mode');
+      document.querySelector('.intro').hidden = false;
+      document.querySelector('.panel').hidden = false;
+      setMode('login');
+      submit.textContent = 'Iniciar sesión';
+      showMessage('Has cerrado sesión correctamente.', 'success');
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -168,7 +309,7 @@
             if (profileInsertError) throw profileInsertError;
           }
 
-          showMessage('Sesión iniciada correctamente. Tu perfil de estudiante está preparado. El campus de cursos se habilitará cuando completemos su construcción.', 'success');
+          await renderDashboard(user);
           submit.textContent = 'Sesión iniciada';
         }
       } catch (error) {
@@ -187,8 +328,8 @@
     });
 
     const { data: sessionData } = await supabase.auth.getSession();
-    if (sessionData.session) {
-      showMessage('Ya tienes una sesión activa en VitroCorp Academy.', 'success');
+    if (sessionData.session?.user) {
+      await renderDashboard(sessionData.session.user);
     }
   </script>
 </body>
