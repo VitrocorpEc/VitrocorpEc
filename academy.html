@@ -75,6 +75,23 @@
     .admin-checks{display:flex;gap:18px;flex-wrap:wrap;color:#50685a;font-size:.9rem}
     .admin-checks label{display:flex;align-items:center;gap:7px;margin:0}
     @media(max-width:600px){.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}.admin-course{align-items:flex-start;flex-direction:column}}
+    .public-catalog{width:min(100% - 32px,1100px);margin:0 auto 64px}
+    .public-catalog[hidden]{display:none}
+    .catalog-heading{text-align:center;margin:0 auto 28px;max-width:680px}
+    .catalog-heading h2{font-family:Syne,sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);margin:8px 0}
+    .catalog-heading p{color:#718078;line-height:1.6}
+    .catalog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+    .catalog-card{background:#fff;border:1px solid #e1e9e1;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .catalog-cover{width:100%;height:190px;object-fit:cover;background:#edf4ed}
+    .catalog-cover-placeholder{height:190px;display:grid;place-items:center;background:linear-gradient(145deg,#173326,#2d6a4f);color:#b7e4c7;font:700 1.2rem Syne,sans-serif}
+    .catalog-card-body{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1}
+    .catalog-card h3{font:700 1.15rem Syne,sans-serif;color:#214b37;margin:0}
+    .catalog-card p{margin:0;color:#718078;line-height:1.6;font-size:.92rem}
+    .catalog-meta{display:flex;gap:8px;flex-wrap:wrap;color:#385648;font-size:.82rem;font-weight:600}
+    .catalog-meta span{background:#edf8f0;border-radius:99px;padding:6px 10px}
+    .catalog-cta{margin-top:auto;border:0;border-radius:9px;background:#2d6a4f;color:white;padding:12px 15px;font:600 .9rem 'DM Sans';cursor:pointer}
+    .catalog-note{font-size:.82rem!important;color:#849087!important}
+    @media(max-width:600px){.public-catalog{margin-bottom:40px}}
 </style>
 </head>
 <body>
@@ -158,6 +175,16 @@
     </section>
     </section>
   </main>
+  <section class="public-catalog" id="public-catalog" aria-labelledby="catalog-title">
+    <div class="catalog-heading">
+      <div class="eyebrow">Oferta académica</div>
+      <h2 id="catalog-title">Cursos de VitroCorp Academy</h2>
+      <p>Formación aplicada en biotecnología vegetal, cultivo in vitro y bioemprendimiento.</p>
+    </div>
+    <div class="catalog-grid" id="public-course-list">
+      <div class="dash-empty">Consultando los cursos disponibles…</div>
+    </div>
+  </section>
   <footer>© VitroCorp EC · VitroCorp Academy</footer>
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.2';
@@ -202,6 +229,78 @@
 
     const dashboard = document.getElementById('student-dashboard');
     const main = document.querySelector('main');
+    const publicCatalog = document.getElementById('public-catalog');
+    const publicCourseList = document.getElementById('public-course-list');
+
+    async function loadPublicCatalog() {
+      publicCourseList.replaceChildren();
+      const { data, error } = await supabase
+        .from('courses')
+        .select('id,title,short_description,description,price,currency,access_duration_days,cover_image_url')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        const notice = document.createElement('div');
+        notice.className = 'dash-empty';
+        notice.textContent = 'No pudimos cargar el catálogo en este momento. Intenta actualizar la página.';
+        publicCourseList.append(notice);
+        return;
+      }
+
+      if (!data?.length) {
+        const notice = document.createElement('div');
+        notice.className = 'dash-empty';
+        notice.textContent = 'Estamos preparando los primeros cursos de VitroCorp Academy. Próximamente publicaremos aquí la oferta formativa.';
+        publicCourseList.append(notice);
+        return;
+      }
+
+      data.forEach(course => {
+        const card = document.createElement('article');
+        card.className = 'catalog-card';
+
+        if (course.cover_image_url) {
+          try {
+            const coverUrl = new URL(course.cover_image_url);
+            if (coverUrl.protocol === 'https:' || coverUrl.protocol === 'http:') {
+              const cover = document.createElement('img');
+              cover.className = 'catalog-cover';
+              cover.src = coverUrl.href;
+              cover.alt = 'Portada de ' + (course.title || 'curso');
+              cover.loading = 'lazy';
+              card.append(cover);
+            }
+          } catch (_) {}
+        }
+        if (!card.querySelector('img')) {
+          const placeholder = document.createElement('div');
+          placeholder.className = 'catalog-cover-placeholder';
+          placeholder.textContent = 'VitroCorp Academy';
+          card.append(placeholder);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'catalog-card-body';
+        const name = document.createElement('h3');
+        name.textContent = course.title || 'Curso de VitroCorp Academy';
+        const description = document.createElement('p');
+        description.textContent = course.short_description || course.description || 'Formación científica aplicada.';
+        const meta = document.createElement('div');
+        meta.className = 'catalog-meta';
+        const price = document.createElement('span');
+        price.textContent = new Intl.NumberFormat('es-EC', { style: 'currency', currency: course.currency || 'USD' }).format(Number(course.price || 0));
+        const duration = document.createElement('span');
+        duration.textContent = 'Acceso: ' + course.access_duration_days + ' días';
+        meta.append(price, duration);
+        const note = document.createElement('p');
+        note.className = 'catalog-note';
+        note.textContent = 'La inscripción y el pago se habilitarán próximamente.';
+        body.append(name, description, meta, note);
+        card.append(body);
+        publicCourseList.append(card);
+      });
+    }
 
     function addCourseItem(container, titleText, descriptionText, statusText) {
       const item = document.createElement('div');
@@ -227,6 +326,7 @@
       document.querySelector('.intro').hidden = true;
       document.querySelector('.panel').hidden = true;
       dashboard.hidden = false;
+      publicCatalog.hidden = true;
       document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
       document.getElementById('dash-email').textContent = user.email || 'Correo no disponible';
 
@@ -340,6 +440,8 @@
         return;
       }
       dashboard.hidden = true;
+      publicCatalog.hidden = false;
+      await loadPublicCatalog();
       document.getElementById('admin-dashboard').hidden = true;
       main.classList.remove('dashboard-mode');
       document.querySelector('.intro').hidden = false;
@@ -419,6 +521,8 @@
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData.session?.user) {
       await renderDashboard(sessionData.session.user);
+    } else {
+      await loadPublicCatalog();
     }
   </script>
 </body>
