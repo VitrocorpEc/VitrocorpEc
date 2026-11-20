@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Accede a VitroCorp Academy, el espacio de formación en biotecnología vegetal de VitroCorp EC.">
+  <title>VitroCorp Academy | Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:#f4f7f2;color:#173326;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column}
+    header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .brand{font-family:Syne,sans-serif;font-weight:800;font-size:1.2rem;color:#173326;text-decoration:none}
+    .brand span{color:#40916c}
+    header a.back{color:#2d6a4f;text-decoration:none;font-weight:600;font-size:.92rem}
+    main{width:min(100% - 32px,980px);margin:auto;display:grid;grid-template-columns:1fr 430px;gap:48px;align-items:center;padding:36px 0 64px}
+    .intro .eyebrow{color:#40916c;text-transform:uppercase;letter-spacing:.13em;font-weight:700;font-size:.76rem}
+    h1{font-family:Syne,sans-serif;font-size:clamp(2.2rem,5vw,3.7rem);line-height:1.05;margin:14px 0}
+    .intro p{color:#627168;line-height:1.7;max-width:430px}
+    .features{margin-top:28px;display:grid;gap:12px;color:#385648;font-size:.95rem}
+    .features span:before{content:'✓';color:#40916c;font-weight:800;margin-right:10px}
+    .panel{background:white;border:1px solid #e1e9e1;border-radius:22px;padding:30px;box-shadow:0 18px 55px rgba(23,51,38,.08)}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;background:#f0f5ef;border-radius:12px;padding:4px;margin-bottom:24px}
+    .tabs button{border:0;background:transparent;padding:11px;border-radius:9px;font:600 .92rem 'DM Sans';color:#65746b;cursor:pointer}
+    .tabs button.active{background:white;color:#1b4332;box-shadow:0 2px 8px #17332612}
+    h2{font-family:Syne,sans-serif;margin:0 0 7px;font-size:1.55rem}
+    .hint{color:#78847c;font-size:.88rem;line-height:1.5;margin:0 0 22px}
+    label{display:block;font-weight:600;font-size:.84rem;margin:15px 0 7px}
+    input{width:100%;border:1px solid #d8e1d8;border-radius:10px;padding:13px 14px;font:inherit;font-size:.94rem;outline:none}
+    input:focus{border-color:#40916c;box-shadow:0 0 0 3px #40916c20}
+    .submit{width:100%;border:0;border-radius:10px;background:#2d6a4f;color:white;font:700 .95rem 'DM Sans';padding:14px;margin-top:22px;cursor:pointer}
+    .submit:disabled{opacity:.65;cursor:wait}
+    .message{display:none;padding:12px 14px;border-radius:10px;font-size:.88rem;line-height:1.5;margin-top:16px}
+    .message.show{display:block}.message.error{background:#fff0ee;color:#a33327}.message.success{background:#edf8f0;color:#245d3a}
+    .small{font-size:.78rem;color:#849087;line-height:1.5;margin:16px 0 0}
+    footer{text-align:center;color:#8a958d;font-size:.8rem;padding:20px}
+    @media(max-width:760px){main{grid-template-columns:1fr;gap:26px;padding:20px 0 44px}.intro{text-align:center}.intro p{margin-inline:auto}.features{display:none}.panel{padding:24px}}
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./">Vitro<span>Corp</span> EC</a>
+    <a class="back" href="./">← Volver al sitio</a>
+  </header>
+  <main>
+    <section class="intro">
+      <div class="eyebrow">Formación científica aplicada</div>
+      <h1>Bienvenido a<br>VitroCorp Academy.</h1>
+      <p>Un espacio de aprendizaje para desarrollar habilidades prácticas en biotecnología vegetal y cultivo in vitro.</p>
+      <div class="features">
+        <span>Acceso personal a tus cursos</span>
+        <span>Seguimiento de tu formación</span>
+        <span>Materiales y evaluaciones en un solo lugar</span>
+      </div>
+    </section>
+    <section class="panel" aria-label="Acceso a VitroCorp Academy">
+      <div class="tabs" role="tablist" aria-label="Tipo de acceso">
+        <button type="button" class="active" id="login-tab" aria-selected="true">Iniciar sesión</button>
+        <button type="button" id="signup-tab" aria-selected="false">Crear cuenta</button>
+      </div>
+      <h2 id="form-title">Iniciar sesión</h2>
+      <p class="hint" id="form-hint">Ingresa con el correo y la contraseña de tu cuenta.</p>
+      <form id="auth-form">
+        <div id="name-wrap" hidden>
+          <label for="full-name">Nombre completo</label>
+          <input id="full-name" name="full-name" type="text" autocomplete="name" maxlength="120">
+        </div>
+        <label for="email">Correo electrónico</label>
+        <input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+        <label for="password">Contraseña</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8">
+        <button class="submit" id="submit-button" type="submit">Iniciar sesión</button>
+      </form>
+      <div class="message" id="message" role="status" aria-live="polite"></div>
+      <p class="small">Al crear una cuenta, recibirás un correo para confirmar tu dirección. No compartas tu contraseña con nadie.</p>
+    </section>
+  </main>
+  <footer>© VitroCorp EC · VitroCorp Academy</footer>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://saxwbaiebvqfltumuqqo.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zO0b2kb3oWMTlgrWJvhlPw_eTdK7AYK';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const form = document.getElementById('auth-form');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const title = document.getElementById('form-title');
+    const hint = document.getElementById('form-hint');
+    const nameWrap = document.getElementById('name-wrap');
+    const nameInput = document.getElementById('full-name');
+    const submit = document.getElementById('submit-button');
+    const message = document.getElementById('message');
+    let mode = 'login';
+
+    function showMessage(text, kind) {
+      message.textContent = text;
+      message.className = 'message show ' + kind;
+    }
+    function setMode(nextMode) {
+      mode = nextMode;
+      const signup = mode === 'signup';
+      loginTab.classList.toggle('active', !signup);
+      signupTab.classList.toggle('active', signup);
+      loginTab.setAttribute('aria-selected', String(!signup));
+      signupTab.setAttribute('aria-selected', String(signup));
+      title.textContent = signup ? 'Crear cuenta' : 'Iniciar sesión';
+      hint.textContent = signup ? 'Regístrate para acceder a tus cursos cuando estén disponibles.' : 'Ingresa con el correo y la contraseña de tu cuenta.';
+      nameWrap.hidden = !signup;
+      nameInput.required = signup;
+      submit.textContent = signup ? 'Crear mi cuenta' : 'Iniciar sesión';
+      document.getElementById('password').autocomplete = signup ? 'new-password' : 'current-password';
+      message.className = 'message';
+      message.textContent = '';
+    }
+    loginTab.addEventListener('click', () => setMode('login'));
+    signupTab.addEventListener('click', () => setMode('signup'));
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'Procesando…';
+      message.className = 'message';
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        if (mode === 'signup') {
+          const fullName = nameInput.value.trim();
+          if (!fullName) throw new Error('Escribe tu nombre completo.');
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { full_name: fullName },
+              emailRedirectTo: 'https://vitrocorpec.github.io/VitrocorpEc/'
+            }
+          });
+          if (error) throw error;
+          if (data.session) {
+            showMessage('Tu cuenta se creó correctamente. Ya puedes iniciar sesión en Academy.', 'success');
+            setMode('login');
+          } else {
+            showMessage('Registro iniciado. Revisa tu correo y confirma la dirección antes de iniciar sesión. Después vuelve a VitroCorp Academy.', 'success');
+          }
+        } else {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          showMessage('Sesión iniciada correctamente. El campus de cursos se habilitará cuando completemos su construcción.', 'success');
+          submit.textContent = 'Sesión iniciada';
+        }
+      } catch (error) {
+        const friendly = {
+          'Invalid login credentials': 'Correo o contraseña incorrectos.',
+          'Email not confirmed': 'Primero confirma tu correo desde el mensaje que te enviamos.',
+          'User already registered': 'Este correo ya tiene una cuenta. Inicia sesión.'
+        };
+        showMessage(friendly[error.message] || error.message || 'No se pudo completar la operación. Inténtalo nuevamente.', 'error');
+      } finally {
+        submit.disabled = false;
+        if (mode === 'signup') submit.textContent = 'Crear mi cuenta';
+        else if (!supabase.auth.getSession) submit.textContent = 'Iniciar sesión';
+        else if (submit.textContent === 'Procesando…') submit.textContent = 'Iniciar sesión';
+      }
+    });
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData.session) {
+      showMessage('Ya tienes una sesión activa en VitroCorp Academy.', 'success');
+    }
+  </script>
+</body>
+</html>
