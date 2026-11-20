@@ -329,7 +329,7 @@
     async function loadAdminCourses() {
       adminCourseList.replaceChildren();
       const { data, error } = await supabase.from('courses')
-        .select('id,title,slug,price,access_duration_days,status')
+        .select('id,title,slug,price,access_duration_days,status,short_description,description,cover_image_url,allow_renewal,allow_repurchase')
         .order('created_at', { ascending: false });
       if (error) {
         const box = document.createElement('div');
@@ -453,6 +453,11 @@
           document.getElementById('course-price').value = course.price ?? 0;
           document.getElementById('course-duration').value = course.access_duration_days || 90;
           document.getElementById('course-status').value = course.status || 'draft';
+          document.getElementById('course-short').value = course.short_description || '';
+          document.getElementById('course-description').value = course.description || '';
+          document.getElementById('course-cover').value = course.cover_image_url || '';
+          document.getElementById('course-renewal').checked = Boolean(course.allow_renewal);
+          document.getElementById('course-repurchase').checked = Boolean(course.allow_repurchase);
           document.getElementById('course-save').textContent = 'Actualizar curso';
           courseCancel.hidden = false;
           adminCourseForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
