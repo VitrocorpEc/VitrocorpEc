@@ -79,7 +79,7 @@
   </main>
   <footer>© VitroCorp EC · VitroCorp Academy</footer>
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.2';
 
     const SUPABASE_URL = 'https://saxwbaiebvqfltumuqqo.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zO0b2kb3oWMTlgrWJvhlPw_eTdK7AYK';
@@ -135,7 +135,7 @@
             password,
             options: {
               data: { full_name: fullName },
-              emailRedirectTo: 'https://vitrocorpec.github.io/VitrocorpEc/'
+              emailRedirectTo: 'https://vitrocorpec.github.io/VitrocorpEc/academy.html'
             }
           });
           if (error) throw error;
@@ -146,9 +146,29 @@
             showMessage('Registro iniciado. Revisa tu correo y confirma la dirección antes de iniciar sesión. Después vuelve a VitroCorp Academy.', 'success');
           }
         } else {
-          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
-          showMessage('Sesión iniciada correctamente. El campus de cursos se habilitará cuando completemos su construcción.', 'success');
+
+          // Create the student's own profile on first successful login.
+          const user = signInData.user;
+          const { data: existingProfile, error: profileReadError } = await supabase
+            .from('student_profiles')
+            .select('user_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          if (profileReadError) throw profileReadError;
+
+          if (!existingProfile) {
+            const { error: profileInsertError } = await supabase
+              .from('student_profiles')
+              .insert({
+                user_id: user.id,
+                full_name: user.user_metadata?.full_name || null
+              });
+            if (profileInsertError) throw profileInsertError;
+          }
+
+          showMessage('Sesión iniciada correctamente. Tu perfil de estudiante está preparado. El campus de cursos se habilitará cuando completemos su construcción.', 'success');
           submit.textContent = 'Sesión iniciada';
         }
       } catch (error) {
