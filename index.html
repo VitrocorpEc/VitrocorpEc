@@ -792,63 +792,76 @@
   }
 </script>
 
+
+
+
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const SUPABASE_URL = 'https://saxwbaiebvqfltumuqqo.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zO0b2kb3oWMTlgrWJvhlPw_eTdK7AYK';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
   async function loadEbooks() {
     const grid = document.getElementById('ebooks-grid');
     if (!grid) return;
-    const { data, error } = await supabase.from('ebooks')
-      .select('id,nombre,descripcion,precio,enlace_compra,imagen_url')
-      .eq('activo', true).order('id', { ascending: true });
-    if (error) {
-      console.error('No se pudo cargar el catálogo de VitroCorp desde Supabase:', error.message);
-      return;
+    try {
+      const endpoint = SUPABASE_URL + '/rest/v1/ebooks?select=id,nombre,descripcion,precio,enlace_compra,imagen_url&activo=eq.true&order=id.asc';
+      const response = await fetch(endpoint, {
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
+        }
+      });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const ebooks = await response.json();
+      if (!Array.isArray(ebooks) || ebooks.length === 0) return;
+
+      const fragment = document.createDocumentFragment();
+      ebooks.forEach((ebook) => {
+        const card = document.createElement('article');
+        card.className = 'ebook-card';
+        const placeholder = () => {
+          const el = document.createElement('div');
+          el.className = 'ebook-placeholder';
+          el.setAttribute('role', 'img');
+          el.setAttribute('aria-label', 'Portada de ' + ebook.nombre);
+          const brand = document.createElement('span'); brand.textContent = 'VITROCORP EC';
+          const name = document.createElement('strong'); name.textContent = ebook.nombre;
+          const category = document.createElement('b'); category.textContent = 'BIOTECNOLOGÍA';
+          const caption = document.createElement('small'); caption.textContent = 'Publicación digital';
+          el.append(brand, name, category, caption);
+          return el;
+        };
+        if (ebook.imagen_url) {
+          const img = document.createElement('img');
+          img.src = ebook.imagen_url;
+          img.alt = 'Portada de ' + ebook.nombre;
+          img.loading = 'lazy';
+          img.onerror = () => img.replaceWith(placeholder());
+          card.appendChild(img);
+        } else {
+          card.appendChild(placeholder());
+        }
+        const body = document.createElement('div'); body.className = 'ebook-card-body';
+        const title = document.createElement('h3'); title.textContent = ebook.nombre;
+        const description = document.createElement('p');
+        description.textContent = ebook.descripcion || 'Recurso digital especializado de VitroCorp EC.';
+        const row = document.createElement('div'); row.className = 'ebook-price-row';
+        const price = document.createElement('span'); price.className = 'ebook-price';
+        price.textContent = String.fromCharCode(36) + Number(ebook.precio).toFixed(2);
+        row.appendChild(price);
+        if (ebook.enlace_compra) {
+          const link = document.createElement('a'); link.className = 'ebook-btn';
+          link.href = ebook.enlace_compra; link.target = '_blank';
+          link.rel = 'noopener noreferrer'; link.textContent = 'Ver en Amazon';
+          row.appendChild(link);
+        }
+        body.append(title, description, row);
+        card.appendChild(body);
+        fragment.appendChild(card);
+      });
+      grid.replaceChildren(fragment);
+    } catch (error) {
+      console.error('No se pudo cargar el catálogo de VitroCorp desde Supabase:', error);
     }
-    if (!Array.isArray(data) || data.length === 0) return;
-    const fragment = document.createDocumentFragment();
-    data.forEach((ebook) => {
-      const card = document.createElement('article');
-      card.className = 'ebook-card';
-      const placeholder = () => {
-        const el = document.createElement('div');
-        el.className = 'ebook-placeholder';
-        el.setAttribute('role', 'img');
-        el.setAttribute('aria-label', 'Portada de ' + ebook.nombre);
-        const brand = document.createElement('span'); brand.textContent = 'VITROCORP EC';
-        const name = document.createElement('strong'); name.textContent = ebook.nombre;
-        const category = document.createElement('b'); category.textContent = 'BIOTECNOLOGÍA';
-        const caption = document.createElement('small'); caption.textContent = 'Publicación digital';
-        el.append(brand, name, category, caption);
-        return el;
-      };
-      if (ebook.imagen_url) {
-        const img = document.createElement('img');
-        img.src = ebook.imagen_url; img.alt = 'Portada de ' + ebook.nombre; img.loading = 'lazy';
-        img.onerror = () => img.replaceWith(placeholder());
-        card.appendChild(img);
-      } else card.appendChild(placeholder());
-      const body = document.createElement('div'); body.className = 'ebook-card-body';
-      const title = document.createElement('h3'); title.textContent = ebook.nombre;
-      const description = document.createElement('p');
-      description.textContent = ebook.descripcion || 'Recurso digital especializado de VitroCorp EC.';
-      const row = document.createElement('div'); row.className = 'ebook-price-row';
-      const price = document.createElement('span'); price.className = 'ebook-price';
-      price.textContent = '
-</html>
- + Number(ebook.precio).toFixed(2); row.appendChild(price);
-      if (ebook.enlace_compra) {
-        const link = document.createElement('a'); link.className = 'ebook-btn';
-        link.href = ebook.enlace_compra; link.target = '_blank';
-        link.rel = 'noopener noreferrer'; link.textContent = 'Ver en Amazon';
-        row.appendChild(link);
-      }
-      body.append(title, description, row); card.appendChild(body); fragment.appendChild(card);
-    });
-    grid.replaceChildren(fragment);
   }
   loadEbooks();
 </script>
