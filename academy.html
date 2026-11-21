@@ -272,7 +272,104 @@
     .enrollment-history-item strong{color:#214b37}
     .enrollment-history-item small{color:#718078;line-height:1.5}
 
-</style>
+
+    /* Responsive QA: tabletas y móviles */
+    html{scroll-behavior:smooth}
+    body{overflow-x:hidden}
+    img,video,iframe{max-width:100%}
+    button,input,select,textarea{max-width:100%}
+    .dashboard,.dash-section,.dash-card,.admin-panel,.learning-area,.learning-player,
+    .learning-module,.activity-card,.content-manager,.content-entry,.catalog-card{min-width:0}
+    .dash-section,.admin-panel,.learning-area,.learning-player,.lesson-reading{overflow-wrap:anywhere}
+    .dash-head{min-width:0}
+    .dash-head h1,.learning-head h2{overflow-wrap:anywhere}
+    .dash-item>div,.admin-course>div,.learning-lesson>div{min-width:0;max-width:100%}
+    .dash-item button,.admin-course button,.admin-actions button,.admin-course-actions button,
+    .payment-admin-actions button,.enrollment-admin-actions button,.lesson-navigation button,
+    .lesson-completion button,.activity-card button,.learning-back,.lesson-select{min-height:42px}
+    .payment-proof input{min-width:0;max-width:100%}
+    .lesson-reading table{max-width:100%}
+    .lesson-reading pre{max-width:100%;overflow-x:auto;white-space:pre}
+    .lesson-reading img{height:auto;max-width:100%}
+    .video-frame{display:block}
+    @media(max-width:900px){
+      main.dashboard-mode{width:min(100% - 28px,100%);padding-top:22px}
+      .admin-panel{padding:20px}
+      .dash-section{padding:20px}
+      .learning-area{padding:16px}
+      .learning-player{padding:14px}
+      .student-course-progress-action{align-items:flex-start}
+    }
+    @media(max-width:760px){
+      header{padding:16px 20px}
+      main{width:min(100% - 28px,100%)}
+      main.dashboard-mode{display:block}
+      .dash-head{align-items:flex-start}
+      .dash-head>div{min-width:0;flex:1}
+      .dash-head .logout{flex:0 0 auto}
+      .dash-grid{grid-template-columns:minmax(0,1fr)}
+      .student-progress-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .admin-panel{padding:16px}
+      .admin-form{grid-template-columns:minmax(0,1fr)}
+      .admin-form .full{grid-column:auto}
+      .admin-course{align-items:flex-start;flex-direction:column}
+      .admin-course-actions{width:100%}
+      .admin-course-actions button{flex:1 1 145px}
+      .learning-head{align-items:flex-start}
+      .learning-head>*{min-width:0}
+      .learning-head .learning-back{flex:0 0 auto}
+      .learning-lesson{align-items:flex-start;flex-direction:column}
+      .lesson-navigation{align-items:stretch}
+      .lesson-navigation button{flex:1 1 130px}
+      .payment-proof{align-items:stretch;flex-direction:column}
+      .payment-proof input,.payment-proof button{width:100%;max-width:none}
+      .payment-admin-actions,.enrollment-admin-actions{align-items:stretch}
+      .payment-admin-actions button,.enrollment-admin-actions button{flex:1 1 130px}
+      .course-progress-head{align-items:flex-start;flex-wrap:wrap}
+    }
+    @media(max-width:480px){
+      header{padding:14px 16px;gap:8px}
+      .brand{font-size:1.05rem}
+      header a.back{font-size:.82rem}
+      main{width:calc(100% - 24px);padding:16px 0 32px}
+      main.dashboard-mode{width:calc(100% - 24px);padding-top:14px}
+      .panel{padding:18px}
+      .dash-head{gap:10px}
+      .dash-head h1{font-size:1.65rem}
+      .dash-head .logout{padding:9px 10px;font-size:.82rem}
+      .dash-section{padding:14px;border-radius:14px}
+      .dash-section h2{font-size:1.18rem}
+      .dash-card{padding:15px}
+      .student-progress-summary{grid-template-columns:1fr}
+      .student-progress-stat{padding:12px}
+      .dash-item{padding:13px;gap:10px}
+      .admin-panel{padding:13px;border-radius:14px}
+      .admin-actions>*{flex:1 1 100%}
+      .admin-button{width:100%}
+      .learning-area{padding:11px;margin:14px 0}
+      .learning-module{padding:12px}
+      .learning-player{padding:10px}
+      .lesson-navigation{gap:8px}
+      .lesson-navigation button{flex:1 1 100%;width:100%}
+      .lesson-reading{padding:14px;font-size:.95rem}
+      .lesson-reading-toolbar{position:static;margin:0 0 14px;padding:9px}
+      .lesson-reading-toolbar button{flex:1 1 auto;min-height:40px}
+      .lesson-toc ol{padding-left:18px}
+      .activity-card{padding:12px}
+      .activity-card button{justify-self:stretch;width:100%}
+      .lesson-completion{align-items:stretch;flex-direction:column}
+      .lesson-completion button{width:100%}
+      .catalog-hero h1{font-size:2rem}
+      .catalog-card-body{padding:16px}
+      .enrollment-steps{padding:17px}
+      .enrollment-step{padding:13px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+    }
+
+  </style>
 </head>
 <body>
   <header>
