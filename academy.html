@@ -127,6 +127,16 @@
     .video-frame{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#10251a}
     .learning-material{color:#2d6a4f;font-weight:600}
     .learning-note{color:#718078;font-size:.88rem;line-height:1.5}
+    .lesson-reading{background:#fbfdfb;border:1px solid #dce9df;border-radius:12px;padding:clamp(16px,3vw,26px);color:#304b3b;line-height:1.75;overflow-wrap:anywhere}
+    .lesson-reading h1,.lesson-reading h2,.lesson-reading h3,.lesson-reading h4{font-family:Syne,sans-serif;color:#214b37;line-height:1.3;margin:1.35em 0 .55em}
+    .lesson-reading h1{font-size:1.45rem;margin-top:0}.lesson-reading h2{font-size:1.2rem}.lesson-reading h3{font-size:1.04rem}
+    .lesson-reading p{margin:.65em 0}.lesson-reading ul,.lesson-reading ol{padding-left:1.5rem;margin:.55em 0}.lesson-reading li{margin:.3em 0}
+    .lesson-reading strong{color:#214b37}.lesson-reading table{width:100%;border-collapse:collapse;display:block;overflow-x:auto;margin:1rem 0;font-size:.88rem}
+    .lesson-reading th,.lesson-reading td{border:1px solid #dce7dc;padding:9px 11px;text-align:left;vertical-align:top;min-width:115px}
+    .lesson-reading th{background:#edf5ee;color:#214b37}.lesson-reading tr:nth-child(even) td{background:#f7faf7}
+    .lesson-reading hr{border:0;border-top:1px solid #dce7dc;margin:1.2rem 0}
+    .lesson-reading code{background:#edf3ed;border-radius:4px;padding:2px 5px;font-size:.9em}
+    .lesson-reading-status{font-size:.82rem;color:#718078;margin:0}
     .lesson-activities{display:grid;gap:14px;margin-top:12px}
     .activity-card{border:1px solid #dce9df;border-radius:12px;padding:16px;background:#fbfdfb;display:grid;gap:10px}
     .activity-card h4{font:700 1rem Syne,sans-serif;color:#214b37;margin:0}
@@ -958,6 +968,82 @@
       if(error) throw error;
     }
 
+    const lessonContentSources={
+      'c56f59c2-dc51-46ad-9d23-ddad08e7674f':'sesion-1-fundamentos-micropropagacion-bioseguridad.md',
+      '56d5fd4d-2190-4373-9d5d-2322d8c2e02b':'sesion-2-procesos-clave-cultivo-in-vitro.md',
+      '6d067cd6-cc3c-4775-8533-04a4265b73d2':'sesion-3-del-laboratorio-al-mercado.md',
+      'c078f863-1ee6-4a83-ba57-547645fa16f3':'sesion-4-modelo-negocio-biotecnologico.md',
+      '29ca02df-2ccb-46f9-93ad-a421d76ea151':'sesion-5-comunicar-ciencia-sin-perder-rigor.md',
+      'fd454b6d-d45b-485a-8c29-e8b97a4763ac':'sesion-6-divulgacion-cientifica-motor-negocio.md'
+    };
+    function escapeLessonHtml(value) {
+      return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+    function formatLessonInline(value) {
+      return escapeLessonHtml(value)
+        .replace(/`([^`]+)`/g,'<code>$1</code>')
+        .replace(/**([^*]+)**/g,'<strong>$1</strong>')
+        .replace(/~~([^~]+)~~/g,'<del>$1</del>')
+        .replace(/(^|[^*])*([^*]+)*(?!*)/g,'$1<em>$2</em>');
+    }
+    function renderLessonMarkdown(markdown) {
+      const lines=String(markdown||'').replace(/\r/g,'').split('\n');
+      const html=[];
+      let paragraph=[],listType=null,listItems=[];
+      const flushParagraph=()=>{if(paragraph.length){html.push('<p>'+paragraph.map(formatLessonInline).join('<br>')+'</p>');paragraph=[];}};
+      const flushList=()=>{if(listType){const tag=listType==='ol'?'ol':'ul';html.push('<'+tag+'>'+listItems.map(item=>'<li>'+formatLessonInline(item)+'</li>').join('')+'</'+tag+'>');listType=null;listItems=[];}};
+      const cells=line=>line.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(cell=>cell.trim());
+      for(let i=0;i<lines.length;i++){
+        const line=lines[i],trim=line.trim();
+        if(!trim){flushParagraph();flushList();continue;}
+        if(/^\|.*\|$/.test(trim)&&i+1<lines.length&&/^\|?\s*:?-{3,}/.test(lines[i+1].trim())){
+          flushParagraph();flushList();
+          const headers=cells(line);i++;
+          while(i+1<lines.length&&/^\|.*\|$/.test(lines[i+1].trim())){i++;const row=cells(lines[i]);html.push('<table><tbody><tr>'+row.map(cell=>'<td>'+formatLessonInline(cell)+'</td>').join('')+'</tr></tbody></table>');}
+          const tableRows=html.splice(html.length-(i>0?Math.max(1,0):1));
+          const bodyRows=tableRows.join('');
+          const rows=bodyRows.match(/<table><tbody><tr>.*?<\/tr><\/tbody><\/table>/g)||[];
+          html.push('<table><thead><tr>'+headers.map(cell=>'<th>'+formatLessonInline(cell)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>row.replace(/^<table><tbody>/,'').replace(/<\/tbody><\/table>$/,'')).join('')+'</tbody></table>');
+          continue;
+        }
+        const heading=trim.match(/^(#{1,4})\s+(.+)$/);
+        if(heading){flushParagraph();flushList();const level=Math.min(4,heading[1].length);html.push('<h'+level+'>'+formatLessonInline(heading[2])+'</h'+level+'>');continue;}
+        if(/^(-{3,}|\*{3,}|_{3,})$/.test(trim)){flushParagraph();flushList();html.push('<hr>');continue;}
+        const bullet=trim.match(/^[-*+]\s+(.+)$/),ordered=trim.match(/^\d+[.)]\s+(.+)$/);
+        if(bullet||ordered){flushParagraph();const type=ordered?'ol':'ul';if(listType&&listType!==type)flushList();listType=type;listItems.push((bullet||ordered)[1]);continue;}
+        flushList();paragraph.push(trim.replace(/\s{2,}$/,''));
+      }
+      flushParagraph();flushList();
+      return html.join('');
+    }
+    async function loadLessonReading(lesson) {
+      const filename=lessonContentSources[lesson.id];
+      if(!filename) return;
+      const section=document.createElement('section');
+      section.className='lesson-reading';
+      const status=document.createElement('p');
+      status.className='lesson-reading-status';
+      status.textContent='Cargando material académico…';
+      section.append(status);
+      learningPlayer.append(section);
+      try {
+        const url='https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/'+filename;
+        const response=await fetch(url,{cache:'no-store'});
+        if(!response.ok) throw new Error('No se pudo obtener el material.');
+        const markdown=await response.text();
+        if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
+        section.innerHTML=renderLessonMarkdown(markdown);
+        section.setAttribute('aria-label','Material académico de la lección');
+      } catch(error) {
+        if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
+        status.textContent='No se pudo cargar el material en línea. Puedes consultar la versión fuente en GitHub.';
+        const link=document.createElement('a');
+        link.href='https://github.com/VitrocorpEc/VitroCorpEc/blob/academy/student-learning-preview/academy/content/bioemprendimiento/'+filename;
+        link.target='_blank';link.rel='noopener noreferrer';link.textContent='Abrir material de la sesión';
+        section.append(link);
+      }
+    }
+
     let studentFacingPreview=false;
     let activeLearningLesson=null;
     function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null, adminPreview=false, studentPreview=false) {
@@ -1002,6 +1088,7 @@
           }
         } catch (_) {}
       }
+      loadLessonReading(lesson);
       if(enrollmentSimulation || realProgress) {
         const completion=document.createElement('div');
         completion.className='lesson-completion';
