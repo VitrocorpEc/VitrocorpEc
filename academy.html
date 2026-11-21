@@ -154,6 +154,18 @@
     .lesson-reading hr{border:0;border-top:1px solid #dce7dc;margin:1.2rem 0}
     .lesson-reading code{background:#edf3ed;border-radius:4px;padding:2px 5px;font-size:.9em}
     .lesson-reading-status{font-size:.82rem;color:#718078;margin:0}
+    .lesson-toc{background:#f0f6f0;border:1px solid #d7e6d9;border-radius:10px;padding:14px 18px;margin:0 0 22px}
+    .lesson-toc-title{display:block;color:#214b37;font-size:.96rem;margin-bottom:8px}
+    .lesson-toc ol{columns:2;column-gap:28px;margin:0;padding-left:20px}
+    .lesson-toc li{break-inside:avoid;margin:4px 0;font-size:.88rem;line-height:1.45}
+    .lesson-toc li.lesson-toc-sub{margin-left:12px;font-size:.83rem}
+    .lesson-toc li.lesson-toc-deep{margin-left:22px;font-size:.8rem}
+    .lesson-toc a{color:#2d6a4f;text-decoration:none}
+    .lesson-toc a:hover,.lesson-toc a:focus{text-decoration:underline}
+    .lesson-reading-heading{scroll-margin-top:20px}
+    .lesson-reading-top{display:inline-block;margin-top:18px;color:#2d6a4f;font-size:.86rem;font-weight:600;text-decoration:none}
+    .lesson-reading-top:hover{text-decoration:underline}
+    @media(max-width:600px){.lesson-toc ol{columns:1}.lesson-toc{padding:13px}}
     .lesson-activities{display:grid;gap:14px;margin-top:12px}
     .activity-card{border:1px solid #dce9df;border-radius:12px;padding:16px;background:#fbfdfb;display:grid;gap:10px}
     .activity-card h4{font:700 1rem Syne,sans-serif;color:#214b37;margin:0}
@@ -1070,6 +1082,53 @@
         if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
         section.innerHTML=renderLessonMarkdown(markdown);
         section.setAttribute('aria-label','Material académico de la lección');
+        const headings=[...section.querySelectorAll('h2,h3,h4')];
+        if(headings.length) {
+          const usedIds=new Set();
+          const slugify=value=>String(value||'seccion').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'seccion';
+          const nav=document.createElement('nav');
+          nav.className='lesson-toc';
+          nav.setAttribute('aria-label','Índice de contenidos');
+          const title=document.createElement('strong');
+          title.className='lesson-toc-title';
+          title.textContent='Contenido de esta sesión';
+          const list=document.createElement('ol');
+          headings.forEach((heading,index)=>{
+            const base=slugify(heading.textContent);
+            let id=base,suffix=2;
+            while(usedIds.has(id)) id=base+'-'+suffix++;
+            usedIds.add(id);
+            heading.id='lesson-'+id;
+            heading.tabIndex=-1;
+            heading.classList.add('lesson-reading-heading');
+            const item=document.createElement('li');
+            if(heading.tagName==='H3') item.className='lesson-toc-sub';
+            if(heading.tagName==='H4') item.className='lesson-toc-sub lesson-toc-deep';
+            const link=document.createElement('a');
+            link.href='#'+heading.id;
+            link.textContent=heading.textContent;
+            link.addEventListener('click',event=>{
+              event.preventDefault();
+              heading.scrollIntoView({behavior:'smooth',block:'start'});
+              heading.focus({preventScroll:true});
+            });
+            item.append(link);list.append(item);
+          });
+          nav.append(title,list);
+          section.insertBefore(nav,section.firstChild);
+          const top=document.createElement('a');
+          top.href='#lesson-reading-top';
+          top.className='lesson-reading-top';
+          top.textContent='↑ Volver al índice';
+          const topId='lesson-reading-top-'+lesson.id;
+          section.id=topId;
+          top.href='#'+topId;
+          top.addEventListener('click',event=>{
+            event.preventDefault();
+            nav.scrollIntoView({behavior:'smooth',block:'start'});
+          });
+          section.append(top);
+        }
       } catch(error) {
         if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
         status.textContent='No se pudo cargar el material en línea. Puedes consultar la versión fuente en GitHub.';
