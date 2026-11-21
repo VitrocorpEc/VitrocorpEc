@@ -1404,7 +1404,7 @@
       const enrollmentDemoEnabled = new URLSearchParams(window.location.search).get('enrollment_demo') === '1' && user.id === '32473b65-282f-4d42-9099-918ad9a57eb7';
       const [profileResult, enrollmentResult, courseResult] = await Promise.all([
         supabase.from('student_profiles').select('full_name,country').eq('user_id', user.id).maybeSingle(),
-        supabase.from('enrollments').select('id,course_id,status,starts_at,expires_at,courses(title,short_description)').eq('user_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('enrollments').select('id,course_id,status,starts_at,expires_at,courses(title,short_description,status)').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('courses').select('id,title,short_description,access_duration_days').eq('status', 'published').order('created_at', { ascending: false })
       ]);
       let displayedEnrollments = enrollmentResult.data || [];
@@ -1458,10 +1458,12 @@
           const now=Date.now();
           const startsAt=enrollment.starts_at ? new Date(enrollment.starts_at).getTime() : 0;
           const expiresAt=enrollment.expires_at ? new Date(enrollment.expires_at).getTime() : Infinity;
-          const accessValid=enrollment.status==='active' && startsAt<=now && expiresAt>now;
+          const enrollmentValid=enrollment.status==='active' && startsAt<=now && expiresAt>now;
+          const courseAvailable=enrollment._simulation || course?.status==='published';
+          const accessValid=enrollmentValid && courseAvailable;
           const expired=enrollment.status==='expired' || (enrollment.status==='active' && expiresAt<=now);
           const expiry=enrollment.expires_at ? ' · Acceso hasta: '+new Date(enrollment.expires_at).toLocaleDateString('es-EC') : '';
-          const statusText=enrollment._simulation?'Matrícula simulada activa':accessValid?'Matrícula activa':expired?'Acceso vencido':enrollment.status==='pending'?'Pendiente':enrollment.status==='revoked'?'Matrícula revocada':'Acceso aún no disponible';
+          const statusText=enrollment._simulation?'Matrícula simulada activa':!courseAvailable?'Curso no disponible actualmente':accessValid?'Matrícula activa':expired?'Acceso vencido':enrollment.status==='pending'?'Pendiente':enrollment.status==='revoked'?'Matrícula revocada':'Acceso aún no disponible';
           const item=document.createElement('div');
           item.className='dash-item';
           const info=document.createElement('div');
