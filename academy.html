@@ -369,6 +369,18 @@
       *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
     }
 
+  
+    .support-materials{background:#fff;border:1px solid #dce9df;border-radius:14px;padding:20px;display:grid;gap:14px}
+    .support-materials[hidden]{display:none}
+    .support-materials h3{font:700 1.08rem Syne,sans-serif;color:#214b37;margin:0}
+    .support-materials>p{margin:0;color:#718078;font-size:.9rem;line-height:1.55}
+    .support-pdf{border:1px solid #e2ebe3;border-radius:11px;overflow:hidden;background:#fbfdfb}
+    .support-pdf summary{cursor:pointer;padding:13px 15px;color:#245d3a;font-weight:700;font-size:.9rem}
+    .support-pdf-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 15px 12px}
+    .support-pdf-actions a{color:#2d6a4f;font-size:.84rem;font-weight:700}
+    .support-pdf iframe{display:block;width:100%;height:560px;border:0;border-top:1px solid #e2ebe3;background:#f4f7f2}
+    @media(max-width:600px){.support-materials{padding:14px}.support-pdf iframe{height:420px}}
+
   </style>
 </head>
 <body>
@@ -465,6 +477,31 @@
           <h3>Selecciona una lección</h3>
           <p class="learning-note">Aquí aparecerán el video de la clase y sus materiales cuando elijas una lección.</p>
         </div>
+
+        <section class="support-materials" id="bio-support-materials" hidden aria-label="Materiales de apoyo">
+          <h3>Materiales de apoyo</h3>
+          <p>Documentos complementarios de Bioemprendimiento. Vista preliminar para revisión docente; todavía no están habilitados para estudiantes.</p>
+          <details class="support-pdf">
+            <summary>Micropropagacion.pdf</summary>
+            <div class="support-pdf-actions"><a href="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/Micropropagacion.pdf" target="_blank" rel="noopener">Abrir PDF en otra pestaña</a></div>
+            <iframe loading="lazy" title="Vista previa de Micropropagacion.pdf" src="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/Micropropagacion.pdf#toolbar=1&navpanes=0"></iframe>
+          </details>
+          <details class="support-pdf">
+            <summary>bioemprendimiento Presentación1.pdf</summary>
+            <div class="support-pdf-actions"><a href="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/bioemprendimiento%20Presentaci%C3%B3n1.pdf" target="_blank" rel="noopener">Abrir PDF en otra pestaña</a></div>
+            <iframe loading="lazy" title="Vista previa de bioemprendimiento Presentación1.pdf" src="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/bioemprendimiento%20Presentaci%C3%B3n1.pdf#toolbar=1&navpanes=0"></iframe>
+          </details>
+          <details class="support-pdf">
+            <summary>divulgacion sesion1.pdf</summary>
+            <div class="support-pdf-actions"><a href="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/divulgacion%20sesion1.pdf" target="_blank" rel="noopener">Abrir PDF en otra pestaña</a></div>
+            <iframe loading="lazy" title="Vista previa de divulgacion sesion1.pdf" src="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/divulgacion%20sesion1.pdf#toolbar=1&navpanes=0"></iframe>
+          </details>
+          <details class="support-pdf">
+            <summary>divulgacion sesion2.pdf</summary>
+            <div class="support-pdf-actions"><a href="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/divulgacion%20sesion2.pdf" target="_blank" rel="noopener">Abrir PDF en otra pestaña</a></div>
+            <iframe loading="lazy" title="Vista previa de divulgacion sesion2.pdf" src="https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/divulgacion%20sesion2.pdf#toolbar=1&navpanes=0"></iframe>
+          </details>
+        </section>
       </section>
             <section class="dash-section" id="student-certificates-section">
         <h2>Mis certificados</h2>
@@ -1911,6 +1948,7 @@
       }
       courseLearning.hidden=false;
       studentFacingPreview=false;
+      document.getElementById('bio-support-materials').hidden=!(adminPreview && courseId==='4292913b-fb96-4fdb-bfb9-bd2836e308ac');
       document.getElementById('admin-preview-notice').hidden=!adminPreview;
       document.getElementById('admin-preview-notice-text').textContent='Vista previa docente: puedes revisar contenido en borrador sin publicar el curso ni crear matrículas.';
       document.getElementById('toggle-student-preview').hidden=!adminPreview;
@@ -2012,6 +2050,7 @@
     document.getElementById('toggle-student-preview').addEventListener('click',()=>{
       if(!activeLearningLesson) return;
       studentFacingPreview=!studentFacingPreview;
+      document.getElementById('bio-support-materials').hidden=studentFacingPreview;
       document.getElementById('admin-preview-notice-text').textContent=studentFacingPreview
         ?'Vista de estudiante simulada: las claves docentes están ocultas y los envíos están desactivados. No se guardará ningún dato.'
         :'Vista previa docente: puedes revisar contenido en borrador sin publicar el curso ni crear matrículas.';
