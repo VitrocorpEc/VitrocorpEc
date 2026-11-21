@@ -127,6 +127,19 @@
     .video-frame{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#10251a}
     .learning-material{color:#2d6a4f;font-weight:600}
     .learning-note{color:#718078;font-size:.88rem;line-height:1.5}
+    .lesson-activities{display:grid;gap:14px;margin-top:12px}
+    .activity-card{border:1px solid #dce9df;border-radius:12px;padding:16px;background:#fbfdfb;display:grid;gap:10px}
+    .activity-card h4{font:700 1rem Syne,sans-serif;color:#214b37;margin:0}
+    .activity-card p,.activity-card li{color:#52675b;font-size:.9rem;line-height:1.55}
+    .activity-card ul{margin:0;padding-left:20px}
+    .activity-card textarea,.activity-card input[type=file]{width:100%;border:1px solid #d8e1d8;border-radius:9px;padding:10px;font:inherit;background:#fff}
+    .activity-card textarea{min-height:84px;resize:vertical}
+    .activity-card button{justify-self:start;border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:10px 14px;font:600 .88rem 'DM Sans';cursor:pointer}
+    .activity-card button:disabled{opacity:.6;cursor:wait}
+    .activity-feedback{font-size:.84rem;color:#2d6a4f;line-height:1.5}
+    .activity-warning{font-size:.84rem;color:#73551b;background:#fff8e8;border:1px solid #ead7a7;border-radius:9px;padding:10px;line-height:1.5}
+    .question-field{display:grid;gap:6px;border-top:1px solid #e7eee8;padding-top:10px}
+    .question-field label{font-weight:600;font-size:.9rem;color:#294d39;margin:0}
     .lesson-completion{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}.lesson-completion button{border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:11px 15px;font:600 .9rem 'DM Sans';cursor:pointer}.lesson-completion button.completed{background:#edf8f0;color:#245d3a;border:1px solid #cfe2d4}.lesson-completion small{color:#2d6a4f;font-weight:600}
     .course-progress{background:#fff;border:1px solid #dce9df;border-radius:12px;padding:16px;display:grid;gap:9px}.course-progress[hidden]{display:none}.course-progress-head{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#294d39;font-weight:700;font-size:.9rem}.course-progress-track{height:10px;background:#e8efe9;border-radius:99px;overflow:hidden}.course-progress-fill{height:100%;width:0;background:#40916c;border-radius:99px;transition:width .2s ease}.course-progress small{color:#718078;font-size:.82rem}
     @media(max-width:600px){.learning-lesson{align-items:flex-start;flex-direction:column}.learning-area{padding:14px}}
@@ -945,7 +958,7 @@
       if(error) throw error;
     }
 
-    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null) {
+    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null, adminPreview=false) {
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
       heading.textContent=lesson.title || 'Lección';
@@ -1024,6 +1037,142 @@
         note.className='learning-note';
         note.textContent=enrollmentSimulation?'Progreso de demostración guardado solo en este navegador.':'Tu progreso se guarda en tu cuenta de VitroCorp Academy.';
         learningPlayer.append(note);
+      }
+      if(!enrollmentSimulation) loadLessonActivities(lesson,adminPreview);
+    }
+
+    function activityText(tag,text,className) {
+      const node=document.createElement(tag);
+      if(className) node.className=className;
+      node.textContent=text;
+      return node;
+    }
+
+    async function loadLessonActivities(lesson,adminPreview=false) {
+      const area=document.createElement('div');
+      area.className='lesson-activities';
+      area.append(activityText('h3','Actividades de aprendizaje'));
+      learningPlayer.append(area);
+      try {
+        const [assignmentResult,assessmentResult]=await Promise.all([
+          supabase.from('lesson_assignments').select('id,title,instructions,accepted_file_types,max_file_size_mb,max_score,rubric,is_published').eq('lesson_id',lesson.id).maybeSingle(),
+          supabase.from('lesson_assessments').select('id,title,instructions,max_score,is_published').eq('lesson_id',lesson.id).maybeSingle()
+        ]);
+        if(assignmentResult.error) throw assignmentResult.error;
+        if(assessmentResult.error) throw assessmentResult.error;
+        const assignment=assignmentResult.data;
+        const assessment=assessmentResult.data;
+        if(!assignment && !assessment) {
+          area.append(activityText('p','Esta lección todavía no tiene deberes ni evaluación configurados.','learning-note'));
+          return;
+        }
+
+        if(assignment) {
+          const card=document.createElement('section');card.className='activity-card';
+          card.append(activityText('h4',assignment.title));
+          card.append(activityText('p',assignment.instructions));
+          const rubricTitle=activityText('strong','Rúbrica de evaluación · '+Number(assignment.max_score).toFixed(0)+' puntos');
+          card.append(rubricTitle);
+          const rubric=document.createElement('ul');
+          (assignment.rubric||[]).forEach(item=>rubric.append(activityText('li',item.criterion+' — '+item.points+' puntos')));
+          card.append(rubric);
+          if(adminPreview) {
+            card.append(activityText('p','Vista docente: el estudiante deberá entregar un archivo o fotografía.','activity-warning'));
+          } else {
+            const {data:{user},error:userError}=await supabase.auth.getUser();
+            if(userError || !user) throw new Error('La sesión no está disponible.');
+            const existing=await supabase.from('assignment_submissions').select('status,score,feedback,submitted_at').eq('assignment_id',assignment.id).eq('user_id',user.id).maybeSingle();
+            if(existing.error) throw existing.error;
+            if(existing.data) {
+              card.append(activityText('p',existing.data.status==='reviewed'?'Entrega calificada: '+existing.data.score+'/10 puntos.':'Entrega recibida. Está pendiente de revisión docente.','activity-feedback'));
+              if(existing.data.feedback) card.append(activityText('p','Retroalimentación: '+existing.data.feedback,'learning-note'));
+            } else {
+              const form=document.createElement('form');form.className='activity-card';
+              const file=document.createElement('input');file.type='file';file.required=true;file.accept='.pdf,.jpg,.jpeg,.png,.webp';
+              const comment=document.createElement('textarea');comment.placeholder='Comentario para el docente (opcional)';
+              const submit=document.createElement('button');submit.type='submit';submit.textContent='Enviar deber';
+              const feedback=activityText('p','', 'activity-feedback');
+              form.append(activityText('label','Adjunta tu trabajo (PDF o fotografía)'),file,comment,submit,feedback);
+              form.addEventListener('submit',async event=>{
+                event.preventDefault();
+                const selected=file.files?.[0];
+                if(!selected) {feedback.textContent='Selecciona un archivo antes de enviar.';return;}
+                if(selected.size>assignment.max_file_size_mb*1024*1024) {feedback.textContent='El archivo supera el límite de '+assignment.max_file_size_mb+' MB.';return;}
+                if(!assignment.accepted_file_types.includes(selected.type)) {feedback.textContent='Formato no permitido. Usa PDF, JPG, PNG o WEBP.';return;}
+                submit.disabled=true;feedback.textContent='Subiendo archivo…';
+                try {
+                  const safeName=selected.name.replace(/[^A-Za-z0-9._-]/g,'_').slice(-100)||'entrega';
+                  const path=user.id+'/'+assignment.id+'/'+Date.now()+'-'+safeName;
+                  const upload=await supabase.storage.from('academy-assignment-submissions').upload(path,selected,{upsert:false,contentType:selected.type});
+                  if(upload.error) throw upload.error;
+                  const saved=await supabase.from('assignment_submissions').insert({assignment_id:assignment.id,user_id:user.id,file_path:path,comment:comment.value.trim()||null});
+                  if(saved.error) throw saved.error;
+                  form.replaceChildren(activityText('p','Entrega recibida correctamente. Quedó pendiente de revisión docente.','activity-feedback'));
+                } catch(error) {
+                  feedback.textContent=error.message||'No se pudo enviar el deber. Intenta nuevamente.';
+                  submit.disabled=false;
+                }
+              });
+              card.append(form);
+            }
+          }
+          area.append(card);
+        }
+
+        if(assessment) {
+          const card=document.createElement('section');card.className='activity-card';
+          card.append(activityText('h4',assessment.title),activityText('p',assessment.instructions));
+          const questionsResult=await supabase.from('assessment_questions').select('id,prompt,question_type,options,points,sort_order').eq('assessment_id',assessment.id).order('sort_order',{ascending:true});
+          if(questionsResult.error) throw questionsResult.error;
+          const questions=questionsResult.data||[];
+          if(adminPreview) {
+            const keysResult=await supabase.from('assessment_answer_keys').select('question_id,expected_answer').in('question_id',questions.map(q=>q.id));
+            if(keysResult.error) throw keysResult.error;
+            const keys=new Map((keysResult.data||[]).map(k=>[k.question_id,k.expected_answer]));
+            card.append(activityText('strong','Clave de respuestas · Solo docente'));
+            questions.forEach((q,index)=>{
+              card.append(activityText('p',(index+1)+'. '+q.prompt));
+              card.append(activityText('p','Respuesta esperada: '+(keys.get(q.id)||'Sin clave'),'activity-warning'));
+            });
+          } else {
+            const {data:{user},error:userError}=await supabase.auth.getUser();
+            if(userError || !user) throw new Error('La sesión no está disponible.');
+            const existing=await supabase.from('assessment_attempts').select('status,score,feedback,submitted_at').eq('assessment_id',assessment.id).eq('user_id',user.id).maybeSingle();
+            if(existing.error) throw existing.error;
+            if(existing.data) {
+              card.append(activityText('p',existing.data.status==='reviewed'?'Evaluación calificada: '+existing.data.score+'/3 puntos.':'Respuestas recibidas. Pendiente de revisión docente.','activity-feedback'));
+              if(existing.data.feedback) card.append(activityText('p','Retroalimentación: '+existing.data.feedback,'learning-note'));
+            } else {
+              const form=document.createElement('form');form.className='activity-card';
+              const fields=[];
+              questions.forEach((q,index)=>{
+                const wrap=document.createElement('div');wrap.className='question-field';
+                wrap.append(activityText('label',(index+1)+'. '+q.prompt));
+                const input=document.createElement('textarea');input.required=true;input.maxLength=3000;
+                wrap.append(input);form.append(wrap);fields.push({id:q.id,input});
+              });
+              const submit=document.createElement('button');submit.type='submit';submit.textContent='Enviar evaluación';
+              const feedback=activityText('p','','activity-feedback');
+              form.append(submit,feedback);
+              form.addEventListener('submit',async event=>{
+                event.preventDefault();submit.disabled=true;feedback.textContent='Enviando respuestas…';
+                try {
+                  const responses=fields.map(field=>({question_id:field.id,answer:field.input.value.trim()}));
+                  const saved=await supabase.from('assessment_attempts').insert({assessment_id:assessment.id,user_id:user.id,responses});
+                  if(saved.error) throw saved.error;
+                  form.replaceChildren(activityText('p','Evaluación enviada. Las tres respuestas serán calificadas por el docente.','activity-feedback'));
+                } catch(error) {
+                  feedback.textContent=error.message||'No se pudo enviar la evaluación.';
+                  submit.disabled=false;
+                }
+              });
+              card.append(form);
+            }
+          }
+          area.append(card);
+        }
+      } catch(error) {
+        area.append(activityText('p','No se pudieron cargar las actividades de esta lección. '+(error.message||''),'activity-warning'));
       }
     }
 
@@ -1117,7 +1266,7 @@
           open.type='button';
           open.className='lesson-select';
           open.textContent='Ver lección';
-          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation,lessons||[],realProgress));
+          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation,lessons||[],realProgress,adminPreview));
           row.append(info,open);
           list.append(row);
         });
@@ -1125,7 +1274,7 @@
         learningModules.append(card);
       });
       const firstLesson=(lessons||[])[0];
-      if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[],realProgress);
+      if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[],realProgress,adminPreview);
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
 
