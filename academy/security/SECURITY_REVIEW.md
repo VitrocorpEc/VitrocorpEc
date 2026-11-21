@@ -7,7 +7,7 @@ Estado: **preparación únicamente**. Ningún archivo de esta carpeta se ha apli
 1. `public.courses`: la política `Students can view their enrolled courses` comprueba que exista una matrícula del usuario, pero no exige `status = 'active'` ni que el curso esté publicado. La política pública ya permite consultar metadatos de cursos publicados; los controles de módulos y lecciones protegidas son independientes.
 2. Certificados: el valor por defecto actual genera `VC-` más 12 caracteres hexadecimales (48 bits). La consulta pública se realiza directamente desde el navegador mediante RPC y no tiene limitación de intentos.
 3. Funciones SECURITY DEFINER: las cinco funciones revisadas contienen controles de autorización/propiedad adecuados para sus operaciones actuales. La función pública de verificación es intencionalmente accesible sin iniciar sesión. No se propone revocar permisos a ciegas.
-4. Tablas privadas `private.academy_payment_settings` y `private.enrollment_admin_actions`: RLS está habilitado y no hay políticas. El esquema privado no es accesible a `anon`; `authenticated` sí tiene USAGE del esquema. Hace falta una comprobación específica de grants antes de decidir cambios.
+4. Tablas privadas `private.academy_payment_settings` y `private.enrollment_admin_actions`: RLS está habilitado y no hay políticas. El esquema privado no es accesible a `anon`; `authenticated` sí tiene USAGE del esquema. Hace falta una comprobación específica de grants a nivel de tabla/función antes de decidir cambios.
 
 ## Archivos preparados
 
@@ -28,7 +28,7 @@ Estado: **preparación únicamente**. Ningún archivo de esta carpeta se ha apli
 2. Respaldar/revisar las políticas y el esquema actual. Aplicar los dos scripts SQL en una ventana aprobada: ambos afectan la base compartida Preview/Producción.
 3. Configurar los dos secretos de la Edge Function y desplegarla con JWT verificado desactivado solo porque la verificación pública no requiere cuenta; la función aplica sus propios controles y usa service role internamente.
 4. Probar la Edge Function con códigos válidos antiguos, códigos nuevos, códigos inexistentes, origen permitido/no permitido y exceso de intentos.
-5. Solo después, cambiar el cliente en `academy.html` de `supabase.rpc('verify_academy_certificate', ...)` a `supabase.functions.invoke('verify-academy-certificate', { body: { code } })`; actualizar lectura de respuesta a `data.certificate`.
+5. Solo después de validar los encabezados de IP del gateway y probar el límite en el entorno real, cambiar el cliente en `academy.html` de `supabase.rpc('verify_academy_certificate', ...)` a `supabase.functions.invoke('verify-academy-certificate', { body: { code } })`; actualizar lectura de respuesta a `data.certificate`.
 6. Probar inscripción, aprobación de transferencia, consulta de cursos, emisión y verificación de certificados. Revertir si falla cualquier operación crítica.
 
 ## Riesgos y límites
