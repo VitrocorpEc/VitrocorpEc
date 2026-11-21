@@ -137,6 +137,10 @@
     .payment-proof{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
     .payment-proof input{max-width:300px;padding:9px}
     .payment-admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .enrollment-admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .enrollment-admin-actions button{border:1px solid #d8e1d8;background:#fff;color:#2d6a4f;border-radius:8px;padding:8px 11px;font:600 .82rem 'DM Sans';cursor:pointer}
+    .enrollment-admin-actions button.danger{color:#a33327;border-color:#f0cfca}
+    .admin-enrollment-note{background:#f2f8f3;border:1px solid #dce9df;border-radius:10px;padding:12px 14px;color:#50685a;font-size:.86rem;line-height:1.5}
 
 </style>
 </head>
@@ -273,6 +277,7 @@
             <section class="dash-section" id="admin-enrollments-section">
         <h2>Gestión de matrículas</h2>
         <p class="dash-muted">Consulta estudiantes, cursos, vigencia y el origen de cada inscripción. Esta sección es privada para administración.</p>
+        <p class="admin-enrollment-note">Puedes activar matrículas como cortesía o beca sin pago aprobado, revocarlas o ampliar su vigencia. Todas las acciones requieren motivo y quedan registradas en el historial administrativo.</p>
         <div class="admin-form" style="margin-bottom:16px">
           <div class="full"><label for="admin-enrollment-search">Buscar estudiante, correo o curso</label><input id="admin-enrollment-search" type="search" placeholder="Escribe un nombre, correo o curso"></div>
           <div><label for="admin-enrollment-course">Filtrar por curso</label><select id="admin-enrollment-course"><option value="">Todos los cursos</option></select></div>
@@ -692,12 +697,73 @@
         identifier.textContent = 'ID de matrícula: ' + row.enrollment_id;
         info.append(title,student,dates,status,origin,identifier);
         item.append(info);
+        const side = document.createElement('div');
+        side.style.display = 'grid';
+        side.style.gap = '8px';
         const badge = document.createElement('span');
         badge.className = 'dash-status';
         badge.textContent = statusLabels[getEffectiveEnrollmentStatus(row)] || row.enrollment_status || 'Desconocido';
-        item.append(badge);
+        side.append(badge);
+        const actions = document.createElement('div');
+        actions.className = 'enrollment-admin-actions';
+        const effectiveStatus = getEffectiveEnrollmentStatus(row);
+        if (effectiveStatus !== 'active' && effectiveStatus !== 'scheduled') {
+          const activate = document.createElement('button');
+          activate.type = 'button';
+          activate.textContent = 'Activar';
+          activate.addEventListener('click', () => manageEnrollment(row, 'activate'));
+          actions.append(activate);
+        }
+        if (effectiveStatus === 'active' || effectiveStatus === 'expired') {
+          const extend = document.createElement('button');
+          extend.type = 'button';
+          extend.textContent = 'Ampliar';
+          extend.addEventListener('click', () => manageEnrollment(row, 'extend'));
+          actions.append(extend);
+        }
+        if (effectiveStatus !== 'revoked') {
+          const revoke = document.createElement('button');
+          revoke.type = 'button';
+          revoke.className = 'danger';
+          revoke.textContent = 'Revocar';
+          revoke.addEventListener('click', () => manageEnrollment(row, 'revoke'));
+          actions.append(revoke);
+        }
+        if (actions.childElementCount) side.append(actions);
+        item.append(side);
         list.append(item);
       });
+    }
+
+    async function manageEnrollment(row, action) {
+      const actionLabels = {activate:'activar', revoke:'revocar', extend:'ampliar'};
+      let days = null;
+      if (action === 'activate' || action === 'extend') {
+        const defaultDays = action === 'activate' ? 90 : 30;
+        const rawDays = window.prompt('¿Por cuántos días? (1 a 3650)', String(defaultDays));
+        if (rawDays === null) return;
+        if (!/^\\d+$/.test(rawDays.trim())) { showAdminMessage('Introduce un número entero de días.','error'); return; }
+        days = Number(rawDays);
+        if (!Number.isInteger(days) || days < 1 || days > 3650) { showAdminMessage('Los días deben estar entre 1 y 3650.','error'); return; }
+      }
+      const reason = window.prompt('Motivo obligatorio de la acción (mínimo 5 caracteres). Si es una cortesía o beca, indícalo aquí.');
+      if (reason === null) return;
+      if (reason.trim().length < 5 || reason.trim().length > 500) { showAdminMessage('El motivo debe tener entre 5 y 500 caracteres.','error'); return; }
+      const detail = action === 'revoke' ? 'revocar el acceso' : action === 'activate' ? 'activar el acceso durante ' + days + ' días' : 'ampliar el acceso ' + days + ' días';
+      if (!window.confirm('¿Confirmas ' + detail + ' para ' + (row.student_email || 'este estudiante') + ' en el curso «' + (row.course_title || 'Curso') + '»?')) return;
+      try {
+        const {error} = await supabase.rpc('admin_manage_enrollment', {
+          p_enrollment_id: row.enrollment_id,
+          p_action: action,
+          p_days: days,
+          p_reason: reason.trim()
+        });
+        if (error) throw error;
+        showAdminMessage('Matrícula actualizada: ' + actionLabels[action] + '. El motivo quedó registrado.');
+        await loadAdminEnrollments();
+      } catch (error) {
+        showAdminMessage(error.message || 'No se pudo gestionar la matrícula.','error');
+      }
     }
 
     async function loadAdminEnrollments() {
