@@ -1494,15 +1494,24 @@
       playLesson(activeLearningLesson,false,[],null,!studentFacingPreview,studentFacingPreview);
     });
 
-    document.getElementById('learning-back').addEventListener('click',()=>{
+    document.getElementById('learning-back').addEventListener('click',async()=>{
       const wasAdminPreview=!document.getElementById('admin-preview-notice').hidden;
       studentFacingPreview=false;
       activeLearningLesson=null;
       courseLearning.hidden=true;
       document.getElementById('admin-preview-notice').hidden=true;
       document.getElementById('student-simulation-notice').hidden=true;
-      if(wasAdminPreview) document.getElementById('admin-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
-      else document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
+      if(wasAdminPreview) {
+        document.getElementById('admin-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
+      } else {
+        try {
+          const {data:{user}}=await supabase.auth.getUser();
+          if(user) await renderDashboard(user);
+        } catch(error) {
+          showMessage('No pudimos actualizar tu resumen de progreso. Actualiza la página para volver a consultar tus datos.','error');
+        }
+        document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
+      }
     });
 
     async function loadDashboardCourseProgress(enrollments) {
