@@ -503,8 +503,7 @@
       return Boolean(progress[lessonId]);
     }
 
-    function updateSimulationCourseProgress(lessons) {
-      const progress=getSimulationProgress();
+    function updateCourseProgress(lessons, progress) {
       const total=(lessons||[]).length;
       const completed=(lessons||[]).filter(lesson=>Boolean(progress[lesson.id])).length;
       const percent=total?Math.round(completed/total*100):0;
@@ -517,8 +516,27 @@
       if(fill) fill.style.width=percent+'%';
       if(detail) detail.textContent=completed+' de '+total+' lecciones completadas';
     }
+    function updateSimulationCourseProgress(lessons) {
+      updateCourseProgress(lessons,getSimulationProgress());
+    }
+    async function loadRealLessonProgress(lessons) {
+      const ids=(lessons||[]).map(lesson=>lesson.id);
+      if(!ids.length) return {};
+      const {data,error}=await supabase.from('lesson_progress').select('lesson_id,completed_at').in('lesson_id',ids);
+      if(error) throw error;
+      return Object.fromEntries((data||[]).filter(row=>row.completed_at).map(row=>[row.lesson_id,true]));
+    }
+    async function saveRealLessonProgress(lessonId, completed) {
+      const {data:{user},error:userError}=await supabase.auth.getUser();
+      if(userError || !user) throw new Error('Tu sesión no está disponible. Inicia sesión nuevamente.');
+      const {error}=await supabase.from('lesson_progress').upsert(
+        {user_id:user.id,lesson_id:lessonId,completed_at:completed?new Date().toISOString():null,updated_at:new Date().toISOString()},
+        {onConflict:'user_id,lesson_id'}
+      );
+      if(error) throw error;
+    }
 
-    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[]) {
+    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null) {
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
       heading.textContent=lesson.title || 'Lección';
@@ -559,31 +577,43 @@
           }
         } catch (_) {}
       }
-      if(enrollmentSimulation) {
+      if(enrollmentSimulation || realProgress) {
         const completion=document.createElement('div');
         completion.className='lesson-completion';
         const button=document.createElement('button');
         button.type='button';
         const status=document.createElement('small');
+        const currentProgress=()=>enrollmentSimulation?getSimulationProgress():realProgress;
         const refreshCompletion=()=>{
-          const done=Boolean(getSimulationProgress()[lesson.id]);
+          const done=Boolean(currentProgress()[lesson.id]);
           button.textContent=done?'Marcar como pendiente':'Marcar como completada';
           button.classList.toggle('completed',done);
-          status.textContent=done?'✓ Lección completada en esta prueba':'Aún no has completado esta lección';
+          status.textContent=done?'✓ Lección completada':'Aún no has completado esta lección';
         };
-        button.addEventListener('click',()=>{
-          const done=Boolean(getSimulationProgress()[lesson.id]);
-          setSimulationLessonCompleted(lesson.id,!done);
-          refreshCompletion();
-          updateSimulationCourseProgress(courseLessons.length?courseLessons:[lesson]);
+        button.addEventListener('click',async()=>{
+          button.disabled=true;
+          const done=Boolean(currentProgress()[lesson.id]);
+          try {
+            if(enrollmentSimulation) {
+              setSimulationLessonCompleted(lesson.id,!done);
+            } else {
+              await saveRealLessonProgress(lesson.id,!done);
+              if(!done) realProgress[lesson.id]=true;
+              else delete realProgress[lesson.id];
+            }
+            refreshCompletion();
+            updateCourseProgress(courseLessons.length?courseLessons:[lesson],currentProgress());
+          } catch(error) {
+            showMessage(error.message||'No se pudo guardar el progreso. Inténtalo nuevamente.','error');
+          } finally { button.disabled=false; }
         });
         completion.append(button,status);
         learningPlayer.append(completion);
         refreshCompletion();
-        updateSimulationCourseProgress([lesson]);
+        updateCourseProgress(courseLessons.length?courseLessons:[lesson],currentProgress());
         const note=document.createElement('p');
         note.className='learning-note';
-        note.textContent='Progreso de demostración guardado solo en este navegador; no se envía a Supabase.';
+        note.textContent=enrollmentSimulation?'Progreso de demostración guardado solo en este navegador.':'Tu progreso se guarda en tu cuenta de VitroCorp Academy.';
         learningPlayer.append(note);
       }
     }
@@ -634,7 +664,16 @@
         showLearningMessage(learningModules,'No pudimos cargar las lecciones. Intenta nuevamente.');
         return;
       }
+      let realProgress=null;
+      if(!enrollmentSimulation && !adminPreview) {
+        try {
+          realProgress=await loadRealLessonProgress(lessons||[]);
+        } catch(error) {
+          showMessage('No pudimos consultar tu progreso guardado. Puedes seguir viendo las lecciones, pero el seguimiento está temporalmente desactivado.','error');
+        }
+      }
       if(enrollmentSimulation) updateSimulationCourseProgress(lessons||[]);
+      else if(realProgress) updateCourseProgress(lessons||[],realProgress);
       learningModules.replaceChildren();
       modules.forEach(module=>{
         const card=document.createElement('article');
@@ -669,7 +708,7 @@
           open.type='button';
           open.className='lesson-select';
           open.textContent='Ver lección';
-          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation,lessons||[]));
+          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation,lessons||[],realProgress));
           row.append(info,open);
           list.append(row);
         });
@@ -677,7 +716,7 @@
         learningModules.append(card);
       });
       const firstLesson=(lessons||[])[0];
-      if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[]);
+      if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[],realProgress);
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
 
