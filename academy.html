@@ -270,7 +270,18 @@
         <div class="full admin-actions"><button class="admin-button" id="course-save" type="submit">Guardar curso</button><button class="admin-button secondary" id="course-cancel" type="button" hidden>Cancelar edición</button></div>
       </form>
       <div><h2>Cursos registrados</h2><div class="admin-course-list" id="admin-course-list"><div class="dash-empty">Cargando cursos…</div></div></div>
-            <section class="dash-section" id="admin-payments-section">
+            <section class="dash-section" id="admin-enrollments-section">
+        <h2>Gestión de matrículas</h2>
+        <p class="dash-muted">Consulta estudiantes, cursos, vigencia y el origen de cada inscripción. Esta sección es privada para administración.</p>
+        <div class="admin-form" style="margin-bottom:16px">
+          <div class="full"><label for="admin-enrollment-search">Buscar estudiante, correo o curso</label><input id="admin-enrollment-search" type="search" placeholder="Escribe un nombre, correo o curso"></div>
+          <div><label for="admin-enrollment-course">Filtrar por curso</label><select id="admin-enrollment-course"><option value="">Todos los cursos</option></select></div>
+          <div><label for="admin-enrollment-status">Filtrar por estado</label><select id="admin-enrollment-status"><option value="">Todos los estados</option><option value="active">Activas</option><option value="scheduled">Programadas</option><option value="expired">Vencidas</option><option value="pending">Pendientes</option><option value="revoked">Revocadas</option></select></div>
+        </div>
+        <p class="dash-muted" id="admin-enrollment-summary" aria-live="polite">Cargando matrículas…</p>
+        <div class="dash-list" id="admin-enrollment-list"><div class="dash-empty">Cargando matrículas…</div></div>
+      </section>
+      <section class="dash-section" id="admin-payments-section">
         <h2>Revisión de pagos</h2>
         <p class="dash-muted">Verifica cada comprobante antes de aprobar una matrícula. Aprobar un pago activa el acceso al curso.</p>
         <div class="dash-list" id="admin-payment-list"><div class="dash-empty">Cargando solicitudes…</div></div>
@@ -624,12 +635,115 @@
       }
     }
 
+    let adminEnrollmentRows = [];
+
+    function getEffectiveEnrollmentStatus(enrollment) {
+      if (enrollment.enrollment_status === 'active') {
+        const now = Date.now();
+        if (enrollment.starts_at && new Date(enrollment.starts_at).getTime() > now) return 'scheduled';
+        if (enrollment.expires_at && new Date(enrollment.expires_at).getTime() <= now) return 'expired';
+      }
+      return enrollment.enrollment_status || 'unknown';
+    }
+
+    function renderAdminEnrollments() {
+      const list = document.getElementById('admin-enrollment-list');
+      const summary = document.getElementById('admin-enrollment-summary');
+      const search = (document.getElementById('admin-enrollment-search').value || '').trim().toLocaleLowerCase('es');
+      const courseFilter = document.getElementById('admin-enrollment-course').value;
+      const statusFilter = document.getElementById('admin-enrollment-status').value;
+      const filtered = adminEnrollmentRows.filter(row => {
+        const effectiveStatus = getEffectiveEnrollmentStatus(row);
+        const haystack = [row.student_email,row.student_name,row.course_title,row.user_id].filter(Boolean).join(' ').toLocaleLowerCase('es');
+        return (!search || haystack.includes(search)) &&
+          (!courseFilter || row.course_id === courseFilter) &&
+          (!statusFilter || effectiveStatus === statusFilter);
+      });
+      list.replaceChildren();
+      summary.textContent = filtered.length + ' de ' + adminEnrollmentRows.length + ' matrículas';
+      if (!filtered.length) {
+        const empty = document.createElement('div');
+        empty.className = 'dash-empty';
+        empty.textContent = adminEnrollmentRows.length ? 'No hay matrículas que coincidan con esos filtros.' : 'Todavía no hay matrículas registradas.';
+        list.append(empty);
+        return;
+      }
+      const statusLabels = {active:'Activa',scheduled:'Programada',expired:'Vencida',pending:'Pendiente',revoked:'Revocada'};
+      const paymentLabels = {approved:'Pago aprobado',pending:'Pago pendiente',under_review:'Pago en revisión',rejected:'Pago rechazado',failed:'Pago fallido',refunded:'Pago reembolsado'};
+      filtered.forEach(row => {
+        const item = document.createElement('article');
+        item.className = 'dash-item';
+        const info = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = row.course_title || 'Curso sin nombre';
+        const student = document.createElement('small');
+        student.textContent = (row.student_name ? row.student_name + ' · ' : '') + (row.student_email || 'Correo no disponible');
+        const dates = document.createElement('small');
+        const start = row.starts_at ? new Date(row.starts_at).toLocaleDateString('es-EC') : 'No definida';
+        const end = row.expires_at ? new Date(row.expires_at).toLocaleDateString('es-EC') : 'Sin vencimiento';
+        dates.textContent = 'Inicio: ' + start + ' · Vence: ' + end;
+        const status = document.createElement('small');
+        status.textContent = 'Estado: ' + (statusLabels[getEffectiveEnrollmentStatus(row)] || row.enrollment_status || 'Desconocido');
+        const origin = document.createElement('small');
+        origin.textContent = row.payment_status
+          ? (paymentLabels[row.payment_status] || row.payment_status) + (row.payment_amount != null ? ' · ' + formatMoney(row.payment_amount,'USD') : '') + (row.payment_method ? ' · ' + row.payment_method.replaceAll('_',' ') : '')
+          : 'Sin pago vinculado · Tipo: ' + (row.purchase_type || 'no especificado');
+        const identifier = document.createElement('small');
+        identifier.textContent = 'ID de matrícula: ' + row.enrollment_id;
+        info.append(title,student,dates,status,origin,identifier);
+        item.append(info);
+        const badge = document.createElement('span');
+        badge.className = 'dash-status';
+        badge.textContent = statusLabels[getEffectiveEnrollmentStatus(row)] || row.enrollment_status || 'Desconocido';
+        item.append(badge);
+        list.append(item);
+      });
+    }
+
+    async function loadAdminEnrollments() {
+      const list = document.getElementById('admin-enrollment-list');
+      if (!list) return;
+      list.replaceChildren();
+      const {data,error} = await supabase.rpc('admin_list_enrollments');
+      if (error) {
+        const empty = document.createElement('div');
+        empty.className = 'dash-empty';
+        empty.textContent = 'No se pudieron cargar las matrículas. Verifica los permisos administrativos.';
+        list.append(empty);
+        document.getElementById('admin-enrollment-summary').textContent = '';
+        return;
+      }
+      adminEnrollmentRows = data || [];
+      const courseSelect = document.getElementById('admin-enrollment-course');
+      const selectedCourse = courseSelect.value;
+      courseSelect.replaceChildren();
+      const allCourses = document.createElement('option');
+      allCourses.value = '';
+      allCourses.textContent = 'Todos los cursos';
+      courseSelect.append(allCourses);
+      const courses = [...new Map(adminEnrollmentRows.map(row => [row.course_id,row.course_title]).filter(entry => entry[0] && entry[1])).entries()]
+        .sort((a,b) => a[1].localeCompare(b[1],'es'));
+      courses.forEach(([id,title]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = title;
+        courseSelect.append(option);
+      });
+      courseSelect.value = courses.some(([id]) => id === selectedCourse) ? selectedCourse : '';
+      renderAdminEnrollments();
+    }
+
+    document.getElementById('admin-enrollment-search').addEventListener('input',renderAdminEnrollments);
+    document.getElementById('admin-enrollment-course').addEventListener('change',renderAdminEnrollments);
+    document.getElementById('admin-enrollment-status').addEventListener('change',renderAdminEnrollments);
+
     async function reviewPayment(paymentId,approve,rejectionReason=null) {
       try {
         const {error}=await supabase.rpc('admin_review_payment_submission',{p_payment_id:paymentId,p_approve:approve,p_rejection_reason:rejectionReason});
         if(error) throw error;
         showAdminMessage(approve?'Pago aprobado y matrícula activada.':'Pago rechazado.');
         await loadAdminPayments();
+        await loadAdminEnrollments();
       } catch(error){showAdminMessage(error.message||'No se pudo procesar el pago.','error');}
     }
 
