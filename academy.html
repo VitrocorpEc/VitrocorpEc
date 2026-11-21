@@ -2106,14 +2106,14 @@
       const courseIds=[...new Set(eligible.map(item=>item.course_id).filter(Boolean))];
       const progressByCourse=new Map();
       if(!courseIds.length) return progressByCourse;
-      const {data:modules,error:moduleError}=await supabase.from('course_modules').select('id,course_id,sort_order').in('course_id',courseIds).order('sort_order',{ascending:true});
+      const {data:modules,error:moduleError}=await supabase.from('course_modules').select('id,course_id,sort_order').in('course_id',courseIds).eq('is_published',true).order('sort_order',{ascending:true});
       if(moduleError) throw moduleError;
       const moduleIds=(modules||[]).map(module=>module.id);
       if(!moduleIds.length) {
         courseIds.forEach(id=>progressByCourse.set(id,{completed:0,total:0,nextLesson:null,allCompleted:false}));
         return progressByCourse;
       }
-      const {data:lessons,error:lessonError}=await supabase.from('course_lessons').select('id,module_id,title,sort_order').in('module_id',moduleIds).order('sort_order',{ascending:true});
+      const {data:lessons,error:lessonError}=await supabase.from('course_lessons').select('id,module_id,title,sort_order').in('module_id',moduleIds).eq('is_published',true).order('sort_order',{ascending:true});
       if(lessonError) throw lessonError;
       const lessonsByCourse=new Map(courseIds.map(id=>[id,[]]));
       const courseByModule=new Map((modules||[]).map(module=>[module.id,module.course_id]));
