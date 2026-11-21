@@ -652,10 +652,8 @@
       let displayedEnrollments = enrollmentResult.data || [];
       if (enrollmentDemoEnabled) {
         document.getElementById('enrollment-simulation-notice').hidden = false;
-        const { data: demoCourse, error: demoCourseError } = await supabase.from('courses').select('id,title,short_description').eq('id', 'd8397b59-f5a7-4dbf-a7d9-a24f34dfed03').maybeSingle();
-        if (!demoCourseError && demoCourse) {
-          displayedEnrollments = [{id:'simulated-enrollment',course_id:demoCourse.id,status:'active',starts_at:new Date(Date.now()-60000).toISOString(),expires_at:new Date(Date.now()+30*24*60*60*1000).toISOString(),courses:demoCourse,_simulation:true}];
-        }
+        const demoCourse = {id:'d8397b59-f5a7-4dbf-a7d9-a24f34dfed03',title:'Curso de prueba — No publicar',short_description:'Curso de demostración para comprobar la experiencia del estudiante.'};
+        displayedEnrollments = [{id:'simulated-enrollment',course_id:demoCourse.id,status:'active',starts_at:new Date(Date.now()-60000).toISOString(),expires_at:new Date(Date.now()+30*24*60*60*1000).toISOString(),courses:demoCourse,_simulation:true}];
       }
 
       if (profileResult.error) {
