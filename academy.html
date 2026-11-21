@@ -294,6 +294,11 @@
           <div class="dash-list" id="student-course-progress-list"><div class="dash-empty">Calculando tu progreso…</div></div>
         </div>
       </section>
+      <section class="dash-section" id="student-notifications-section">
+        <h2>Avisos y novedades</h2>
+        <p class="dash-muted">Aquí aparecerán las actualizaciones de tus pagos, entregas y evaluaciones revisadas por VitroCorp.</p>
+        <div class="dash-list" id="student-notifications-list"><div class="dash-empty">Consultando novedades…</div></div>
+      </section>
       <section class="dash-section">
         <h2>Mis cursos</h2>
         <div class="simulation-notice" id="enrollment-simulation-notice" hidden><strong>Modo de prueba:</strong> esta matrícula es ficticia y solo sirve para comprobar la pantalla y el acceso al aula. No se ha creado ningún registro, cobro ni inscripción en Supabase.</div>
@@ -1029,6 +1034,44 @@
         await loadAdminPayments();
         await loadAdminEnrollments();
       } catch(error){showAdminMessage(error.message||'No se pudo procesar el pago.','error');}
+    }
+
+    async function loadStudentNotifications() {
+      const list=document.getElementById('student-notifications-list');
+      if(!list)return;
+      list.replaceChildren();
+      const results=await Promise.all([
+        supabase.from('assignment_submissions').select('id,status,score,feedback,reviewed_at,submitted_at,lesson_assignments(title,course_lessons(title,course_modules(courses(title))))').eq('status','reviewed').order('reviewed_at',{ascending:false}).limit(10),
+        supabase.from('assessment_attempts').select('id,status,score,feedback,reviewed_at,submitted_at,lesson_assessments(title,course_lessons(title,course_modules(courses(title))))').eq('status','reviewed').order('reviewed_at',{ascending:false}).limit(10),
+        supabase.from('payment_submissions').select('id,status,rejection_reason,amount,currency,updated_at,courses(title)').in('status',['approved','rejected']).order('updated_at',{ascending:false}).limit(10)
+      ]);
+      const events=[];
+      results.forEach((result,index)=>{
+        if(result.error)return;
+        (result.data||[]).forEach(row=>{
+          if(index===0||index===1){
+            const activity=index===0?row.lesson_assignments:row.lesson_assessments;
+            const lesson=activity?.course_lessons;const course=lesson?.course_modules?.courses;
+            events.push({date:row.reviewed_at||row.submitted_at,title:(index===0?'Tarea revisada: ':'Evaluación calificada: ')+(activity?.title||'Actividad'),course:course?.title||'Curso',detail:'Sesión: '+(lesson?.title||'No especificada')+' · Calificación: '+(row.score===null?'Pendiente':row.score),feedback:row.feedback||''});
+          }else{
+            events.push({date:row.updated_at,title:row.status==='approved'?'Pago aprobado':'Pago rechazado',course:row.courses?.title||'Curso',detail:row.status==='approved'?'Tu pago fue verificado. La matrícula correspondiente debe estar activa.':'El pago requiere corrección. '+(row.rejection_reason||''),feedback:''});
+          }
+        });
+      });
+      events.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+      if(!events.length){
+        const empty=document.createElement('div');empty.className='dash-empty';empty.textContent='Todavía no hay novedades académicas o de pago.';list.append(empty);return;
+      }
+      events.slice(0,15).forEach(event=>{
+        const item=document.createElement('div');item.className='dash-item';
+        const info=document.createElement('div');
+        const title=document.createElement('strong');title.textContent=event.title;
+        const detail=document.createElement('small');detail.textContent=event.course+' · '+(event.date?new Date(event.date).toLocaleString('es-EC'):'Fecha no disponible');
+        const description=document.createElement('p');description.textContent=event.detail;
+        info.append(title,detail,description);
+        if(event.feedback){const feedback=document.createElement('small');feedback.textContent='Comentario docente: '+event.feedback;info.append(feedback);}
+        item.append(info);list.append(item);
+      });
     }
 
     function addCourseItem(container, titleText, descriptionText, statusText) {
@@ -2037,6 +2080,7 @@
         });
       }
       await loadStudentPayments();
+      await loadStudentNotifications();
       const { data: adminStatus, error: adminStatusError } = await supabase.rpc('is_current_user_admin');
       const adminDashboard = document.getElementById('admin-dashboard');
       if (!adminStatusError && adminStatus === true) {
