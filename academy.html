@@ -231,7 +231,7 @@
           <div><div class="eyebrow">Aula virtual</div><h2 id="learning-title">Curso</h2></div>
           <button type="button" class="learning-back" id="learning-back">← Volver a mis cursos</button>
         </div>
-        <div class="preview-notice" id="admin-preview-notice" hidden>Vista previa exclusiva de administración. Puedes revisar contenido en borrador sin publicar el curso ni crear matrículas. Esta vista no representa el acceso de un estudiante.</div>
+        <div class="preview-notice" id="admin-preview-notice" hidden><span id="admin-preview-notice-text">Vista previa docente: puedes revisar contenido en borrador sin publicar el curso ni crear matrículas.</span> <button type="button" class="admin-button secondary" id="toggle-student-preview">Vista de estudiante</button></div>
         <div class="simulation-notice" id="student-simulation-notice" hidden>Estás viendo un aula de demostración. El módulo y la lección se muestran como ejemplo; esta prueba no comprueba permisos reales ni crea una matrícula.</div>
         <div class="course-progress" id="simulation-course-progress" hidden><div class="course-progress-head"><span>Progreso del curso</span><span id="simulation-progress-percent">0%</span></div><div class="course-progress-track" role="progressbar" id="simulation-progress-bar" aria-label="Progreso del curso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="course-progress-fill" id="simulation-progress-fill"></div></div><small id="simulation-progress-detail">0 de 0 lecciones completadas</small></div>
         <div class="learning-modules" id="learning-modules"><div class="dash-empty">Selecciona un curso para consultar sus módulos.</div></div>
@@ -958,7 +958,10 @@
       if(error) throw error;
     }
 
-    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null, adminPreview=false) {
+    let studentFacingPreview=false;
+    let activeLearningLesson=null;
+    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[], realProgress=null, adminPreview=false, studentPreview=false) {
+      activeLearningLesson=lesson;
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
       heading.textContent=lesson.title || 'Lección';
@@ -1038,7 +1041,7 @@
         note.textContent=enrollmentSimulation?'Progreso de demostración guardado solo en este navegador.':'Tu progreso se guarda en tu cuenta de VitroCorp Academy.';
         learningPlayer.append(note);
       }
-      if(!enrollmentSimulation) loadLessonActivities(lesson,adminPreview);
+      if(!enrollmentSimulation) loadLessonActivities(lesson,adminPreview,studentPreview);
     }
 
     function activityText(tag,text,className) {
@@ -1048,7 +1051,7 @@
       return node;
     }
 
-    async function loadLessonActivities(lesson,adminPreview=false) {
+    async function loadLessonActivities(lesson,adminPreview=false,studentPreview=false) {
       const area=document.createElement('div');
       area.className='lesson-activities';
       area.append(activityText('h3','Actividades de aprendizaje'));
@@ -1111,6 +1114,12 @@
               });
               review.append(gradeForm);card.append(review);
             }
+          } else if(studentPreview) {
+            card.append(activityText('p','Vista de estudiante: así aparecerá la entrega. No se subirá ningún archivo ni se creará una entrega real.','activity-warning'));
+            const file=document.createElement('input');file.type='file';file.accept='.pdf,.jpg,.jpeg,.png,.webp';file.disabled=true;
+            const comment=document.createElement('textarea');comment.placeholder='Comentario para el docente (opcional)';comment.disabled=true;
+            const submit=document.createElement('button');submit.type='button';submit.textContent='Enviar deber';submit.disabled=true;
+            card.append(activityText('label','Adjunta tu trabajo (PDF o fotografía)'),file,comment,submit);
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
@@ -1200,6 +1209,15 @@
               });
               review.append(gradeForm);card.append(review);
             }
+          } else if(studentPreview) {
+            card.append(activityText('p','Vista de estudiante: las respuestas se pueden revisar, pero el envío está desactivado y no se guardará información.','activity-warning'));
+            questions.forEach((q,index)=>{
+              const wrap=document.createElement('div');wrap.className='question-field';
+              wrap.append(activityText('label',(index+1)+'. '+q.prompt));
+              const input=document.createElement('textarea');input.maxLength=3000;input.placeholder='Escribe tu respuesta aquí…';input.disabled=true;
+              wrap.append(input);card.append(wrap);
+            });
+            const submit=document.createElement('button');submit.type='button';submit.textContent='Enviar evaluación';submit.disabled=true;card.append(submit);
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
@@ -1251,7 +1269,11 @@
         }
       }
       courseLearning.hidden=false;
+      studentFacingPreview=false;
       document.getElementById('admin-preview-notice').hidden=!adminPreview;
+      document.getElementById('admin-preview-notice-text').textContent='Vista previa docente: puedes revisar contenido en borrador sin publicar el curso ni crear matrículas.';
+      document.getElementById('toggle-student-preview').hidden=!adminPreview;
+      document.getElementById('toggle-student-preview').textContent='Vista de estudiante';
       document.getElementById('student-simulation-notice').hidden=!enrollmentSimulation;
       document.getElementById('simulation-course-progress').hidden=Boolean(adminPreview);
       document.getElementById('learning-back').textContent=adminPreview?'← Volver a administración':'← Volver a mis cursos';
@@ -1344,8 +1366,20 @@
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
 
+    document.getElementById('toggle-student-preview').addEventListener('click',()=>{
+      if(!activeLearningLesson) return;
+      studentFacingPreview=!studentFacingPreview;
+      document.getElementById('admin-preview-notice-text').textContent=studentFacingPreview
+        ?'Vista de estudiante simulada: las claves docentes están ocultas y los envíos están desactivados. No se guardará ningún dato.'
+        :'Vista previa docente: puedes revisar contenido en borrador sin publicar el curso ni crear matrículas.';
+      document.getElementById('toggle-student-preview').textContent=studentFacingPreview?'Volver a vista docente':'Vista de estudiante';
+      playLesson(activeLearningLesson,false,[],null,!studentFacingPreview,studentFacingPreview);
+    });
+
     document.getElementById('learning-back').addEventListener('click',()=>{
       const wasAdminPreview=!document.getElementById('admin-preview-notice').hidden;
+      studentFacingPreview=false;
+      activeLearningLesson=null;
       courseLearning.hidden=true;
       document.getElementById('admin-preview-notice').hidden=true;
       document.getElementById('student-simulation-notice').hidden=true;
