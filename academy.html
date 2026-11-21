@@ -518,7 +518,7 @@
       if(detail) detail.textContent=completed+' de '+total+' lecciones completadas';
     }
 
-    function playLesson(lesson, enrollmentSimulation=false) {
+    function playLesson(lesson, enrollmentSimulation=false, courseLessons=[]) {
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
       heading.textContent=lesson.title || 'Lección';
@@ -575,7 +575,7 @@
           const done=Boolean(getSimulationProgress()[lesson.id]);
           setSimulationLessonCompleted(lesson.id,!done);
           refreshCompletion();
-          updateSimulationCourseProgress([lesson]);
+          updateSimulationCourseProgress(courseLessons.length?courseLessons:[lesson]);
         });
         completion.append(button,status);
         learningPlayer.append(completion);
@@ -623,7 +623,7 @@
       }
       let lessons, lessonError;
       if (enrollmentSimulation) {
-        lessons=[{id:'simulation-lesson',module_id:'simulation-module',title:'Lección de prueba: Introducción',description:'Lección de demostración para comprobar el reproductor de YouTube.',youtube_video_id:'RRY5A4StrSE',presentation_url:null,sort_order:1,duration_minutes:null}];
+        lessons=[{id:'simulation-lesson-1',module_id:'simulation-module',title:'Lección 1: Introducción',description:'Lección de demostración para comprobar el reproductor de YouTube.',youtube_video_id:'RRY5A4StrSE',presentation_url:null,sort_order:1,duration_minutes:5},{id:'simulation-lesson-2',module_id:'simulation-module',title:'Lección 2: Bioseguridad básica',description:'Lección de ejemplo para comprobar el cálculo del progreso del curso.',youtube_video_id:null,presentation_url:null,sort_order:2,duration_minutes:5},{id:'simulation-lesson-3',module_id:'simulation-module',title:'Lección 3: Registro de laboratorio',description:'Lección de ejemplo para comprobar el cálculo del progreso del curso.',youtube_video_id:null,presentation_url:null,sort_order:3,duration_minutes:5}];
         lessonError=null;
       } else {
         const moduleIds=modules.map(module=>module.id);
@@ -669,7 +669,7 @@
           open.type='button';
           open.className='lesson-select';
           open.textContent='Ver lección';
-          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation));
+          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation,lessons||[]));
           row.append(info,open);
           list.append(row);
         });
@@ -677,7 +677,7 @@
         learningModules.append(card);
       });
       const firstLesson=(lessons||[])[0];
-      if(firstLesson) playLesson(firstLesson,enrollmentSimulation);
+      if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[]);
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
 
