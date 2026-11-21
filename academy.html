@@ -51,6 +51,18 @@
     .dash-section{background:#fff;border:1px solid #e1e9e1;border-radius:18px;padding:24px}
     .dash-section h2{font-size:1.35rem;margin-bottom:16px}
     .dash-list{display:grid;gap:12px}
+    .student-progress-overview{display:grid;gap:14px}
+    .student-progress-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .student-progress-stat{background:#f5f8f4;border:1px solid #e1e9e1;border-radius:12px;padding:14px}
+    .student-progress-stat strong{display:block;font:700 1.35rem Syne,sans-serif;color:#214b37}
+    .student-progress-stat small{display:block;color:#718078;margin-top:4px;line-height:1.4}
+    .student-course-progress{display:grid;gap:8px;border:1px solid #e7ede7;border-radius:12px;padding:14px}
+    .student-course-progress-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .student-course-progress-head strong{color:#214b37}
+    .student-course-progress-track{height:9px;background:#e8efe9;border-radius:99px;overflow:hidden}
+    .student-course-progress-fill{height:100%;background:#40916c;border-radius:99px;transition:width .2s ease}
+    .student-course-progress small{color:#718078;line-height:1.4}
+    @media(max-width:600px){.student-progress-summary{grid-template-columns:1fr}}
     .dash-item{border:1px solid #e7ede7;border-radius:12px;padding:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
     .dash-item strong{display:block;color:#214b37;margin-bottom:5px}
     .dash-item small{color:#718078;line-height:1.5}
@@ -231,6 +243,18 @@
         <article class="dash-card"><h3>Correo de acceso</h3><p id="dash-email">Cargando…</p></article>
         <article class="dash-card"><h3>Estado de cuenta</h3><p>Cuenta activa</p></article>
       </div>
+      <section class="dash-section" id="student-progress-section">
+        <h2>Mi progreso de aprendizaje</h2>
+        <p class="dash-muted">Consulta las sesiones que has completado en tus cursos con matrícula activa.</p>
+        <div class="student-progress-overview" id="student-progress-overview">
+          <div class="student-progress-summary">
+            <div class="student-progress-stat"><strong id="student-progress-completed">—</strong><small>Sesiones completadas</small></div>
+            <div class="student-progress-stat"><strong id="student-progress-total">—</strong><small>Sesiones disponibles</small></div>
+            <div class="student-progress-stat"><strong id="student-progress-percent">—</strong><small>Avance general</small></div>
+          </div>
+          <div class="dash-list" id="student-course-progress-list"><div class="dash-empty">Calculando tu progreso…</div></div>
+        </div>
+      </section>
       <section class="dash-section">
         <h2>Mis cursos</h2>
         <div class="simulation-notice" id="enrollment-simulation-notice" hidden><strong>Modo de prueba:</strong> esta matrícula es ficticia y solo sirve para comprobar la pantalla y el acceso al aula. No se ha creado ningún registro, cobro ni inscripción en Supabase.</div>
@@ -1481,6 +1505,88 @@
       else document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
     });
 
+    async function loadDashboardCourseProgress(enrollments) {
+      const now=Date.now();
+      const eligible=(enrollments||[]).filter(enrollment=>{
+        const course=Array.isArray(enrollment.courses)?enrollment.courses[0]:enrollment.courses;
+        const startsAt=enrollment.starts_at?new Date(enrollment.starts_at).getTime():0;
+        const expiresAt=enrollment.expires_at?new Date(enrollment.expires_at).getTime():Infinity;
+        return !enrollment._simulation && enrollment.status==='active' && startsAt<=now && expiresAt>now && course?.status==='published';
+      });
+      const courseIds=[...new Set(eligible.map(item=>item.course_id).filter(Boolean))];
+      const progressByCourse=new Map();
+      if(!courseIds.length) return progressByCourse;
+      const {data:modules,error:moduleError}=await supabase.from('course_modules').select('id,course_id').in('course_id',courseIds);
+      if(moduleError) throw moduleError;
+      const moduleIds=(modules||[]).map(module=>module.id);
+      if(!moduleIds.length) {
+        courseIds.forEach(id=>progressByCourse.set(id,{completed:0,total:0}));
+        return progressByCourse;
+      }
+      const {data:lessons,error:lessonError}=await supabase.from('course_lessons').select('id,module_id').in('module_id',moduleIds);
+      if(lessonError) throw lessonError;
+      const lessonsByCourse=new Map(courseIds.map(id=>[id,[]]));
+      const courseByModule=new Map((modules||[]).map(module=>[module.id,module.course_id]));
+      (lessons||[]).forEach(lesson=>{
+        const courseId=courseByModule.get(lesson.module_id);
+        if(courseId && lessonsByCourse.has(courseId)) lessonsByCourse.get(courseId).push(lesson.id);
+      });
+      const lessonIds=[...lessonsByCourse.values()].flat();
+      let completedIds=new Set();
+      if(lessonIds.length) {
+        const {data:progress,error:progressError}=await supabase.from('lesson_progress').select('lesson_id,completed_at').in('lesson_id',lessonIds);
+        if(progressError) throw progressError;
+        completedIds=new Set((progress||[]).filter(row=>row.completed_at).map(row=>row.lesson_id));
+      }
+      courseIds.forEach(courseId=>{
+        const ids=lessonsByCourse.get(courseId)||[];
+        progressByCourse.set(courseId,{completed:ids.filter(id=>completedIds.has(id)).length,total:ids.length});
+      });
+      return progressByCourse;
+    }
+
+    function renderDashboardCourseProgress(enrollments, progressByCourse, simulated=false) {
+      const list=document.getElementById('student-course-progress-list');
+      const completedNode=document.getElementById('student-progress-completed');
+      const totalNode=document.getElementById('student-progress-total');
+      const percentNode=document.getElementById('student-progress-percent');
+      list.replaceChildren();
+      if(simulated) {
+        completedNode.textContent='—';totalNode.textContent='—';percentNode.textContent='—';
+        const note=document.createElement('div');note.className='dash-empty';
+        note.textContent='El modo de prueba no consulta ni modifica el progreso real de tu cuenta.';
+        list.append(note);return;
+      }
+      const entries=(enrollments||[]).filter(enrollment=>progressByCourse.has(enrollment.course_id));
+      if(!entries.length) {
+        completedNode.textContent='0';totalNode.textContent='0';percentNode.textContent='0%';
+        const note=document.createElement('div');note.className='dash-empty';
+        note.textContent='Tu progreso aparecerá aquí cuando tengas un curso publicado, una matrícula activa y sesiones disponibles.';
+        list.append(note);return;
+      }
+      let totalCompleted=0,totalLessons=0;
+      entries.forEach(enrollment=>{
+        const course=Array.isArray(enrollment.courses)?enrollment.courses[0]:enrollment.courses;
+        const progress=progressByCourse.get(enrollment.course_id)||{completed:0,total:0};
+        totalCompleted+=progress.completed;totalLessons+=progress.total;
+        const percent=progress.total?Math.round(progress.completed/progress.total*100):0;
+        const card=document.createElement('article');card.className='student-course-progress';
+        const head=document.createElement('div');head.className='student-course-progress-head';
+        const name=document.createElement('strong');name.textContent=course?.title||'Curso';
+        const value=document.createElement('span');value.className='dash-status';value.textContent=percent+'%';
+        head.append(name,value);
+        const track=document.createElement('div');track.className='student-course-progress-track';
+        track.setAttribute('role','progressbar');track.setAttribute('aria-label','Avance de '+(course?.title||'curso'));
+        track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(percent));
+        const fill=document.createElement('div');fill.className='student-course-progress-fill';fill.style.width=percent+'%';track.append(fill);
+        const detail=document.createElement('small');detail.textContent=progress.completed+' de '+progress.total+' sesiones completadas';
+        card.append(head,track,detail);list.append(card);
+      });
+      completedNode.textContent=String(totalCompleted);
+      totalNode.textContent=String(totalLessons);
+      percentNode.textContent=(totalLessons?Math.round(totalCompleted/totalLessons*100):0)+'%';
+    }
+
     async function renderDashboard(user) {
       main.classList.add('dashboard-mode');
       document.querySelector('.intro').hidden = true;
@@ -1529,6 +1635,20 @@
         });
         displayedEnrollments = Array.from(preferredEnrollments.values());
       }
+
+      let dashboardProgress=new Map();
+      if(!enrollmentDemoEnabled && !enrollmentResult.error) {
+        try {
+          dashboardProgress=await loadDashboardCourseProgress(displayedEnrollments);
+        } catch(error) {
+          const list=document.getElementById('student-course-progress-list');
+          list.replaceChildren();
+          const note=document.createElement('div');note.className='dash-empty';
+          note.textContent='No pudimos consultar tu progreso en este momento. Intenta actualizar la página.';
+          list.append(note);
+        }
+      }
+      renderDashboardCourseProgress(displayedEnrollments,dashboardProgress,enrollmentDemoEnabled);
 
       if (profileResult.error) {
         document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
