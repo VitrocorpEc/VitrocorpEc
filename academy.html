@@ -154,6 +154,21 @@
     .lesson-reading hr{border:0;border-top:1px solid #dce7dc;margin:1.2rem 0}
     .lesson-reading code{background:#edf3ed;border-radius:4px;padding:2px 5px;font-size:.9em}
     .lesson-reading-status{font-size:.82rem;color:#718078;margin:0}
+    .lesson-reading{--reading-font-size:17px}
+    .lesson-reading>p,.lesson-reading>ul,.lesson-reading>ol,.lesson-reading>blockquote{font-size:var(--reading-font-size)}
+    .lesson-reading-toolbar{position:sticky;top:8px;z-index:2;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding:9px 11px;margin:-5px -5px 18px;background:rgba(240,246,240,.96);border:1px solid #d7e6d9;border-radius:10px;backdrop-filter:blur(8px)}
+    .lesson-reading-toolbar strong{margin-right:auto;color:#214b37;font-size:.86rem}
+    .lesson-reading-toolbar button{border:1px solid #cbdccb;background:#fff;color:#2d6a4f;border-radius:7px;padding:6px 10px;font:600 .84rem 'DM Sans';cursor:pointer}
+    .lesson-reading-toolbar button:disabled{opacity:.4;cursor:not-allowed}
+    .lesson-reading-toolbar .lesson-reading-focus-toggle[aria-pressed="true"]{background:#2d6a4f;color:#fff}
+    .lesson-reading-font-value{font-size:.78rem;color:#718078;min-width:38px;text-align:center;font-variant-numeric:tabular-nums}
+    .lesson-reading.reading-focus{max-width:850px;margin-inline:auto;padding:clamp(20px,5vw,48px);background:#fff}
+    .lesson-reading.reading-focus>p,.lesson-reading.reading-focus>ul,.lesson-reading.reading-focus>ol{line-height:1.9}
+    .lesson-reading h2{border-left:4px solid #78b58a;padding:7px 0 7px 13px;background:linear-gradient(90deg,#f0f6f0,transparent 85%)}
+    .lesson-reading h2.reading-example-heading,.lesson-reading h3.reading-example-heading{border-left-color:#c69b4b;background:linear-gradient(90deg,#fff8e8,transparent 85%)}
+    .lesson-reading h2.reading-activity-heading,.lesson-reading h3.reading-activity-heading{border-left-color:#4b91a3;background:linear-gradient(90deg,#eef7fa,transparent 85%)}
+    .lesson-reading h2.reading-summary-heading,.lesson-reading h3.reading-summary-heading{border-left-color:#40916c;background:linear-gradient(90deg,#edf8f0,transparent 85%)}
+    @media(max-width:600px){.lesson-reading-toolbar{top:4px;justify-content:flex-start}.lesson-reading-toolbar strong{width:100%}.lesson-reading-toolbar button{padding:7px 9px}.lesson-reading.reading-focus{padding:16px}}
     .lesson-toc{background:#f0f6f0;border:1px solid #d7e6d9;border-radius:10px;padding:14px 18px;margin:0 0 22px}
     .lesson-toc-title{display:block;color:#214b37;font-size:.96rem;margin-bottom:8px}
     .lesson-toc ol{columns:2;column-gap:28px;margin:0;padding-left:20px}
@@ -1082,7 +1097,38 @@
         if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
         section.innerHTML=renderLessonMarkdown(markdown);
         section.setAttribute('aria-label','Material académico de la lección');
+        let readingFontSize=17;
+        const toolbar=document.createElement('div');
+        toolbar.className='lesson-reading-toolbar';
+        toolbar.setAttribute('aria-label','Preferencias de lectura');
+        const toolbarLabel=document.createElement('strong');
+        toolbarLabel.textContent='Lectura';
+        const fontDown=document.createElement('button');
+        fontDown.type='button';fontDown.textContent='A−';fontDown.setAttribute('aria-label','Reducir tamaño de letra');
+        const fontValue=document.createElement('span');
+        fontValue.className='lesson-reading-font-value';fontValue.textContent='17 px';
+        const fontUp=document.createElement('button');
+        fontUp.type='button';fontUp.textContent='A+';fontUp.setAttribute('aria-label','Aumentar tamaño de letra');
+        const focusToggle=document.createElement('button');
+        focusToggle.type='button';focusToggle.className='lesson-reading-focus-toggle';focusToggle.textContent='Modo lectura';focusToggle.setAttribute('aria-pressed','false');
+        const updateFont=()=>{section.style.setProperty('--reading-font-size',readingFontSize+'px');fontValue.textContent=readingFontSize+' px';fontDown.disabled=readingFontSize<=14;fontUp.disabled=readingFontSize>=22;};
+        fontDown.addEventListener('click',()=>{readingFontSize=Math.max(14,readingFontSize-1);updateFont();});
+        fontUp.addEventListener('click',()=>{readingFontSize=Math.min(22,readingFontSize+1);updateFont();});
+        focusToggle.addEventListener('click',()=>{
+          const enabled=section.classList.toggle('reading-focus');
+          focusToggle.setAttribute('aria-pressed',String(enabled));
+          focusToggle.textContent=enabled?'Salir del modo lectura':'Modo lectura';
+        });
+        toolbar.append(toolbarLabel,fontDown,fontValue,fontUp,focusToggle);
+        section.insertBefore(toolbar,section.firstChild);
+        updateFont();
         const headings=[...section.querySelectorAll('h2,h3,h4')];
+        headings.forEach(heading=>{
+          const text=heading.textContent.toLocaleLowerCase();
+          if(/ejemplo|caso aplicado|caso práctico|caso practico/.test(text)) heading.classList.add('reading-example-heading');
+          if(/actividad|ejercicio|tarea|evaluación|evaluacion/.test(text)) heading.classList.add('reading-activity-heading');
+          if(/resumen|conclusiones|ideas clave/.test(text)) heading.classList.add('reading-summary-heading');
+        });
         if(headings.length) {
           const usedIds=new Set();
           const slugify=value=>String(value||'seccion').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'seccion';
