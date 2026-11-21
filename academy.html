@@ -352,6 +352,20 @@
           <div><h3>Evaluaciones por revisar</h3><div class="dash-list" id="admin-overview-assessment-list"><div class="dash-empty">Cargando…</div></div></div>
         </div>
       </section>
+      <section class="dash-section" id="admin-academic-analytics">
+        <h2>Analítica académica</h2>
+        <p class="dash-muted">Indicadores generales de actividad y avance de VitroCorp Academy.</p>
+        <div class="progress-grid">
+          <div class="progress-card"><strong id="admin-analytics-courses">—</strong><span>Cursos publicados</span></div>
+          <div class="progress-card"><strong id="admin-analytics-lessons">—</strong><span>Sesiones publicadas</span></div>
+          <div class="progress-card"><strong id="admin-analytics-enrollments">—</strong><span>Matrículas activas</span></div>
+          <div class="progress-card"><strong id="admin-analytics-completions">—</strong><span>Sesiones completadas</span></div>
+          <div class="progress-card"><strong id="admin-analytics-certificates">—</strong><span>Certificados emitidos</span></div>
+          <div class="progress-card"><strong id="admin-analytics-reviews">—</strong><span>Actividades calificadas</span></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px"><button type="button" class="admin-button secondary" id="admin-analytics-refresh">Actualizar analítica</button></div>
+        <p class="dash-muted" id="admin-analytics-updated" aria-live="polite">Los indicadores aún no se han consultado.</p>
+      </section>
       <section class="content-manager" aria-label="Gestión de módulos y lecciones">
         <div><h2>Contenido académico</h2><p class="dash-muted">Organiza los cursos en módulos y añade lecciones con videos de YouTube no listados y presentaciones.</p></div>
         <form id="module-form" class="admin-form">
@@ -749,6 +763,31 @@
       }
     }
 
+    async function loadAdminAnalytics() {
+      const metrics=[
+        ['admin-analytics-courses',()=>supabase.from('courses').select('id',{count:'exact',head:true}).eq('status','published')],
+        ['admin-analytics-lessons',()=>supabase.from('course_lessons').select('id',{count:'exact',head:true}).eq('is_published',true)],
+        ['admin-analytics-enrollments',()=>supabase.from('enrollments').select('id',{count:'exact',head:true}).eq('status','active')],
+        ['admin-analytics-completions',()=>supabase.from('lesson_progress').select('id',{count:'exact',head:true}).not('completed_at','is',null)],
+        ['admin-analytics-certificates',()=>supabase.from('academy_certificates').select('id',{count:'exact',head:true}).eq('status','issued')],
+        ['admin-analytics-reviews',async()=>{
+          const pair=await Promise.all([
+            supabase.from('assignment_submissions').select('id',{count:'exact',head:true}).eq('status','reviewed'),
+            supabase.from('assessment_attempts').select('id',{count:'exact',head:true}).eq('status','reviewed')
+          ]);
+          if(pair.some(x=>x.error))return {error:true,count:null};
+          return {count:pair.reduce((sum,x)=>sum+(x.count||0),0)};
+        }]
+      ];
+      const results=await Promise.all(metrics.map(async([id,run])=>{
+        try{const result=await run();return {id,value:result.error?null:result.count};}
+        catch(_){return {id,value:null};}
+      }));
+      results.forEach(({id,value})=>{const node=document.getElementById(id);if(node)node.textContent=value===null?'—':String(value);});
+      const updated=document.getElementById('admin-analytics-updated');
+      if(updated)updated.textContent='Última actualización: '+new Date().toLocaleString('es-EC')+'. Un guion indica que no fue posible consultar ese indicador.';
+    }
+
     async function loadAdminOverview() {
       const setMetric=(id,value)=>{const node=document.getElementById(id);if(node)node.textContent=String(value);};
       const renderQueue=(id,result,type)=>{
@@ -781,6 +820,8 @@
       renderQueue('admin-overview-assignment-list',assignments,'assignment');
       renderQueue('admin-overview-assessment-list',assessments,'assessment');
     }
+    const adminAnalyticsRefresh=document.getElementById('admin-analytics-refresh');
+    if(adminAnalyticsRefresh)adminAnalyticsRefresh.addEventListener('click',async()=>{adminAnalyticsRefresh.disabled=true;try{await loadAdminAnalytics();}finally{adminAnalyticsRefresh.disabled=false;}});
     const adminOverviewRefresh=document.getElementById('admin-overview-refresh');
     if(adminOverviewRefresh)adminOverviewRefresh.addEventListener('click',async()=>{
       adminOverviewRefresh.disabled=true;
@@ -2090,6 +2131,7 @@
         await loadAdminPayments();
         await loadAdminEnrollments();
         await loadAdminOverview();
+      await loadAdminAnalytics();
       } else {
         adminDashboard.hidden = true;
       }
