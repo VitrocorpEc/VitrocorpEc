@@ -64,6 +64,9 @@
     .student-course-progress small{color:#718078;line-height:1.4}
     .student-course-progress-action{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
     .student-course-progress-action .lesson-select{white-space:nowrap}
+    .lesson-navigation{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #e2ebe3}
+    .lesson-navigation small{color:#718078;font-weight:600}
+    .lesson-navigation button:disabled{opacity:.45;cursor:not-allowed}
     @media(max-width:600px){.student-progress-summary{grid-template-columns:1fr}}
     .dash-item{border:1px solid #e7ede7;border-radius:12px;padding:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
     .dash-item strong{display:block;color:#214b37;margin-bottom:5px}
@@ -1161,6 +1164,27 @@
         note.textContent=enrollmentSimulation?'Progreso de demostración guardado solo en este navegador.':'Tu progreso se guarda en tu cuenta de VitroCorp Academy.';
         learningPlayer.append(note);
       }
+      const orderedLessons=courseLessons.length?courseLessons:[lesson];
+      const currentIndex=orderedLessons.findIndex(item=>item.id===lesson.id);
+      if(currentIndex>=0 && orderedLessons.length>1) {
+        const navigation=document.createElement('nav');
+        navigation.className='lesson-navigation';
+        navigation.setAttribute('aria-label','Navegación entre sesiones');
+        const previous=document.createElement('button');
+        previous.type='button';previous.className='lesson-select secondary';
+        previous.textContent='← Sesión anterior';
+        previous.disabled=currentIndex===0;
+        previous.addEventListener('click',()=>playLesson(orderedLessons[currentIndex-1],enrollmentSimulation,orderedLessons,realProgress,adminPreview,studentPreview));
+        const position=document.createElement('small');
+        position.textContent='Sesión '+(currentIndex+1)+' de '+orderedLessons.length;
+        const next=document.createElement('button');
+        next.type='button';next.className='lesson-select';
+        next.textContent='Siguiente sesión →';
+        next.disabled=currentIndex===orderedLessons.length-1;
+        next.addEventListener('click',()=>playLesson(orderedLessons[currentIndex+1],enrollmentSimulation,orderedLessons,realProgress,adminPreview,studentPreview));
+        navigation.append(previous,position,next);
+        learningPlayer.append(navigation);
+      }
       if(!enrollmentSimulation) loadLessonActivities(lesson,adminPreview,studentPreview);
     }
 
@@ -1430,6 +1454,8 @@
         showLearningMessage(learningModules,'No pudimos cargar las lecciones. Intenta nuevamente.');
         return;
       }
+      const moduleOrder=new Map((modules||[]).map((module,index)=>[module.id,index]));
+      (lessons||[]).sort((a,b)=>(moduleOrder.get(a.module_id)??0)-(moduleOrder.get(b.module_id)??0)||(a.sort_order??0)-(b.sort_order??0));
       let realProgress=null;
       if(!enrollmentSimulation && !adminPreview) {
         try {
