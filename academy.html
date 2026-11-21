@@ -331,6 +331,22 @@
 
     <section class="admin-panel" id="admin-dashboard" hidden aria-label="Panel administrativo">
       <div><div class="eyebrow">Administración privada</div><h2>Gestión de VitroCorp Academy</h2><p class="dash-muted">Crea cursos, edita su información y controla su publicación.</p></div>
+      <section class="dash-section" id="admin-academic-overview">
+        <div class="row" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div><h2>Centro de seguimiento académico</h2><p class="dash-muted">Resumen de entregas, evaluaciones, matrículas y pagos que requieren atención.</p></div>
+          <button type="button" class="admin-button secondary" id="admin-overview-refresh">Actualizar resumen</button>
+        </div>
+        <div class="progress-grid" id="admin-overview-metrics">
+          <div class="progress-card"><strong id="admin-overview-assignments">—</strong><span>Entregas pendientes</span></div>
+          <div class="progress-card"><strong id="admin-overview-assessments">—</strong><span>Evaluaciones pendientes</span></div>
+          <div class="progress-card"><strong id="admin-overview-enrollments">—</strong><span>Matrículas registradas</span></div>
+          <div class="progress-card"><strong id="admin-overview-payments">—</strong><span>Pagos por revisar</span></div>
+        </div>
+        <div class="admin-form" style="margin-top:14px">
+          <div><h3>Entregas por revisar</h3><div class="dash-list" id="admin-overview-assignment-list"><div class="dash-empty">Cargando…</div></div></div>
+          <div><h3>Evaluaciones por revisar</h3><div class="dash-list" id="admin-overview-assessment-list"><div class="dash-empty">Cargando…</div></div></div>
+        </div>
+      </section>
       <section class="content-manager" aria-label="Gestión de módulos y lecciones">
         <div><h2>Contenido académico</h2><p class="dash-muted">Organiza los cursos en módulos y añade lecciones con videos de YouTube no listados y presentaciones.</p></div>
         <form id="module-form" class="admin-form">
@@ -1991,6 +2007,7 @@
         await loadContentManager();
         await loadAdminPayments();
         await loadAdminEnrollments();
+        await loadAdminOverview();
       } else {
         adminDashboard.hidden = true;
       }
