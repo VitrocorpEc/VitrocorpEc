@@ -200,6 +200,7 @@
           <button type="button" class="learning-back" id="learning-back">← Volver a mis cursos</button>
         </div>
         <div class="preview-notice" id="admin-preview-notice" hidden>Vista previa exclusiva de administración. Puedes revisar contenido en borrador sin publicar el curso ni crear matrículas. Esta vista no representa el acceso de un estudiante.</div>
+        <div class="simulation-notice" id="student-simulation-notice" hidden>Estás viendo un aula de demostración. El módulo y la lección se muestran como ejemplo; esta prueba no comprueba permisos reales ni crea una matrícula.</div>
         <div class="learning-modules" id="learning-modules"><div class="dash-empty">Selecciona un curso para consultar sus módulos.</div></div>
         <div class="learning-player" id="learning-player">
           <h3>Selecciona una lección</h3>
@@ -528,7 +529,7 @@
       }
     }
 
-    async function openCourseContent(courseId, title, adminPreview=false) {
+    async function openCourseContent(courseId, title, adminPreview=false, enrollmentSimulation=false) {
       if (adminPreview) {
         const {data: isAdmin,error: adminError}=await supabase.rpc('is_current_user_admin');
         if (adminError || isAdmin!==true) {
@@ -538,15 +539,20 @@
       }
       courseLearning.hidden=false;
       document.getElementById('admin-preview-notice').hidden=!adminPreview;
+      document.getElementById('student-simulation-notice').hidden=!enrollmentSimulation;
       document.getElementById('learning-back').textContent=adminPreview?'← Volver a administración':'← Volver a mis cursos';
       learningTitle.textContent=(title || 'Contenido del curso')+(adminPreview?' · Vista previa':'');
       showLearningMessage(learningModules,'Cargando módulos y lecciones…');
       showLearningMessage(learningPlayer,'Selecciona una lección para comenzar.');
       courseLearning.scrollIntoView({behavior:'smooth',block:'start'});
-      const {data: modules,error: moduleError}=await supabase.from('course_modules')
-        .select('id,title,description,sort_order')
-        .eq('course_id',courseId)
-        .order('sort_order',{ascending:true});
+      let modules, moduleError;
+      if (enrollmentSimulation) {
+        modules=[{id:'simulation-module',title:'Introducción de prueba',description:'Módulo de demostración para comprobar la navegación del aula.',sort_order:1}];
+        moduleError=null;
+      } else {
+        const result=await supabase.from('course_modules').select('id,title,description,sort_order').eq('course_id',courseId).order('sort_order',{ascending:true});
+        modules=result.data; moduleError=result.error;
+      }
       if(moduleError) {
         showLearningMessage(learningModules,'No pudimos cargar el contenido. Verifica tu matrícula o intenta nuevamente.');
         return;
@@ -555,11 +561,15 @@
         showLearningMessage(learningModules,'Este curso todavía no tiene módulos publicados.');
         return;
       }
-      const moduleIds=modules.map(module=>module.id);
-      const {data: lessons,error: lessonError}=await supabase.from('course_lessons')
-        .select('id,module_id,title,description,youtube_video_id,presentation_url,sort_order,duration_minutes')
-        .in('module_id',moduleIds)
-        .order('sort_order',{ascending:true});
+      let lessons, lessonError;
+      if (enrollmentSimulation) {
+        lessons=[{id:'simulation-lesson',module_id:'simulation-module',title:'Lección de prueba: Introducción',description:'Lección de demostración para comprobar el reproductor de YouTube.',youtube_video_id:'RRY5A4StrSE',presentation_url:null,sort_order:1,duration_minutes:null}];
+        lessonError=null;
+      } else {
+        const moduleIds=modules.map(module=>module.id);
+        const result=await supabase.from('course_lessons').select('id,module_id,title,description,youtube_video_id,presentation_url,sort_order,duration_minutes').in('module_id',moduleIds).order('sort_order',{ascending:true});
+        lessons=result.data; lessonError=result.error;
+      }
       if(lessonError) {
         showLearningMessage(learningModules,'No pudimos cargar las lecciones. Intenta nuevamente.');
         return;
@@ -614,6 +624,7 @@
       const wasAdminPreview=!document.getElementById('admin-preview-notice').hidden;
       courseLearning.hidden=true;
       document.getElementById('admin-preview-notice').hidden=true;
+      document.getElementById('student-simulation-notice').hidden=true;
       if(wasAdminPreview) document.getElementById('admin-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
       else document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
     });
@@ -691,7 +702,7 @@
             open.type='button';
             open.className='lesson-select';
             open.textContent=enrollment._simulation?'Probar aula (simulación)':'Abrir curso';
-            open.addEventListener('click',()=>openCourseContent(enrollment.course_id,course.title));
+            open.addEventListener('click',()=>openCourseContent(enrollment.course_id,course.title,false,Boolean(enrollment._simulation)));
             item.append(open);
           }
           myCourses.append(item);
