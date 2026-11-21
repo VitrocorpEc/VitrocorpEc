@@ -34,6 +34,8 @@
     .submit:disabled{opacity:.65;cursor:wait}
     .message{display:none;padding:12px 14px;border-radius:10px;font-size:.88rem;line-height:1.5;margin-top:16px}
     .message.show{display:block}.message.error{background:#fff0ee;color:#a33327}.message.success{background:#edf8f0;color:#245d3a}
+    .auth-link{display:block;margin:14px auto 0;padding:0;border:0;background:transparent;color:#2d6a4f;font:600 .88rem "DM Sans",sans-serif;text-decoration:underline;cursor:pointer}.auth-link:hover{color:#1b4332}
+    .recovery-form{display:grid;gap:4px}.recovery-form[hidden]{display:none}.recovery-actions{display:grid;gap:10px}
     .small{font-size:.78rem;color:#849087;line-height:1.5;margin:16px 0 0}
     footer{text-align:center;color:#8a958d;font-size:.8rem;padding:20px}
     main.dashboard-mode{display:block;max-width:1100px}
@@ -162,6 +164,14 @@
         <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8">
         <button class="submit" id="submit-button" type="submit">Iniciar sesión</button>
       </form>
+      <button type="button" class="auth-link" id="forgot-password">¿Olvidaste tu contraseña?</button>
+      <form id="recovery-form" class="recovery-form" hidden>
+        <label for="new-password">Nueva contraseña</label>
+        <input id="new-password" type="password" autocomplete="new-password" minlength="8" required>
+        <label for="confirm-password">Confirmar nueva contraseña</label>
+        <input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required>
+        <div class="recovery-actions"><button class="submit" id="recovery-submit" type="submit">Guardar nueva contraseña</button><button type="button" class="auth-link" id="recovery-cancel">Volver al inicio de sesión</button></div>
+      </form>
       <div class="message" id="message" role="status" aria-live="polite"></div>
       <p class="small">Al crear una cuenta, recibirás un correo para confirmar tu dirección. No compartas tu contraseña con nadie.</p>
     </section>
@@ -273,7 +283,10 @@
     const nameInput = document.getElementById('full-name');
     const submit = document.getElementById('submit-button');
     const message = document.getElementById('message');
+    const recoveryForm = document.getElementById('recovery-form');
+    const forgotPassword = document.getElementById('forgot-password');
     let mode = 'login';
+    let recoveryMode = false;
 
     function showMessage(text, kind) {
       message.textContent = text;
@@ -281,6 +294,11 @@
     }
     function setMode(nextMode) {
       mode = nextMode;
+      recoveryMode = false;
+      form.hidden = false;
+      recoveryForm.hidden = true;
+      document.querySelector('.tabs').hidden = false;
+      forgotPassword.hidden = nextMode !== 'login';
       const signup = mode === 'signup';
       loginTab.classList.toggle('active', !signup);
       signupTab.classList.toggle('active', signup);
@@ -295,6 +313,68 @@
       message.className = 'message';
       message.textContent = '';
     }
+    function showRecoveryForm() {
+      recoveryMode = true;
+      form.hidden = true;
+      recoveryForm.hidden = false;
+      document.querySelector('.tabs').hidden = true;
+      forgotPassword.hidden = true;
+      title.textContent = 'Crear una nueva contraseña';
+      hint.textContent = 'Escribe y confirma tu nueva contraseña para recuperar el acceso a VitroCorp Academy.';
+      document.getElementById('new-password').value = '';
+      document.getElementById('confirm-password').value = '';
+      message.className = 'message';
+      message.textContent = '';
+    }
+    forgotPassword.addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        showMessage('Primero escribe el correo electrónico de tu cuenta.', 'error');
+        document.getElementById('email').focus();
+        return;
+      }
+      forgotPassword.disabled = true;
+      showMessage('Enviando el enlace de recuperación…', 'success');
+      try {
+        const redirectTo = window.location.origin + '/academy.html';
+        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+        showMessage('Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña. Revisa también la carpeta de spam.', 'success');
+      } catch (error) {
+        showMessage(error.message || 'No se pudo enviar el correo de recuperación. Inténtalo nuevamente.', 'error');
+      } finally {
+        forgotPassword.disabled = false;
+      }
+    });
+    document.getElementById('recovery-cancel').addEventListener('click', () => setMode('login'));
+    recoveryForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const password = document.getElementById('new-password').value;
+      const confirmation = document.getElementById('confirm-password').value;
+      if (password.length < 8) { showMessage('La contraseña debe tener al menos 8 caracteres.', 'error'); return; }
+      if (password !== confirmation) { showMessage('Las contraseñas no coinciden.', 'error'); return; }
+      const button = document.getElementById('recovery-submit');
+      button.disabled = true;
+      button.textContent = 'Actualizando…';
+      try {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        await supabase.auth.signOut();
+        recoveryForm.hidden = true;
+        form.hidden = false;
+        document.querySelector('.tabs').hidden = false;
+        setMode('login');
+        showMessage('Tu contraseña se actualizó correctamente. Ya puedes iniciar sesión con tu nueva contraseña.', 'success');
+      } catch (error) {
+        showMessage(error.message || 'No se pudo actualizar la contraseña. Solicita un nuevo enlace e inténtalo otra vez.', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Guardar nueva contraseña';
+      }
+    });
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') showRecoveryForm();
+    });
     loginTab.addEventListener('click', () => setMode('login'));
     signupTab.addEventListener('click', () => setMode('signup'));
 
