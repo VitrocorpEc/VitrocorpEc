@@ -107,7 +107,7 @@
     .content-status{font-size:.76rem;font-weight:700;color:#2d6a4f}
     .content-status.draft{color:#8a6420}
     .learning-area{display:grid;gap:18px;background:#f8fbf8;border:1px solid #dce9df;border-radius:14px;padding:20px;margin:20px 0}
-    .preview-notice{background:#fff8e8;border:1px solid #ead7a7;color:#73551b;border-radius:10px;padding:12px 14px;font-size:.88rem;line-height:1.5}
+    .preview-notice{background:#fff8e8;border:1px solid #ead7a7;color:#73551b;border-radius:10px;padding:12px 14px;font-size:.88rem;line-height:1.5}.simulation-notice{background:#eef6ff;border:1px solid #c9def5;color:#234b70;border-radius:10px;padding:12px 14px;font-size:.88rem;line-height:1.5;margin-bottom:12px}.simulation-notice[hidden]{display:none}
     .admin-course-actions{display:flex;gap:8px;flex-wrap:wrap}
     .admin-course button.preview-button{background:#edf8f0;border-color:#cfe2d4}
     .learning-area[hidden]{display:none}
@@ -191,6 +191,7 @@
       </div>
       <section class="dash-section">
         <h2>Mis cursos</h2>
+        <div class="simulation-notice" id="enrollment-simulation-notice" hidden><strong>Modo de prueba:</strong> esta matrícula es ficticia y solo sirve para comprobar la pantalla y el acceso al aula. No se ha creado ningún registro, cobro ni inscripción en Supabase.</div>
         <div class="dash-list" id="my-courses"><div class="dash-empty">Consultando tus matrículas…</div></div>
       </section>
       <section class="learning-area" id="course-learning" hidden aria-label="Contenido del curso">
@@ -631,11 +632,20 @@
       myCourses.replaceChildren();
       availableCourses.replaceChildren();
 
+      const enrollmentDemoEnabled = new URLSearchParams(window.location.search).get('enrollment_demo') === '1' && user.id === '32473b65-282f-4d42-9099-918ad9a57eb7';
       const [profileResult, enrollmentResult, courseResult] = await Promise.all([
         supabase.from('student_profiles').select('full_name,country').eq('user_id', user.id).maybeSingle(),
         supabase.from('enrollments').select('id,course_id,status,starts_at,expires_at,courses(title,short_description)').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('courses').select('id,title,short_description,access_duration_days').eq('status', 'published').order('created_at', { ascending: false })
       ]);
+      let displayedEnrollments = enrollmentResult.data || [];
+      if (enrollmentDemoEnabled) {
+        document.getElementById('enrollment-simulation-notice').hidden = false;
+        const { data: demoCourse, error: demoCourseError } = await supabase.from('courses').select('id,title,short_description').eq('id', 'd8397b59-f5a7-4dbf-a7d9-a24f34dfed03').maybeSingle();
+        if (!demoCourseError && demoCourse) {
+          displayedEnrollments = [{id:'simulated-enrollment',course_id:demoCourse.id,status:'active',starts_at:new Date(Date.now()-60000).toISOString(),expires_at:new Date(Date.now()+30*24*60*60*1000).toISOString(),courses:demoCourse,_simulation:true}];
+        }
+      }
 
       if (profileResult.error) {
         document.getElementById('dash-name').textContent = user.user_metadata?.full_name || 'Estudiante';
@@ -643,18 +653,18 @@
         document.getElementById('dash-name').textContent = profileResult.data.full_name;
       }
 
-      if (enrollmentResult.error) {
+      if (enrollmentResult.error && !enrollmentDemoEnabled) {
         const errorBox = document.createElement('div');
         errorBox.className = 'dash-empty';
         errorBox.textContent = 'No pudimos consultar tus matrículas en este momento. Intenta actualizar la página.';
         myCourses.append(errorBox);
-      } else if (!enrollmentResult.data?.length) {
+      } else if (!displayedEnrollments.length) {
         const empty = document.createElement('div');
         empty.className = 'dash-empty';
         empty.textContent = 'Todavía no tienes cursos matriculados. Cuando se habiliten las inscripciones, tus cursos aparecerán aquí.';
         myCourses.append(empty);
       } else {
-        enrollmentResult.data.forEach(enrollment => {
+        displayedEnrollments.forEach(enrollment => {
           const course = Array.isArray(enrollment.courses) ? enrollment.courses[0] : enrollment.courses;
           const now=Date.now();
           const startsAt=enrollment.starts_at ? new Date(enrollment.starts_at).getTime() : 0;
@@ -662,14 +672,14 @@
           const accessValid=enrollment.status==='active' && startsAt<=now && expiresAt>now;
           const expired=enrollment.status==='expired' || (enrollment.status==='active' && expiresAt<=now);
           const expiry=enrollment.expires_at ? ' · Acceso hasta: '+new Date(enrollment.expires_at).toLocaleDateString('es-EC') : '';
-          const statusText=accessValid?'Matrícula activa':expired?'Acceso vencido':enrollment.status==='pending'?'Pendiente':enrollment.status==='revoked'?'Matrícula revocada':'Acceso aún no disponible';
+          const statusText=enrollment._simulation?'Matrícula simulada activa':accessValid?'Matrícula activa':expired?'Acceso vencido':enrollment.status==='pending'?'Pendiente':enrollment.status==='revoked'?'Matrícula revocada':'Acceso aún no disponible';
           const item=document.createElement('div');
           item.className='dash-item';
           const info=document.createElement('div');
           const name=document.createElement('strong');
           name.textContent=course?.title || 'Curso';
           const description=document.createElement('small');
-          description.textContent=(course?.short_description || 'Matrícula registrada')+expiry;
+          description.textContent=(enrollment._simulation?'SIMULACIÓN · No es una matrícula real. ':'')+(course?.short_description || 'Matrícula registrada')+expiry;
           info.append(name,description);
           item.append(info);
           const status=document.createElement('span');
@@ -680,7 +690,7 @@
             const open=document.createElement('button');
             open.type='button';
             open.className='lesson-select';
-            open.textContent='Abrir curso';
+            open.textContent=enrollment._simulation?'Probar aula (simulación)':'Abrir curso';
             open.addEventListener('click',()=>openCourseContent(enrollment.course_id,course.title));
             item.append(open);
           }
