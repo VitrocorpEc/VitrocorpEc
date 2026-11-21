@@ -497,13 +497,43 @@
       try {
         const {data,error}=await supabase.rpc('create_bank_transfer_payment',{p_course_id:course.id});
         if(error) throw error;
-        showMessage('Solicitud creada por '+formatMoney(data.amount,data.currency)+'. Los datos bancarios se mostrarán cuando VitroCorp configure la cuenta receptora. No realices transferencias hasta que aparezcan esos datos.','success');
+        showMessage('Solicitud creada. Revisa los datos bancarios y carga tu comprobante en “Mis pagos e inscripciones”.','success');
         await loadStudentPayments();
       } catch(error) {
         showMessage(error.message||'No se pudo crear la solicitud de pago.','error');
       } finally {
         if(button) { button.disabled=false; button.textContent='Solicitar inscripción'; }
       }
+    }
+
+    async function appendBankTransferDetails(payment,item) {
+      const {data,error}=await supabase.rpc('get_bank_transfer_details',{p_payment_id:payment.id});
+      if(error||!data) {
+        const note=document.createElement('small');note.textContent='No pudimos mostrar las instrucciones bancarias. Actualiza la página o contacta a VitroCorp.';item.append(note);return;
+      }
+      const box=document.createElement('div');box.className='dash-empty';box.style.width='100%';
+      const heading=document.createElement('strong');heading.textContent='Datos para realizar la transferencia';box.append(heading);
+      const rows=[
+        ['Banco',data.bank_name],
+        ['Tipo de cuenta',data.account_type],
+        ['Titular',data.account_holder],
+        ['Número de cuenta',data.account_number],
+        ['Valor a transferir',formatMoney(data.amount,data.currency)]
+      ];
+      rows.forEach(([label,value])=>{
+        const line=document.createElement('div');line.style.marginTop='5px';
+        const labelNode=document.createElement('strong');labelNode.textContent=label+': ';
+        const valueNode=document.createElement('span');valueNode.textContent=String(value??'');
+        line.append(labelNode,valueNode);box.append(line);
+      });
+      const copy=document.createElement('button');copy.type='button';copy.className='payment-action';copy.textContent='Copiar número de cuenta';
+      copy.addEventListener('click',async()=>{
+        try { await navigator.clipboard.writeText(String(data.account_number));copy.textContent='Número copiado'; }
+        catch(_) { copy.textContent='No se pudo copiar'; }
+      });
+      box.append(copy);
+      const warning=document.createElement('small');warning.textContent='Realiza la transferencia por el valor exacto y adjunta el comprobante. La matrícula se activa solo después de la verificación.';box.append(warning);
+      item.append(box);
     }
 
     async function loadStudentPayments() {
@@ -518,7 +548,7 @@
       if(!data?.length) {
         const e=document.createElement('div');e.className='dash-empty';e.textContent='Todavía no tienes solicitudes de pago.';studentPaymentList.append(e);return;
       }
-      data.forEach(payment=>{
+      for (const payment of data) {
         const item=document.createElement('div');item.className='dash-item';
         const info=document.createElement('div');
         const title=document.createElement('strong');title.textContent=payment.courses?.title||'Curso';
@@ -526,6 +556,7 @@
         info.append(title,detail);
         if(payment.rejection_reason){const reason=document.createElement('small');reason.textContent='Motivo: '+payment.rejection_reason;info.append(reason);}
         item.append(info);
+        if(payment.status==='pending'||payment.status==='under_review') await appendBankTransferDetails(payment,item);
         if(payment.status==='pending') {
           const form=document.createElement('form');form.className='payment-proof';
           const file=document.createElement('input');file.type='file';file.accept='.jpg,.jpeg,.png,.webp,.pdf';file.required=true;file.setAttribute('aria-label','Comprobante de transferencia');
@@ -558,7 +589,7 @@
           const waiting=document.createElement('small');waiting.textContent='Comprobante recibido. Estamos verificando el pago.';item.append(waiting);
         }
         studentPaymentList.append(item);
-      });
+      }
     }
 
     async function loadAdminPayments() {
