@@ -141,6 +141,11 @@
     .enrollment-admin-actions button{border:1px solid #d8e1d8;background:#fff;color:#2d6a4f;border-radius:8px;padding:8px 11px;font:600 .82rem 'DM Sans';cursor:pointer}
     .enrollment-admin-actions button.danger{color:#a33327;border-color:#f0cfca}
     .admin-enrollment-note{background:#f2f8f3;border:1px solid #dce9df;border-radius:10px;padding:12px 14px;color:#50685a;font-size:.86rem;line-height:1.5}
+    .enrollment-history{border-top:1px solid #e4ebe4;padding-top:18px;margin-top:20px}
+    .enrollment-history h3{font:700 1.05rem Syne,sans-serif;color:#214b37;margin:0 0 8px}
+    .enrollment-history-item{border:1px solid #e4ebe4;border-radius:12px;padding:14px;background:#fff;display:grid;gap:5px}
+    .enrollment-history-item strong{color:#214b37}
+    .enrollment-history-item small{color:#718078;line-height:1.5}
 
 </style>
 </head>
@@ -285,6 +290,11 @@
         </div>
         <p class="dash-muted" id="admin-enrollment-summary" aria-live="polite">Cargando matrículas…</p>
         <div class="dash-list" id="admin-enrollment-list"><div class="dash-empty">Cargando matrículas…</div></div>
+        <div class="enrollment-history">
+          <h3>Historial administrativo</h3>
+          <p class="dash-muted">Registro de activaciones, revocaciones y ampliaciones. Se muestran las 200 acciones más recientes.</p>
+          <div class="dash-list" id="admin-enrollment-history-list"><div class="dash-empty">Cargando historial…</div></div>
+        </div>
       </section>
       <section class="dash-section" id="admin-payments-section">
         <h2>Revisión de pagos</h2>
@@ -797,6 +807,50 @@
       });
       courseSelect.value = courses.some(([id]) => id === selectedCourse) ? selectedCourse : '';
       renderAdminEnrollments();
+      await loadAdminEnrollmentHistory();
+    }
+
+    async function loadAdminEnrollmentHistory() {
+      const list = document.getElementById('admin-enrollment-history-list');
+      if (!list) return;
+      list.replaceChildren();
+      const {data,error} = await supabase.rpc('admin_list_enrollment_actions');
+      if (error) {
+        const item = document.createElement('div');
+        item.className = 'dash-empty';
+        item.textContent = 'No se pudo cargar el historial administrativo. Verifica los permisos.';
+        list.append(item);
+        return;
+      }
+      const rows = data || [];
+      if (!rows.length) {
+        const empty = document.createElement('div');
+        empty.className = 'dash-empty';
+        empty.textContent = 'Todavía no hay acciones administrativas registradas.';
+        list.append(empty);
+        return;
+      }
+      const labels = {activate:'Activación',revoke:'Revocación',extend:'Ampliación'};
+      rows.forEach(row => {
+        const item = document.createElement('article');
+        item.className = 'enrollment-history-item';
+        const heading = document.createElement('strong');
+        heading.textContent = (labels[row.action] || row.action || 'Acción') + ' · ' + (row.course_title || 'Curso');
+        const student = document.createElement('small');
+        student.textContent = row.student_email || 'Estudiante no disponible';
+        const dates = document.createElement('small');
+        const oldExpiry = row.previous_expires_at ? new Date(row.previous_expires_at).toLocaleString('es-EC') : 'Sin fecha';
+        const newExpiry = row.new_expires_at ? new Date(row.new_expires_at).toLocaleString('es-EC') : 'Sin fecha';
+        dates.textContent = 'Vencimiento: ' + oldExpiry + ' → ' + newExpiry + (row.days ? ' · ' + row.days + ' días' : '');
+        const statuses = document.createElement('small');
+        statuses.textContent = 'Estado: ' + (row.previous_status || '—') + ' → ' + (row.new_status || '—');
+        const reason = document.createElement('small');
+        reason.textContent = 'Motivo: ' + (row.reason || 'No especificado');
+        const recorded = document.createElement('small');
+        recorded.textContent = 'Registrado: ' + (row.created_at ? new Date(row.created_at).toLocaleString('es-EC') : 'Fecha no disponible');
+        item.append(heading,student,dates,statuses,reason,recorded);
+        list.append(item);
+      });
     }
 
     document.getElementById('admin-enrollment-search').addEventListener('input',renderAdminEnrollments);
