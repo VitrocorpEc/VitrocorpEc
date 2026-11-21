@@ -649,6 +649,9 @@
     const message = document.getElementById('message');
     const recoveryForm = document.getElementById('recovery-form');
     const forgotPassword = document.getElementById('forgot-password');
+    const academyAuthRedirect = window.location.hostname === 'vitrocorp-academy.vercel.app'
+      ? 'https://vitrocorp-academy.vercel.app/academy.html'
+      : 'https://vitrocorp-academy-git-academy-student-l-1e947c-scienceyapa-4889.vercel.app/academy.html';
     let mode = 'login';
     let recoveryMode = false;
 
@@ -700,7 +703,7 @@
       forgotPassword.disabled = true;
       showMessage('Enviando el enlace de recuperación…', 'success');
       try {
-        const redirectTo = 'https://vitrocorp-academy-git-academy-student-l-1e947c-scienceyapa-4889.vercel.app/academy.html';
+        const redirectTo = academyAuthRedirect;
         const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
         if (error) throw error;
         showMessage('Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña. Revisa también la carpeta de spam.', 'success');
@@ -2501,7 +2504,7 @@
             password,
             options: {
               data: { full_name: fullName },
-              emailRedirectTo: 'https://vitrocorp-academy.vercel.app/academy.html'
+              emailRedirectTo: academyAuthRedirect
             }
           });
           if (error) throw error;
