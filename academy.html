@@ -62,6 +62,8 @@
     .student-course-progress-track{height:9px;background:#e8efe9;border-radius:99px;overflow:hidden}
     .student-course-progress-fill{height:100%;background:#40916c;border-radius:99px;transition:width .2s ease}
     .student-course-progress small{color:#718078;line-height:1.4}
+    .student-course-progress-action{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+    .student-course-progress-action .lesson-select{white-space:nowrap}
     @media(max-width:600px){.student-progress-summary{grid-template-columns:1fr}}
     .dash-item{border:1px solid #e7ede7;border-radius:12px;padding:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
     .dash-item strong{display:block;color:#214b37;margin-bottom:5px}
@@ -1378,7 +1380,7 @@
       }
     }
 
-    async function openCourseContent(courseId, title, adminPreview=false, enrollmentSimulation=false) {
+    async function openCourseContent(courseId, title, adminPreview=false, enrollmentSimulation=false, targetLessonId=null) {
       if (adminPreview) {
         const {data: isAdmin,error: adminError}=await supabase.rpc('is_current_user_admin');
         if (adminError || isAdmin!==true) {
@@ -1479,7 +1481,7 @@
         card.append(list);
         learningModules.append(card);
       });
-      const firstLesson=(lessons||[])[0];
+      const firstLesson=(lessons||[]).find(lesson=>lesson.id===targetLessonId)||(lessons||[])[0];
       if(firstLesson) playLesson(firstLesson,enrollmentSimulation,lessons||[],realProgress,adminPreview);
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
@@ -1525,22 +1527,24 @@
       const courseIds=[...new Set(eligible.map(item=>item.course_id).filter(Boolean))];
       const progressByCourse=new Map();
       if(!courseIds.length) return progressByCourse;
-      const {data:modules,error:moduleError}=await supabase.from('course_modules').select('id,course_id').in('course_id',courseIds);
+      const {data:modules,error:moduleError}=await supabase.from('course_modules').select('id,course_id,sort_order').in('course_id',courseIds).order('sort_order',{ascending:true});
       if(moduleError) throw moduleError;
       const moduleIds=(modules||[]).map(module=>module.id);
       if(!moduleIds.length) {
-        courseIds.forEach(id=>progressByCourse.set(id,{completed:0,total:0}));
+        courseIds.forEach(id=>progressByCourse.set(id,{completed:0,total:0,nextLesson:null,allCompleted:false}));
         return progressByCourse;
       }
-      const {data:lessons,error:lessonError}=await supabase.from('course_lessons').select('id,module_id').in('module_id',moduleIds);
+      const {data:lessons,error:lessonError}=await supabase.from('course_lessons').select('id,module_id,title,sort_order').in('module_id',moduleIds).order('sort_order',{ascending:true});
       if(lessonError) throw lessonError;
       const lessonsByCourse=new Map(courseIds.map(id=>[id,[]]));
       const courseByModule=new Map((modules||[]).map(module=>[module.id,module.course_id]));
+      const moduleOrder=new Map((modules||[]).map((module,index)=>[module.id,index]));
       (lessons||[]).forEach(lesson=>{
         const courseId=courseByModule.get(lesson.module_id);
-        if(courseId && lessonsByCourse.has(courseId)) lessonsByCourse.get(courseId).push(lesson.id);
+        if(courseId && lessonsByCourse.has(courseId)) lessonsByCourse.get(courseId).push(lesson);
       });
-      const lessonIds=[...lessonsByCourse.values()].flat();
+      lessonsByCourse.forEach(items=>items.sort((a,b)=>(moduleOrder.get(a.module_id)??0)-(moduleOrder.get(b.module_id)??0)||(a.sort_order??0)-(b.sort_order??0)));
+      const lessonIds=[...lessonsByCourse.values()].flat().map(lesson=>lesson.id);
       let completedIds=new Set();
       if(lessonIds.length) {
         const {data:progress,error:progressError}=await supabase.from('lesson_progress').select('lesson_id,completed_at').in('lesson_id',lessonIds);
@@ -1548,8 +1552,10 @@
         completedIds=new Set((progress||[]).filter(row=>row.completed_at).map(row=>row.lesson_id));
       }
       courseIds.forEach(courseId=>{
-        const ids=lessonsByCourse.get(courseId)||[];
-        progressByCourse.set(courseId,{completed:ids.filter(id=>completedIds.has(id)).length,total:ids.length});
+        const courseLessons=lessonsByCourse.get(courseId)||[];
+        const completed=courseLessons.filter(lesson=>completedIds.has(lesson.id)).length;
+        const nextLesson=courseLessons.find(lesson=>!completedIds.has(lesson.id))||null;
+        progressByCourse.set(courseId,{completed,total:courseLessons.length,nextLesson,allCompleted:courseLessons.length>0 && completed===courseLessons.length});
       });
       return progressByCourse;
     }
@@ -1589,7 +1595,21 @@
         track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(percent));
         const fill=document.createElement('div');fill.className='student-course-progress-fill';fill.style.width=percent+'%';track.append(fill);
         const detail=document.createElement('small');detail.textContent=progress.completed+' de '+progress.total+' sesiones completadas';
-        card.append(head,track,detail);list.append(card);
+        card.append(head,track,detail);
+        if(progress.nextLesson) {
+          const action=document.createElement('div');action.className='student-course-progress-action';
+          const next=document.createElement('small');next.textContent='Siguiente: '+(progress.nextLesson.title||'Continuar aprendizaje');
+          const button=document.createElement('button');button.type='button';button.className='lesson-select';button.textContent=progress.completed?'Continuar aprendizaje':'Comenzar curso';
+          button.addEventListener('click',()=>openCourseContent(enrollment.course_id,course?.title||'Curso',false,false,progress.nextLesson.id));
+          action.append(next,button);card.append(action);
+        } else if(progress.allCompleted) {
+          const done=document.createElement('small');done.className='learning-note';done.textContent='✓ Has completado todas las sesiones de este curso.';
+          card.append(done);
+        } else {
+          const pending=document.createElement('small');pending.className='learning-note';pending.textContent='Este curso todavía no tiene sesiones disponibles.';
+          card.append(pending);
+        }
+        list.append(card);
       });
       completedNode.textContent=String(totalCompleted);
       totalNode.textContent=String(totalLessons);
