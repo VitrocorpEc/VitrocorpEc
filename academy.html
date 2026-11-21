@@ -191,6 +191,13 @@
     .activity-card button{justify-self:start;border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:10px 14px;font:600 .88rem 'DM Sans';cursor:pointer}
     .activity-card button:disabled{opacity:.6;cursor:wait}
     .activity-feedback{font-size:.84rem;color:#2d6a4f;line-height:1.5}
+    .student-review-result{display:grid;gap:8px;margin-top:14px;padding:15px;border:1px solid #d5e6d8;border-radius:11px;background:#f5faf5}
+    .student-review-result>strong{color:#214b37;font-size:.92rem}
+    .student-review-result p{margin:0;line-height:1.6;overflow-wrap:anywhere}
+    .student-review-result small{color:#718078;font-size:.78rem}
+    .student-review-score{font-size:1.08rem;font-weight:700;color:#24633e}
+    .student-review-pending{color:#795a1e;background:#fff8e8;border:1px solid #ead7a7;padding:9px 11px;border-radius:8px}
+    .student-review-feedback{background:#fff;border-left:3px solid #78b58a;border-radius:5px;padding:11px 13px;color:#40584a;white-space:pre-wrap}
     .activity-warning{font-size:.84rem;color:#73551b;background:#fff8e8;border:1px solid #ead7a7;border-radius:9px;padding:10px;line-height:1.5}
     .question-field{display:grid;gap:6px;border-top:1px solid #e7eee8;padding-top:10px}
     .question-field label{font-weight:600;font-size:.9rem;color:#294d39;margin:0}
@@ -1346,9 +1353,12 @@
               const gradeForm=document.createElement('form');gradeForm.className='question-field';
               const scoreLabel=activityText('label','Calificación (0 a 10)');
               const score=document.createElement('input');score.type='number';score.min='0';score.max='10';score.step='0.5';score.required=true;score.value=submission.score??'';
-              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Retroalimentación para el estudiante';feedbackInput.value=submission.feedback||'';
-              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación';
-              gradeForm.append(scoreLabel,score,feedbackInput,save);
+              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Explica los aciertos, aspectos por mejorar y recomendaciones concretas…';feedbackInput.maxLength=2000;feedbackInput.value=submission.feedback||'';
+              const feedbackHint=activityText('small','Comentario visible para el estudiante · máximo 2.000 caracteres','payment-meta');
+              const feedbackCount=activityText('small',feedbackInput.value.length+'/2000 caracteres','payment-meta');
+              feedbackInput.addEventListener('input',()=>feedbackCount.textContent=feedbackInput.value.length+'/2000 caracteres');
+              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación y comentario';
+              gradeForm.append(scoreLabel,score,activityText('label','Retroalimentación para el estudiante'),feedbackInput,feedbackHint,feedbackCount,save);
               gradeForm.addEventListener('submit',async event=>{
                 event.preventDefault();const value=Number(score.value);
                 if(!Number.isFinite(value)||value<0||value>10){showAdminMessage('La calificación debe estar entre 0 y 10.','error');return;}
@@ -1372,11 +1382,19 @@
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
-            const existing=await supabase.from('assignment_submissions').select('status,score,feedback,submitted_at').eq('assignment_id',assignment.id).eq('user_id',user.id).maybeSingle();
+            const existing=await supabase.from('assignment_submissions').select('status,score,feedback,submitted_at,reviewed_at').eq('assignment_id',assignment.id).eq('user_id',user.id).maybeSingle();
             if(existing.error) throw existing.error;
             if(existing.data) {
-              card.append(activityText('p',existing.data.status==='reviewed'?'Entrega calificada: '+existing.data.score+'/10 puntos.':'Entrega recibida. Está pendiente de revisión docente.','activity-feedback'));
-              if(existing.data.feedback) card.append(activityText('p','Retroalimentación: '+existing.data.feedback,'learning-note'));
+              const reviewed=existing.data.status==='reviewed';
+              const resultBox=document.createElement('div');resultBox.className='student-review-result';
+              const resultTitle=activityText('strong',reviewed?'Resultado de tu deber':'Entrega recibida');
+              resultBox.append(resultTitle);
+              resultBox.append(activityText('p',reviewed?'Calificación: '+(existing.data.score??'—')+'/10 puntos':'Tu entrega está pendiente de revisión docente.',reviewed?'student-review-score':'student-review-pending'));
+              if(reviewed&&existing.data.reviewed_at) resultBox.append(activityText('small','Revisado el '+new Date(existing.data.reviewed_at).toLocaleString('es-EC')));
+              const feedbackTitle=activityText('strong','Comentario del docente');
+              resultBox.append(feedbackTitle);
+              resultBox.append(activityText('p',existing.data.feedback|| (reviewed?'El docente no añadió comentarios adicionales.':'Aquí aparecerá la retroalimentación cuando tu deber sea revisado.'),'student-review-feedback'));
+              card.append(resultBox);
             } else {
               const form=document.createElement('form');form.className='activity-card';
               const file=document.createElement('input');file.type='file';file.required=true;file.accept='.pdf,.jpg,.jpeg,.png,.webp';
@@ -1441,9 +1459,12 @@
               const gradeForm=document.createElement('form');gradeForm.className='question-field';
               const scoreLabel=activityText('label','Calificación (0 a 3)');
               const score=document.createElement('input');score.type='number';score.min='0';score.max='3';score.step='0.5';score.required=true;score.value=attempt.score??'';
-              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Retroalimentación para el estudiante';feedbackInput.value=attempt.feedback||'';
-              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación';
-              gradeForm.append(scoreLabel,score,feedbackInput,save);
+              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Explica qué respuestas están bien fundamentadas y qué conceptos conviene reforzar…';feedbackInput.maxLength=2000;feedbackInput.value=attempt.feedback||'';
+              const feedbackHint=activityText('small','Comentario visible para el estudiante · máximo 2.000 caracteres','payment-meta');
+              const feedbackCount=activityText('small',feedbackInput.value.length+'/2000 caracteres','payment-meta');
+              feedbackInput.addEventListener('input',()=>feedbackCount.textContent=feedbackInput.value.length+'/2000 caracteres');
+              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación y comentario';
+              gradeForm.append(scoreLabel,score,activityText('label','Retroalimentación para el estudiante'),feedbackInput,feedbackHint,feedbackCount,save);
               gradeForm.addEventListener('submit',async event=>{
                 event.preventDefault();const value=Number(score.value);
                 if(!Number.isFinite(value)||value<0||value>3){showAdminMessage('La calificación debe estar entre 0 y 3.','error');return;}
@@ -1470,11 +1491,17 @@
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
-            const existing=await supabase.from('assessment_attempts').select('status,score,feedback,submitted_at').eq('assessment_id',assessment.id).eq('user_id',user.id).maybeSingle();
+            const existing=await supabase.from('assessment_attempts').select('status,score,feedback,submitted_at,reviewed_at').eq('assessment_id',assessment.id).eq('user_id',user.id).maybeSingle();
             if(existing.error) throw existing.error;
             if(existing.data) {
-              card.append(activityText('p',existing.data.status==='reviewed'?'Evaluación calificada: '+existing.data.score+'/3 puntos.':'Respuestas recibidas. Pendiente de revisión docente.','activity-feedback'));
-              if(existing.data.feedback) card.append(activityText('p','Retroalimentación: '+existing.data.feedback,'learning-note'));
+              const reviewed=existing.data.status==='reviewed';
+              const resultBox=document.createElement('div');resultBox.className='student-review-result';
+              resultBox.append(activityText('strong',reviewed?'Resultado de tu evaluación':'Evaluación recibida'));
+              resultBox.append(activityText('p',reviewed?'Calificación: '+(existing.data.score??'—')+'/3 puntos':'Tus respuestas están pendientes de revisión docente.',reviewed?'student-review-score':'student-review-pending'));
+              if(reviewed&&existing.data.reviewed_at) resultBox.append(activityText('small','Revisada el '+new Date(existing.data.reviewed_at).toLocaleString('es-EC')));
+              resultBox.append(activityText('strong','Comentario del docente'));
+              resultBox.append(activityText('p',existing.data.feedback|| (reviewed?'El docente no añadió comentarios adicionales.':'Aquí aparecerá la retroalimentación cuando tu evaluación sea revisada.'),'student-review-feedback'));
+              card.append(resultBox);
             } else {
               const form=document.createElement('form');form.className='activity-card';
               const fields=[];
