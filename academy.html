@@ -629,7 +629,7 @@
       courseLearning.hidden=false;
       document.getElementById('admin-preview-notice').hidden=!adminPreview;
       document.getElementById('student-simulation-notice').hidden=!enrollmentSimulation;
-      document.getElementById('simulation-course-progress').hidden=!enrollmentSimulation;
+      document.getElementById('simulation-course-progress').hidden=Boolean(adminPreview);
       document.getElementById('learning-back').textContent=adminPreview?'← Volver a administración':'← Volver a mis cursos';
       learningTitle.textContent=(title || 'Contenido del curso')+(adminPreview?' · Vista previa':'');
       showLearningMessage(learningModules,'Cargando módulos y lecciones…');
