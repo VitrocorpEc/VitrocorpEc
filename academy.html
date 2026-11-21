@@ -1078,6 +1078,39 @@
           card.append(rubric);
           if(adminPreview) {
             card.append(activityText('p','Vista docente: el estudiante deberá entregar un archivo o fotografía.','activity-warning'));
+            const {data:{user:adminUser}}=await supabase.auth.getUser();
+            const submissions=await supabase.from('assignment_submissions').select('id,user_id,file_path,comment,score,status,feedback,submitted_at').eq('assignment_id',assignment.id).order('submitted_at',{ascending:false});
+            if(submissions.error) throw submissions.error;
+            if(!submissions.data?.length) card.append(activityText('p','Todavía no hay entregas de estudiantes.','learning-note'));
+            for(const submission of (submissions.data||[])) {
+              const review=document.createElement('div');review.className='question-field';
+              review.append(activityText('strong','Entrega · '+submission.user_id));
+              review.append(activityText('small','Enviada: '+new Date(submission.submitted_at).toLocaleString('es-EC')+' · Estado: '+submission.status));
+              if(submission.comment) review.append(activityText('p','Comentario: '+submission.comment));
+              const signed=await supabase.storage.from('academy-assignment-submissions').createSignedUrl(submission.file_path,3600);
+              if(!signed.error && signed.data?.signedUrl) {
+                const link=document.createElement('a');link.href=signed.data.signedUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Abrir archivo entregado';link.className='learning-material';review.append(link);
+              }
+              const gradeForm=document.createElement('form');gradeForm.className='question-field';
+              const scoreLabel=activityText('label','Calificación (0 a 10)');
+              const score=document.createElement('input');score.type='number';score.min='0';score.max='10';score.step='0.5';score.required=true;score.value=submission.score??'';
+              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Retroalimentación para el estudiante';feedbackInput.value=submission.feedback||'';
+              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación';
+              gradeForm.append(scoreLabel,score,feedbackInput,save);
+              gradeForm.addEventListener('submit',async event=>{
+                event.preventDefault();const value=Number(score.value);
+                if(!Number.isFinite(value)||value<0||value>10){showAdminMessage('La calificación debe estar entre 0 y 10.','error');return;}
+                save.disabled=true;
+                try {
+                  const result=await supabase.from('assignment_submissions').update({score:value,status:'reviewed',feedback:feedbackInput.value.trim()||null,reviewed_by:adminUser.id,reviewed_at:new Date().toISOString()}).eq('id',submission.id);
+                  if(result.error) throw result.error;
+                  showAdminMessage('Deber calificado correctamente.');
+                  await loadLessonActivities(lesson,true);
+                  area.remove();
+                } catch(error) { showAdminMessage(error.message||'No se pudo guardar la calificación.','error');save.disabled=false; }
+              });
+              review.append(gradeForm);card.append(review);
+            }
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
@@ -1134,6 +1167,39 @@
               card.append(activityText('p',(index+1)+'. '+q.prompt));
               card.append(activityText('p','Respuesta esperada: '+(keys.get(q.id)||'Sin clave'),'activity-warning'));
             });
+            const {data:{user:adminUser}}=await supabase.auth.getUser();
+            const attempts=await supabase.from('assessment_attempts').select('id,user_id,responses,score,status,feedback,submitted_at').eq('assessment_id',assessment.id).order('submitted_at',{ascending:false});
+            if(attempts.error) throw attempts.error;
+            if(!attempts.data?.length) card.append(activityText('p','Todavía no hay evaluaciones enviadas.','learning-note'));
+            for(const attempt of (attempts.data||[])) {
+              const review=document.createElement('div');review.className='question-field';
+              review.append(activityText('strong','Evaluación · '+attempt.user_id));
+              review.append(activityText('small','Enviada: '+new Date(attempt.submitted_at).toLocaleString('es-EC')+' · Estado: '+attempt.status));
+              const answers=new Map((attempt.responses||[]).map(item=>[item.question_id,item.answer]));
+              questions.forEach((q,index)=>{
+                review.append(activityText('p',(index+1)+'. '+q.prompt));
+                review.append(activityText('p','Respuesta: '+(answers.get(q.id)||'Sin respuesta'),'activity-warning'));
+              });
+              const gradeForm=document.createElement('form');gradeForm.className='question-field';
+              const scoreLabel=activityText('label','Calificación (0 a 3)');
+              const score=document.createElement('input');score.type='number';score.min='0';score.max='3';score.step='0.5';score.required=true;score.value=attempt.score??'';
+              const feedbackInput=document.createElement('textarea');feedbackInput.placeholder='Retroalimentación para el estudiante';feedbackInput.value=attempt.feedback||'';
+              const save=document.createElement('button');save.type='submit';save.textContent='Guardar calificación';
+              gradeForm.append(scoreLabel,score,feedbackInput,save);
+              gradeForm.addEventListener('submit',async event=>{
+                event.preventDefault();const value=Number(score.value);
+                if(!Number.isFinite(value)||value<0||value>3){showAdminMessage('La calificación debe estar entre 0 y 3.','error');return;}
+                save.disabled=true;
+                try {
+                  const result=await supabase.from('assessment_attempts').update({score:value,status:'reviewed',feedback:feedbackInput.value.trim()||null,reviewed_by:adminUser.id,reviewed_at:new Date().toISOString()}).eq('id',attempt.id);
+                  if(result.error) throw result.error;
+                  showAdminMessage('Evaluación calificada correctamente.');
+                  await loadLessonActivities(lesson,true);
+                  area.remove();
+                } catch(error) { showAdminMessage(error.message||'No se pudo guardar la calificación.','error');save.disabled=false; }
+              });
+              review.append(gradeForm);card.append(review);
+            }
           } else {
             const {data:{user},error:userError}=await supabase.auth.getUser();
             if(userError || !user) throw new Error('La sesión no está disponible.');
