@@ -104,6 +104,25 @@
     .content-entry .lesson-row strong{font-size:.9rem}
     .content-status{font-size:.76rem;font-weight:700;color:#2d6a4f}
     .content-status.draft{color:#8a6420}
+    .learning-area{display:grid;gap:18px;background:#f8fbf8;border:1px solid #dce9df;border-radius:14px;padding:20px;margin:20px 0}
+    .learning-area[hidden]{display:none}
+    .learning-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .learning-head h2{margin:0}
+    .learning-back,.lesson-select{border:1px solid #d8e1d8;background:#fff;color:#2d6a4f;border-radius:9px;padding:9px 12px;font:600 .88rem 'DM Sans';cursor:pointer}
+    .learning-modules{display:grid;gap:14px}
+    .learning-module{background:#fff;border:1px solid #e4ebe4;border-radius:12px;padding:16px}
+    .learning-module h3{font:700 1rem Syne,sans-serif;color:#214b37;margin:0 0 6px}
+    .learning-module p{color:#718078;font-size:.9rem;line-height:1.5;margin:0 0 12px}
+    .learning-lessons{display:grid;gap:8px}
+    .learning-lesson{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #edf1ed;padding:10px 0 0}
+    .learning-lesson strong{display:block;color:#294d39;font-size:.9rem}
+    .learning-lesson small{display:block;color:#78847c;margin-top:4px}
+    .learning-player{background:#fff;border:1px solid #e4ebe4;border-radius:14px;padding:16px;display:grid;gap:12px}
+    .learning-player h3{font:700 1.1rem Syne,sans-serif;color:#214b37;margin:0}
+    .video-frame{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#10251a}
+    .learning-material{color:#2d6a4f;font-weight:600}
+    .learning-note{color:#718078;font-size:.88rem;line-height:1.5}
+    @media(max-width:600px){.learning-lesson{align-items:flex-start;flex-direction:column}.learning-area{padding:14px}}
 </style>
 </head>
 <body>
@@ -160,6 +179,17 @@
       <section class="dash-section">
         <h2>Mis cursos</h2>
         <div class="dash-list" id="my-courses"><div class="dash-empty">Consultando tus matrículas…</div></div>
+      </section>
+      <section class="learning-area" id="course-learning" hidden aria-label="Contenido del curso">
+        <div class="learning-head">
+          <div><div class="eyebrow">Aula virtual</div><h2 id="learning-title">Curso</h2></div>
+          <button type="button" class="learning-back" id="learning-back">← Volver a mis cursos</button>
+        </div>
+        <div class="learning-modules" id="learning-modules"><div class="dash-empty">Selecciona un curso para consultar sus módulos.</div></div>
+        <div class="learning-player" id="learning-player">
+          <h3>Selecciona una lección</h3>
+          <p class="learning-note">Aquí aparecerán el video de la clase y sus materiales cuando elijas una lección.</p>
+        </div>
       </section>
       <section class="dash-section">
         <h2>Cursos disponibles</h2>
@@ -358,6 +388,139 @@
       container.append(item);
     }
 
+    const courseLearning = document.getElementById('course-learning');
+    const learningTitle = document.getElementById('learning-title');
+    const learningModules = document.getElementById('learning-modules');
+    const learningPlayer = document.getElementById('learning-player');
+
+    function showLearningMessage(container, message) {
+      const box=document.createElement('div');
+      box.className='dash-empty';
+      box.textContent=message;
+      container.replaceChildren(box);
+    }
+
+    function playLesson(lesson) {
+      learningPlayer.replaceChildren();
+      const heading=document.createElement('h3');
+      heading.textContent=lesson.title || 'Lección';
+      learningPlayer.append(heading);
+      if (lesson.description) {
+        const description=document.createElement('p');
+        description.className='learning-note';
+        description.textContent=lesson.description;
+        learningPlayer.append(description);
+      }
+      if (lesson.youtube_video_id) {
+        const frame=document.createElement('iframe');
+        frame.className='video-frame';
+        frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(lesson.youtube_video_id)+'?rel=0';
+        frame.title='Video de la lección: '+(lesson.title || 'VitroCorp Academy');
+        frame.loading='lazy';
+        frame.referrerPolicy='strict-origin-when-cross-origin';
+        frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.allowFullscreen=true;
+        learningPlayer.append(frame);
+      } else {
+        const noVideo=document.createElement('p');
+        noVideo.className='learning-note';
+        noVideo.textContent='Esta lección todavía no tiene un video disponible.';
+        learningPlayer.append(noVideo);
+      }
+      if (lesson.presentation_url) {
+        try {
+          const materialUrl=new URL(lesson.presentation_url);
+          if (materialUrl.protocol==='https:') {
+            const link=document.createElement('a');
+            link.className='learning-material';
+            link.href=materialUrl.href;
+            link.target='_blank';
+            link.rel='noopener noreferrer';
+            link.textContent='Abrir presentación o material de clase';
+            learningPlayer.append(link);
+          }
+        } catch (_) {}
+      }
+    }
+
+    async function openCourseContent(courseId, title) {
+      courseLearning.hidden=false;
+      learningTitle.textContent=title || 'Contenido del curso';
+      showLearningMessage(learningModules,'Cargando módulos y lecciones…');
+      showLearningMessage(learningPlayer,'Selecciona una lección para comenzar.');
+      courseLearning.scrollIntoView({behavior:'smooth',block:'start'});
+      const {data: modules,error: moduleError}=await supabase.from('course_modules')
+        .select('id,title,description,sort_order')
+        .eq('course_id',courseId)
+        .order('sort_order',{ascending:true});
+      if(moduleError) {
+        showLearningMessage(learningModules,'No pudimos cargar el contenido. Verifica tu matrícula o intenta nuevamente.');
+        return;
+      }
+      if(!modules?.length) {
+        showLearningMessage(learningModules,'Este curso todavía no tiene módulos publicados.');
+        return;
+      }
+      const moduleIds=modules.map(module=>module.id);
+      const {data: lessons,error: lessonError}=await supabase.from('course_lessons')
+        .select('id,module_id,title,description,youtube_video_id,presentation_url,sort_order,duration_minutes')
+        .in('module_id',moduleIds)
+        .order('sort_order',{ascending:true});
+      if(lessonError) {
+        showLearningMessage(learningModules,'No pudimos cargar las lecciones. Intenta nuevamente.');
+        return;
+      }
+      learningModules.replaceChildren();
+      modules.forEach(module=>{
+        const card=document.createElement('article');
+        card.className='learning-module';
+        const heading=document.createElement('h3');
+        heading.textContent=module.title;
+        card.append(heading);
+        if(module.description) {
+          const description=document.createElement('p');
+          description.textContent=module.description;
+          card.append(description);
+        }
+        const list=document.createElement('div');
+        list.className='learning-lessons';
+        const moduleLessons=(lessons||[]).filter(lesson=>lesson.module_id===module.id);
+        if(!moduleLessons.length) {
+          const empty=document.createElement('p');
+          empty.className='learning-note';
+          empty.textContent='Próximamente se añadirán lecciones a este módulo.';
+          list.append(empty);
+        }
+        moduleLessons.forEach(lesson=>{
+          const row=document.createElement('div');
+          row.className='learning-lesson';
+          const info=document.createElement('div');
+          const name=document.createElement('strong');
+          name.textContent=lesson.title;
+          const meta=document.createElement('small');
+          meta.textContent=lesson.duration_minutes ? lesson.duration_minutes+' minutos' : 'Lección';
+          info.append(name,meta);
+          const open=document.createElement('button');
+          open.type='button';
+          open.className='lesson-select';
+          open.textContent='Ver lección';
+          open.addEventListener('click',()=>playLesson(lesson));
+          row.append(info,open);
+          list.append(row);
+        });
+        card.append(list);
+        learningModules.append(card);
+      });
+      const firstLesson=(lessons||[])[0];
+      if(firstLesson) playLesson(firstLesson);
+      else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
+    }
+
+    document.getElementById('learning-back').addEventListener('click',()=>{
+      courseLearning.hidden=true;
+      document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+
     async function renderDashboard(user) {
       main.classList.add('dashboard-mode');
       document.querySelector('.intro').hidden = true;
@@ -374,7 +537,7 @@
 
       const [profileResult, enrollmentResult, courseResult] = await Promise.all([
         supabase.from('student_profiles').select('full_name,country').eq('user_id', user.id).maybeSingle(),
-        supabase.from('enrollments').select('id,status,starts_at,expires_at,courses(title,short_description)').eq('user_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('enrollments').select('id,course_id,status,starts_at,expires_at,courses(title,short_description)').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('courses').select('id,title,short_description,access_duration_days').eq('status', 'published').order('created_at', { ascending: false })
       ]);
 
@@ -396,10 +559,36 @@
         myCourses.append(empty);
       } else {
         enrollmentResult.data.forEach(enrollment => {
-          const course = enrollment.courses;
-          const expiry = enrollment.expires_at ? ' · Acceso hasta: ' + new Date(enrollment.expires_at).toLocaleDateString('es-EC') : '';
-          const statusLabels = { active: 'Matrícula activa', pending: 'Pendiente', expired: 'Acceso vencido', revoked: 'Matrícula revocada' };
-          addCourseItem(myCourses, course?.title || 'Curso', (course?.short_description || 'Matrícula registrada') + expiry, statusLabels[enrollment.status] || enrollment.status);
+          const course = Array.isArray(enrollment.courses) ? enrollment.courses[0] : enrollment.courses;
+          const now=Date.now();
+          const startsAt=enrollment.starts_at ? new Date(enrollment.starts_at).getTime() : 0;
+          const expiresAt=enrollment.expires_at ? new Date(enrollment.expires_at).getTime() : Infinity;
+          const accessValid=enrollment.status==='active' && startsAt<=now && expiresAt>now;
+          const expired=enrollment.status==='expired' || (enrollment.status==='active' && expiresAt<=now);
+          const expiry=enrollment.expires_at ? ' · Acceso hasta: '+new Date(enrollment.expires_at).toLocaleDateString('es-EC') : '';
+          const statusText=accessValid?'Matrícula activa':expired?'Acceso vencido':enrollment.status==='pending'?'Pendiente':enrollment.status==='revoked'?'Matrícula revocada':'Acceso aún no disponible';
+          const item=document.createElement('div');
+          item.className='dash-item';
+          const info=document.createElement('div');
+          const name=document.createElement('strong');
+          name.textContent=course?.title || 'Curso';
+          const description=document.createElement('small');
+          description.textContent=(course?.short_description || 'Matrícula registrada')+expiry;
+          info.append(name,description);
+          item.append(info);
+          const status=document.createElement('span');
+          status.className='dash-status';
+          status.textContent=statusText;
+          item.append(status);
+          if(accessValid && enrollment.course_id && course?.title) {
+            const open=document.createElement('button');
+            open.type='button';
+            open.className='lesson-select';
+            open.textContent='Abrir curso';
+            open.addEventListener('click',()=>openCourseContent(enrollment.course_id,course.title));
+            item.append(open);
+          }
+          myCourses.append(item);
         });
       }
 
