@@ -999,11 +999,11 @@
         if(/^\|.*\|$/.test(trim)&&i+1<lines.length&&/^\|?\s*:?-{3,}/.test(lines[i+1].trim())){
           flushParagraph();flushList();
           const headers=cells(line);i++;
-          while(i+1<lines.length&&/^\|.*\|$/.test(lines[i+1].trim())){i++;const row=cells(lines[i]);html.push('<table><tbody><tr>'+row.map(cell=>'<td>'+formatLessonInline(cell)+'</td>').join('')+'</tr></tbody></table>');}
-          const tableRows=html.splice(html.length-(i>0?Math.max(1,0):1));
-          const bodyRows=tableRows.join('');
-          const rows=bodyRows.match(/<table><tbody><tr>.*?<\/tr><\/tbody><\/table>/g)||[];
-          html.push('<table><thead><tr>'+headers.map(cell=>'<th>'+formatLessonInline(cell)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>row.replace(/^<table><tbody>/,'').replace(/<\/tbody><\/table>$/,'')).join('')+'</tbody></table>');
+          i++;
+          const rows=[];
+          while(i<lines.length&&/^\|.*\|$/.test(lines[i].trim())){rows.push(cells(lines[i]));i++;}
+          i--;
+          html.push('<table><thead><tr>'+headers.map(cell=>'<th>'+formatLessonInline(cell)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(cell=>'<td>'+formatLessonInline(cell)+'</td>').join('')+'</tr>').join('')+'</tbody></table>');
           continue;
         }
         const heading=trim.match(/^(#{1,4})\s+(.+)$/);
