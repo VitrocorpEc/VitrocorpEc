@@ -38,3 +38,38 @@ Estado: **preparación únicamente**. Ningún archivo de esta carpeta se ha apli
 - El límite por IP puede afectar a usuarios detrás de una misma red; 20 intentos/10 minutos es un valor inicial conservador que debe validarse.
 - La tabla de intentos necesita limpieza periódica aprobada para evitar crecimiento indefinido.
 - La limitación por IP no sustituye controles antiabuso adicionales ni garantiza protección frente a redes distribuidas.
+
+
+## Verificaciones adicionales (21-11-2026)
+
+### Grants de las tablas privadas — comprobado en la base actual
+
+Consulta de solo lectura a los privilegios efectivos y ACL:
+
+- `private.academy_payment_settings`: RLS habilitado; los únicos grants de tabla observados pertenecen a `postgres`. No hay grants de SELECT/INSERT/UPDATE/DELETE a `anon`, `authenticated` ni `service_role`.
+- `private.enrollment_admin_actions`: mismo resultado; solo `postgres` tiene grants de tabla.
+- El esquema `private` tiene USAGE para `authenticated`, pero eso por sí solo no concede acceso a las tablas. `anon` y `service_role` no tienen USAGE observado.
+- Conclusión: no se justifica cambiar grants ni crear políticas para estas dos tablas. Mantenerlas como están.
+
+### Encabezados de IP — bloqueo pendiente, no validados
+
+Se revisó la documentación oficial de Edge Functions disponible mediante la búsqueda de documentación de Supabase. No se encontró una garantía documentada que permita afirmar que `cf-connecting-ip` o `x-forwarded-for` llegan al código de la función sin posibilidad de falsificación por el cliente.
+
+Por tanto, **no se debe desplegar ni activar el rate limit por IP con la implementación actual** hasta confirmar por documentación específica de la plataforma o una prueba controlada desde el gateway qué encabezado es añadido/sobrescrito por una capa confiable. No confiar en `x-forwarded-for` recibido sin verificar; CORS no autentica encabezados. La función actual falla de forma cerrada si no obtiene IP/secretos, pero eso no demuestra que la IP leída sea auténtica.
+
+### Estado de backup y reversión
+
+Antes de cualquier aplicación futura en la base compartida:
+1. Exportar un backup restaurable de la base desde Supabase y comprobar que finaliza correctamente.
+2. Guardar una captura SQL de `pg_policies`, grants, defaults y definiciones afectadas. Las consultas de auditoría actuales registraron la política original de cursos y el DEFAULT de certificados.
+3. Ejecutar primero en un proyecto Supabase de staging separado. No existe staging confirmado actualmente.
+4. Aplicar cada script en una ventana aprobada, verificar comportamiento y mantener lista la reversión.
+
+Se añadió `rollback_security_hardening.sql` como reversión preparada para **estos scripts concretos**. Restaura la política de lectura de cursos observada antes del cambio, restaura el DEFAULT original de códigos y elimina la tabla/función de rate limit creadas por el script. No sustituye un backup y no debe ejecutarse si hubo cambios posteriores independientes en esos mismos objetos.
+
+### Lectura exacta de los riesgos
+
+- Las tablas privadas revisadas no muestran exposición por grants directos a roles de aplicación; no hace falta modificarlas.
+- El problema de la política de cursos es de visibilidad de metadatos bajo esa política, no evidencia de acceso directo a lecciones protegidas.
+- El rate limit de certificados permanece sin activar. Los certificados existentes conservan sus códigos de 48 bits.
+- No se aplicó SQL, no se desplegó la Edge Function y no se alteró producción.
