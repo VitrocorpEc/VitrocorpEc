@@ -94,7 +94,49 @@
     .admin-checks{display:flex;gap:18px;flex-wrap:wrap;color:#50685a;font-size:.9rem}
     .admin-checks label{display:flex;align-items:center;gap:7px;margin:0}
     @media(max-width:600px){.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}.admin-course{align-items:flex-start;flex-direction:column}}
-    .public-catalog{width:min(100% - 32px,1100px);margin:0 auto 64px}
+    .public-catalog{width:min(100% - 32px,1160px);margin:24px auto 54px}
+    .catalog-hero{display:grid;grid-template-columns:1.35fr .85fr;gap:36px;align-items:center;padding:clamp(26px,5vw,58px);border-radius:24px;background:linear-gradient(125deg,#102c20 0%,#1e5138 58%,#276747 100%);color:#fff;overflow:hidden;position:relative}
+    .catalog-hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff20;border-radius:50%;right:-110px;top:-160px;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff06;pointer-events:none}
+    .catalog-hero-copy,.catalog-hero-aside{position:relative;z-index:1}
+    .catalog-hero .eyebrow{color:#a9dfb8;text-transform:uppercase;letter-spacing:.14em;font-weight:700;font-size:.75rem}
+    .catalog-hero h1{font:800 clamp(2.2rem,5vw,4rem)/1.04 Syne,sans-serif;letter-spacing:-.04em;margin:16px 0}
+    .catalog-hero h1 span{color:#a9dfb8}
+    .catalog-hero-copy>p{max-width:610px;color:#e0eee4;line-height:1.75;font-size:1.02rem;margin:0}
+    .catalog-hero-link{display:inline-flex;align-items:center;gap:14px;margin-top:25px;padding:12px 17px;border-radius:9px;background:#f5fbf5;color:#1b5035;text-decoration:none;font-weight:700;font-size:.9rem}
+    .catalog-hero-link:hover{background:#dff2e3}
+    .catalog-hero-aside{display:grid;gap:0;border:1px solid #ffffff35;border-radius:15px;background:#ffffff0b;backdrop-filter:blur(4px)}
+    .catalog-hero-aside div{display:flex;align-items:center;gap:15px;padding:17px 18px;border-bottom:1px solid #ffffff25}
+    .catalog-hero-aside div:last-child{border-bottom:0}
+    .catalog-hero-aside strong{font:700 .85rem Syne,sans-serif;color:#a9dfb8}
+    .catalog-hero-aside span{font-size:.88rem;line-height:1.45;color:#f0f7f1}
+    .catalog-heading{text-align:left;margin:46px 0 22px;max-width:720px}
+    .catalog-heading .eyebrow{color:#40916c;text-transform:uppercase;letter-spacing:.13em;font-weight:700;font-size:.75rem}
+    .catalog-heading h2{font-family:Syne,sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);margin:8px 0}
+    .catalog-heading p{color:#718078;line-height:1.6;margin:0}
+    .catalog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .catalog-card{background:#fff;border:1px solid #e1e9e1;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 28px #1733260a;transition:transform .18s ease,box-shadow .18s ease}
+    .catalog-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px #17332612}
+    .catalog-cover{width:100%;height:205px;object-fit:cover;background:#edf4ed}
+    .catalog-cover-placeholder{height:205px;display:grid;place-items:center;background:linear-gradient(145deg,#173326,#2d6a4f);color:#b7e4c7;font:700 1.2rem Syne,sans-serif}
+    .catalog-card-body{padding:22px;display:flex;flex-direction:column;gap:13px;flex:1}
+    .catalog-card h3{font:700 1.18rem/1.35 Syne,sans-serif;color:#214b37;margin:0}
+    .catalog-card p{margin:0;color:#718078;line-height:1.65;font-size:.92rem}
+    .catalog-meta{display:flex;gap:8px;flex-wrap:wrap;color:#385648;font-size:.82rem;font-weight:600}
+    .catalog-meta span{background:#edf8f0;border-radius:99px;padding:7px 10px}
+    .catalog-details{border-top:1px solid #e8eee8;padding-top:11px}
+    .catalog-details summary{color:#2d6a4f;font-size:.86rem;font-weight:700;cursor:pointer}
+    .catalog-details p{margin-top:10px;white-space:pre-line}
+    .catalog-cta{margin-top:auto;border:0;border-radius:9px;background:#2d6a4f;color:white;padding:13px 15px;font:700 .9rem 'DM Sans';cursor:pointer}
+    .catalog-cta:hover{background:#1b5035}
+    .catalog-note{font-size:.82rem!important;color:#849087!important}
+    .catalog-empty{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:26px;background:#fff;border:1px solid #dce9df;border-radius:16px}
+    .catalog-empty-mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#edf8f0;color:#2d6a4f;font:800 1.2rem Syne,sans-serif}
+    .catalog-empty h3{font:700 1.05rem Syne,sans-serif;color:#214b37;margin:1px 0 6px}
+    .catalog-empty p{margin:0;color:#718078;font-size:.9rem;line-height:1.6}
+    .catalog-empty button{margin-top:14px;border:1px solid #cfe2d4;border-radius:8px;background:#f4faf4;color:#245d3a;padding:9px 12px;font:700 .85rem 'DM Sans';cursor:pointer}
+    .catalog-footnote{margin-top:22px;padding-top:15px;border-top:1px solid #e1e9e1;color:#8a958d;font-size:.8rem}
+    @media(max-width:760px){.catalog-hero{grid-template-columns:1fr;gap:26px}.catalog-hero-aside{max-width:100%}.catalog-heading{margin-top:34px}}
+    @media(max-width:600px){.public-catalog{margin:14px auto 38px}.catalog-hero{padding:26px 22px;border-radius:18px}.catalog-hero h1{font-size:2.25rem}.catalog-hero-copy>p{font-size:.94rem}.catalog-empty{grid-template-columns:1fr}.catalog-grid{grid-template-columns:1fr}}
     .public-catalog[hidden]{display:none}
     .catalog-heading{text-align:center;margin:0 auto 28px;max-width:680px}
     .catalog-heading h2{font-family:Syne,sans-serif;font-size:clamp(1.7rem,3.5vw,2.4rem);margin:8px 0}
@@ -228,7 +270,7 @@
     <a class="brand" href="./">Vitro<span>Corp</span> EC</a>
     <a class="back" href="./">← Volver al sitio</a>
   </header>
-  <main>
+  <main id="academy-access">
     <section class="intro">
       <div class="eyebrow">Formación científica aplicada</div>
       <h1>Bienvenido a<br>VitroCorp Academy.</h1>
@@ -443,14 +485,28 @@
     </section>
   </main>
   <section class="public-catalog" id="public-catalog" aria-labelledby="catalog-title">
+    <div class="catalog-hero">
+      <div class="catalog-hero-copy">
+        <div class="eyebrow">VitroCorp EC · Formación científica aplicada</div>
+        <h1 id="catalog-title">Aprende ciencia.<br><span>Desarrolla capacidades.</span></h1>
+        <p>Formación especializada para llevar conocimientos de biotecnología a la práctica, con contenidos estructurados, actividades y seguimiento de aprendizaje.</p>
+        <a class="catalog-hero-link" href="#academy-access">Acceder a mi cuenta <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="catalog-hero-aside" aria-label="Características de VitroCorp Academy">
+        <div><strong>01</strong><span>Contenido académico organizado por sesiones</span></div>
+        <div><strong>02</strong><span>Actividades y evaluaciones con revisión docente</span></div>
+        <div><strong>03</strong><span>Seguimiento del progreso y certificados sujetos a aprobación</span></div>
+      </div>
+    </div>
     <div class="catalog-heading">
       <div class="eyebrow">Oferta académica</div>
-      <h2 id="catalog-title">Cursos de VitroCorp Academy</h2>
-      <p>Formación aplicada en biotecnología vegetal, cultivo in vitro y bioemprendimiento.</p>
+      <h2>Cursos disponibles</h2>
+      <p>Explora los programas publicados. Los cursos se habilitan aquí cuando su información y acceso están listos.</p>
     </div>
-    <div class="catalog-grid" id="public-course-list">
+    <div class="catalog-grid" id="public-course-list" aria-live="polite">
       <div class="dash-empty">Consultando los cursos disponibles…</div>
     </div>
+    <div class="catalog-footnote">VitroCorp Academy · Educación científica con enfoque práctico.</div>
   </section>
   <section class="public-catalog" id="certificate-verification" hidden>
     <div class="dash-section">
@@ -594,8 +650,25 @@
 
       if (!data?.length) {
         const notice = document.createElement('div');
-        notice.className = 'dash-empty';
-        notice.textContent = 'Estamos preparando los primeros cursos de VitroCorp Academy. Próximamente publicaremos aquí la oferta formativa.';
+        notice.className = 'catalog-empty';
+        const mark = document.createElement('div');
+        mark.className = 'catalog-empty-mark';
+        mark.textContent = 'VC';
+        const content = document.createElement('div');
+        const heading = document.createElement('h3');
+        heading.textContent = 'Estamos preparando la primera oferta académica';
+        const description = document.createElement('p');
+        description.textContent = 'Pronto encontrarás aquí los cursos disponibles. Mientras tanto, puedes crear tu cuenta de Academy para tener listo tu acceso cuando se habiliten las matrículas.';
+        const action = document.createElement('button');
+        action.type = 'button';
+        action.textContent = 'Crear cuenta en Academy';
+        action.addEventListener('click', () => {
+          setMode('signup');
+          document.getElementById('academy-access').scrollIntoView({behavior:'smooth',block:'start'});
+          nameInput.focus({preventScroll:true});
+        });
+        content.append(heading,description,action);
+        notice.append(mark,content);
         publicCourseList.append(notice);
         return;
       }
@@ -629,32 +702,44 @@
         const name = document.createElement('h3');
         name.textContent = course.title || 'Curso de VitroCorp Academy';
         const description = document.createElement('p');
-        description.textContent = course.short_description || course.description || 'Formación científica aplicada.';
+        description.textContent = course.short_description || 'Formación científica aplicada.';
         const meta = document.createElement('div');
         meta.className = 'catalog-meta';
         const price = document.createElement('span');
         price.textContent = new Intl.NumberFormat('es-EC', { style: 'currency', currency: course.currency || 'USD' }).format(Number(course.price || 0));
         const duration = document.createElement('span');
-        duration.textContent = 'Acceso: ' + course.access_duration_days + ' días';
+        duration.textContent = 'Acceso: ' + Number(course.access_duration_days || 0) + ' días';
         meta.append(price, duration);
+        body.append(name, description, meta);
+
+        if (course.description) {
+          const details = document.createElement('details');
+          details.className = 'catalog-details';
+          const summary = document.createElement('summary');
+          summary.textContent = 'Ver descripción del programa';
+          const fullDescription = document.createElement('p');
+          fullDescription.textContent = course.description;
+          details.append(summary, fullDescription);
+          body.append(details);
+        }
+
         const note = document.createElement('p');
         note.className = 'catalog-note';
-        note.textContent = 'Inicia sesión o crea una cuenta para solicitar tu inscripción. El pago se valida antes de activar el acceso.';
-        body.append(name, description, meta, note);
+        note.textContent = 'La inscripción se completa desde tu cuenta. El acceso se activa después de la validación del pago.';
         const action = document.createElement('button');
-        action.type = 'button'; action.className = 'catalog-cta';
+        action.type = 'button';
+        action.className = 'catalog-cta';
         action.textContent = 'Acceder para inscribirme';
-        action.addEventListener('click',()=>{
-          document.querySelector('.panel').scrollIntoView({behavior:'smooth',block:'center'});
-          document.getElementById('email').focus();
-          showMessage('Inicia sesión o crea una cuenta para solicitar la inscripción.','success');
+        action.addEventListener('click', () => {
+          document.getElementById('academy-access').scrollIntoView({behavior:'smooth',block:'start'});
+          document.getElementById('email').focus({preventScroll:true});
+          showMessage('Inicia sesión o crea una cuenta para solicitar la inscripción.', 'success');
         });
-        body.append(action);
+        body.append(note, action);
         card.append(body);
         publicCourseList.append(card);
       });
     }
-
 
     const studentPaymentList = document.getElementById('student-payment-list');
     const adminPaymentList = document.getElementById('admin-payment-list');
