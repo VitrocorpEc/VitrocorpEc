@@ -92,6 +92,11 @@
     .catalog-cta{margin-top:auto;border:0;border-radius:9px;background:#2d6a4f;color:white;padding:12px 15px;font:600 .9rem 'DM Sans';cursor:pointer}
     .catalog-note{font-size:.82rem!important;color:#849087!important}
     @media(max-width:600px){.public-catalog{margin-bottom:40px}}
+    .video-test{background:#f7faf7;border:1px solid #dce9df;border-radius:14px;padding:18px;display:grid;gap:12px}
+    .video-test h3{font:700 1rem Syne,sans-serif;color:#214b37;margin:0}
+    .video-test p{margin:0;color:#718078;font-size:.9rem;line-height:1.5}
+    .video-test-frame{position:relative;width:100%;aspect-ratio:16/9;background:#10251b;border-radius:12px;overflow:hidden}
+    .video-test-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 </style>
 </head>
 <body>
@@ -157,6 +162,21 @@
 
     <section class="admin-panel" id="admin-dashboard" hidden aria-label="Panel administrativo">
       <div><div class="eyebrow">Administración privada</div><h2>Gestión de VitroCorp Academy</h2><p class="dash-muted">Crea cursos, edita su información y controla su publicación.</p></div>
+      <section class="video-test" aria-label="Prueba temporal del reproductor">
+        <h3>Prueba temporal del reproductor de clases</h3>
+        <p>Este video es únicamente una prueba técnica. No está asociado a ningún curso ni se muestra a estudiantes.</p>
+        <div class="video-test-frame">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/RRY5A4StrSE"
+            title="Video de prueba de VitroCorp Academy"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <p>Video alojado en YouTube con visibilidad «Oculto / No listado».</p>
+      </section>
       <form id="course-form" class="admin-form">
         <input type="hidden" id="course-id">
         <div class="full"><label for="course-title">Nombre del curso</label><input id="course-title" required maxlength="160" placeholder="Nombre del curso"></div>
