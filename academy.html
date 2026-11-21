@@ -127,6 +127,7 @@
     .video-frame{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#10251a}
     .learning-material{color:#2d6a4f;font-weight:600}
     .learning-note{color:#718078;font-size:.88rem;line-height:1.5}
+    .lesson-completion{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}.lesson-completion button{border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:11px 15px;font:600 .9rem 'DM Sans';cursor:pointer}.lesson-completion button.completed{background:#edf8f0;color:#245d3a;border:1px solid #cfe2d4}.lesson-completion small{color:#2d6a4f;font-weight:600}
     @media(max-width:600px){.learning-lesson{align-items:flex-start;flex-direction:column}.learning-area{padding:14px}}
 </style>
 </head>
@@ -486,7 +487,21 @@
       container.replaceChildren(box);
     }
 
-    function playLesson(lesson) {
+    const simulationProgressKey='vitrocorp_academy_demo_progress_v1';
+    function getSimulationProgress() {
+      try { return JSON.parse(localStorage.getItem(simulationProgressKey) || '{}'); }
+      catch (_) { return {}; }
+    }
+    function setSimulationLessonCompleted(lessonId, completed) {
+      const progress=getSimulationProgress();
+      if(completed) progress[lessonId]=true;
+      else delete progress[lessonId];
+      try { localStorage.setItem(simulationProgressKey,JSON.stringify(progress)); }
+      catch (_) {}
+      return Boolean(progress[lessonId]);
+    }
+
+    function playLesson(lesson, enrollmentSimulation=false) {
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
       heading.textContent=lesson.title || 'Lección';
@@ -526,6 +541,31 @@
             learningPlayer.append(link);
           }
         } catch (_) {}
+      }
+      if(enrollmentSimulation) {
+        const completion=document.createElement('div');
+        completion.className='lesson-completion';
+        const button=document.createElement('button');
+        button.type='button';
+        const status=document.createElement('small');
+        const refreshCompletion=()=>{
+          const done=Boolean(getSimulationProgress()[lesson.id]);
+          button.textContent=done?'Marcar como pendiente':'Marcar como completada';
+          button.classList.toggle('completed',done);
+          status.textContent=done?'✓ Lección completada en esta prueba':'Aún no has completado esta lección';
+        };
+        button.addEventListener('click',()=>{
+          const done=Boolean(getSimulationProgress()[lesson.id]);
+          setSimulationLessonCompleted(lesson.id,!done);
+          refreshCompletion();
+        });
+        completion.append(button,status);
+        learningPlayer.append(completion);
+        refreshCompletion();
+        const note=document.createElement('p');
+        note.className='learning-note';
+        note.textContent='Progreso de demostración guardado solo en este navegador; no se envía a Supabase.';
+        learningPlayer.append(note);
       }
     }
 
@@ -608,7 +648,7 @@
           open.type='button';
           open.className='lesson-select';
           open.textContent='Ver lección';
-          open.addEventListener('click',()=>playLesson(lesson));
+          open.addEventListener('click',()=>playLesson(lesson,enrollmentSimulation));
           row.append(info,open);
           list.append(row);
         });
@@ -616,7 +656,7 @@
         learningModules.append(card);
       });
       const firstLesson=(lessons||[])[0];
-      if(firstLesson) playLesson(firstLesson);
+      if(firstLesson) playLesson(firstLesson,enrollmentSimulation);
       else showLearningMessage(learningPlayer,'Este curso todavía no tiene lecciones publicadas.');
     }
 
