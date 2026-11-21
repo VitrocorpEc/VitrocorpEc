@@ -105,6 +105,9 @@
     .content-status{font-size:.76rem;font-weight:700;color:#2d6a4f}
     .content-status.draft{color:#8a6420}
     .learning-area{display:grid;gap:18px;background:#f8fbf8;border:1px solid #dce9df;border-radius:14px;padding:20px;margin:20px 0}
+    .preview-notice{background:#fff8e8;border:1px solid #ead7a7;color:#73551b;border-radius:10px;padding:12px 14px;font-size:.88rem;line-height:1.5}
+    .admin-course-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .admin-course button.preview-button{background:#edf8f0;border-color:#cfe2d4}
     .learning-area[hidden]{display:none}
     .learning-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
     .learning-head h2{margin:0}
@@ -185,6 +188,7 @@
           <div><div class="eyebrow">Aula virtual</div><h2 id="learning-title">Curso</h2></div>
           <button type="button" class="learning-back" id="learning-back">← Volver a mis cursos</button>
         </div>
+        <div class="preview-notice" id="admin-preview-notice" hidden>Vista previa exclusiva de administración. Puedes revisar contenido en borrador sin publicar el curso ni crear matrículas. Esta vista no representa el acceso de un estudiante.</div>
         <div class="learning-modules" id="learning-modules"><div class="dash-empty">Selecciona un curso para consultar sus módulos.</div></div>
         <div class="learning-player" id="learning-player">
           <h3>Selecciona una lección</h3>
@@ -443,9 +447,18 @@
       }
     }
 
-    async function openCourseContent(courseId, title) {
+    async function openCourseContent(courseId, title, adminPreview=false) {
+      if (adminPreview) {
+        const {data: isAdmin,error: adminError}=await supabase.rpc('is_current_user_admin');
+        if (adminError || isAdmin!==true) {
+          showMessage('No tienes autorización para abrir la vista previa administrativa.','error');
+          return;
+        }
+      }
       courseLearning.hidden=false;
-      learningTitle.textContent=title || 'Contenido del curso';
+      document.getElementById('admin-preview-notice').hidden=!adminPreview;
+      document.getElementById('learning-back').textContent=adminPreview?'← Volver a administración':'← Volver a mis cursos';
+      learningTitle.textContent=(title || 'Contenido del curso')+(adminPreview?' · Vista previa':'');
       showLearningMessage(learningModules,'Cargando módulos y lecciones…');
       showLearningMessage(learningPlayer,'Selecciona una lección para comenzar.');
       courseLearning.scrollIntoView({behavior:'smooth',block:'start'});
@@ -517,8 +530,11 @@
     }
 
     document.getElementById('learning-back').addEventListener('click',()=>{
+      const wasAdminPreview=!document.getElementById('admin-preview-notice').hidden;
       courseLearning.hidden=true;
-      document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
+      document.getElementById('admin-preview-notice').hidden=true;
+      if(wasAdminPreview) document.getElementById('admin-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
+      else document.getElementById('my-courses').scrollIntoView({behavior:'smooth',block:'start'});
     });
 
     async function renderDashboard(user) {
@@ -639,6 +655,9 @@
         const item=document.createElement('div');item.className='admin-course';const info=document.createElement('div');
         const name=document.createElement('strong');name.textContent=course.title;
         const details=document.createElement('small');details.textContent=course.slug+' · $'+Number(course.price).toFixed(2)+' · '+course.access_duration_days+' días · '+course.status;info.append(name,details);
+        const actions=document.createElement('div');actions.className='admin-course-actions';
+        const preview=document.createElement('button');preview.type='button';preview.className='preview-button';preview.textContent='Vista previa del aula';
+        preview.addEventListener('click',()=>openCourseContent(course.id,course.title,true));
         const edit=document.createElement('button');edit.type='button';edit.textContent='Editar';
         edit.addEventListener('click',()=>{
           document.getElementById('course-id').value=course.id;document.getElementById('course-title').value=course.title||'';
@@ -648,7 +667,7 @@
           document.getElementById('course-cover').value=course.cover_image_url||'';document.getElementById('course-renewal').checked=Boolean(course.allow_renewal);
           document.getElementById('course-repurchase').checked=Boolean(course.allow_repurchase);document.getElementById('course-save').textContent='Actualizar curso';
           courseCancel.hidden=false;adminCourseForm.scrollIntoView({behavior:'smooth',block:'start'});
-        });item.append(info,edit);adminCourseList.append(item);
+        });actions.append(preview,edit);item.append(info,actions);adminCourseList.append(item);
       });
     }
     const moduleForm = document.getElementById('module-form');
