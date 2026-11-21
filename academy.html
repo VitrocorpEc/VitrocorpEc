@@ -92,11 +92,18 @@
     .catalog-cta{margin-top:auto;border:0;border-radius:9px;background:#2d6a4f;color:white;padding:12px 15px;font:600 .9rem 'DM Sans';cursor:pointer}
     .catalog-note{font-size:.82rem!important;color:#849087!important}
     @media(max-width:600px){.public-catalog{margin-bottom:40px}}
-    .video-test{background:#f7faf7;border:1px solid #dce9df;border-radius:14px;padding:18px;display:grid;gap:12px}
-    .video-test h3{font:700 1rem Syne,sans-serif;color:#214b37;margin:0}
-    .video-test p{margin:0;color:#718078;font-size:.9rem;line-height:1.5}
-    .video-test-frame{position:relative;width:100%;aspect-ratio:16/9;background:#10251b;border-radius:12px;overflow:hidden}
-    .video-test-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .content-manager{display:grid;gap:18px;background:#f8fbf8;border:1px solid #dce9df;border-radius:14px;padding:18px}
+    .content-manager h3{font:700 1rem Syne,sans-serif;color:#214b37;margin:0 0 8px}
+    .content-manager .admin-form{background:#fff;border:1px solid #e4ebe4;border-radius:12px;padding:16px}
+    .content-manager .admin-form input[type="checkbox"]{width:auto}
+    .content-manager .admin-form input,.content-manager .admin-form textarea,.content-manager .admin-form select{min-width:0}
+    .content-entry{border:1px solid #e4ebe4;border-radius:12px;padding:14px;background:#fff}
+    .content-entry strong{display:block;color:#214b37;margin-bottom:5px}
+    .content-entry small{color:#718078;line-height:1.5}
+    .content-entry .lesson-row{padding:9px 0 0 14px;margin-top:9px;border-top:1px solid #edf1ed}
+    .content-entry .lesson-row strong{font-size:.9rem}
+    .content-status{font-size:.76rem;font-weight:700;color:#2d6a4f}
+    .content-status.draft{color:#8a6420}
 </style>
 </head>
 <body>
@@ -162,20 +169,30 @@
 
     <section class="admin-panel" id="admin-dashboard" hidden aria-label="Panel administrativo">
       <div><div class="eyebrow">Administración privada</div><h2>Gestión de VitroCorp Academy</h2><p class="dash-muted">Crea cursos, edita su información y controla su publicación.</p></div>
-      <section class="video-test" aria-label="Prueba temporal del reproductor">
-        <h3>Prueba temporal del reproductor de clases</h3>
-        <p>Este video es únicamente una prueba técnica. No está asociado a ningún curso ni se muestra a estudiantes.</p>
-        <div class="video-test-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/RRY5A4StrSE"
-            title="Video de prueba de VitroCorp Academy"
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <p>Video alojado en YouTube con visibilidad «Oculto / No listado».</p>
+      <section class="content-manager" aria-label="Gestión de módulos y lecciones">
+        <div><h2>Contenido académico</h2><p class="dash-muted">Organiza los cursos en módulos y añade lecciones con videos de YouTube no listados y presentaciones.</p></div>
+        <form id="module-form" class="admin-form">
+          <div class="full"><h3>Crear módulo</h3></div>
+          <div class="full"><label for="module-course">Curso</label><select id="module-course" required><option value="">Selecciona un curso</option></select></div>
+          <div class="full"><label for="module-title">Nombre del módulo</label><input id="module-title" required maxlength="180" placeholder="Ej. Fundamentos de cultivo in vitro"></div>
+          <div class="full"><label for="module-description">Descripción</label><textarea id="module-description" rows="2"></textarea></div>
+          <div><label for="module-order">Orden</label><input id="module-order" type="number" min="0" step="1" value="1"></div>
+          <div class="full admin-checks"><label><input id="module-published" type="checkbox"> Módulo visible para estudiantes (requiere curso publicado y matrícula activa)</label></div>
+          <div class="full"><button class="admin-button" id="module-save" type="submit">Crear módulo</button></div>
+        </form>
+        <form id="lesson-form" class="admin-form">
+          <div class="full"><h3>Agregar lección</h3></div>
+          <div class="full"><label for="lesson-module">Módulo</label><select id="lesson-module" required><option value="">Primero crea o selecciona un módulo</option></select></div>
+          <div class="full"><label for="lesson-title">Nombre de la lección</label><input id="lesson-title" required maxlength="180" placeholder="Ej. Introducción a la micropropagación"></div>
+          <div class="full"><label for="lesson-description">Descripción o instrucciones</label><textarea id="lesson-description" rows="2"></textarea></div>
+          <div class="full"><label for="lesson-video">Enlace o ID del video de YouTube</label><input id="lesson-video" placeholder="https://youtu.be/XXXXXXXXXXX"></div>
+          <div class="full"><label for="lesson-presentation">Enlace de presentación o material (opcional)</label><input id="lesson-presentation" type="url" placeholder="https://..."></div>
+          <div><label for="lesson-order">Orden</label><input id="lesson-order" type="number" min="0" step="1" value="1"></div>
+          <div><label for="lesson-duration">Duración (minutos)</label><input id="lesson-duration" type="number" min="1" step="1" placeholder="Ej. 15"></div>
+          <div class="full admin-checks"><label><input id="lesson-published" type="checkbox"> Lección visible para estudiantes (requiere módulo publicado y matrícula activa)</label></div>
+          <div class="full"><button class="admin-button" id="lesson-save" type="submit">Agregar lección</button></div>
+        </form>
+        <div><h3>Módulos y lecciones registrados</h3><div class="admin-course-list" id="admin-content-list"><div class="dash-empty">Cargando contenido…</div></div></div>
       </section>
       <form id="course-form" class="admin-form">
         <input type="hidden" id="course-id">
@@ -406,6 +423,7 @@
       if (!adminStatusError && adminStatus === true) {
         adminDashboard.hidden = false;
         await loadAdminCourses();
+        await loadContentManager();
       } else {
         adminDashboard.hidden = true;
       }
@@ -444,6 +462,91 @@
         });item.append(info,edit);adminCourseList.append(item);
       });
     }
+    const moduleForm = document.getElementById('module-form');
+    const lessonForm = document.getElementById('lesson-form');
+    const moduleCourseSelect = document.getElementById('module-course');
+    const lessonModuleSelect = document.getElementById('lesson-module');
+    const adminContentList = document.getElementById('admin-content-list');
+
+    async function loadContentManager() {
+      const {data: courses, error: coursesError} = await supabase.from('courses').select('id,title').order('created_at',{ascending:false});
+      moduleCourseSelect.replaceChildren(new Option('Selecciona un curso',''));
+      if (coursesError) { showAdminMessage('No se pudieron cargar los cursos para gestionar el contenido.','error'); return; }
+      (courses || []).forEach(course => moduleCourseSelect.add(new Option(course.title,course.id)));
+
+      const {data: modules, error} = await supabase.from('course_modules').select('id,course_id,title,description,sort_order,is_published').order('sort_order',{ascending:true});
+      if (error) { adminContentList.textContent='No se pudieron cargar los módulos. '+error.message; return; }
+      lessonModuleSelect.replaceChildren(new Option('Selecciona un módulo',''));
+      const courseById = new Map((courses || []).map(course=>[course.id,course.title]));
+      (modules || []).forEach(module => lessonModuleSelect.add(new Option((courseById.get(module.course_id)||'Curso')+' · '+module.title,module.id)));
+      adminContentList.replaceChildren();
+      if (!modules?.length) {
+        const empty=document.createElement('div');empty.className='dash-empty';empty.textContent='Todavía no hay módulos. Crea el primer módulo para comenzar a organizar las clases.';adminContentList.append(empty);return;
+      }
+      const {data: lessons, error: lessonError} = await supabase.from('course_lessons').select('id,module_id,title,description,youtube_video_id,presentation_url,sort_order,duration_minutes,is_published').order('sort_order',{ascending:true});
+      if (lessonError) { showAdminMessage('No se pudieron cargar las lecciones.','error'); }
+      modules.forEach(module => {
+        const card=document.createElement('article');card.className='content-entry';
+        const heading=document.createElement('strong');heading.textContent=(courseById.get(module.course_id)||'Curso')+' · '+module.title;
+        const meta=document.createElement('small');meta.textContent='Orden '+module.sort_order+' · '+(module.is_published?'Publicado':'Borrador')+(module.description?' · '+module.description:'');
+        const status=document.createElement('div');status.className='content-status'+(module.is_published?'':' draft');status.textContent=module.is_published?'Módulo publicado':'Módulo en borrador';
+        card.append(heading,meta,status);
+        const moduleLessons=(lessons||[]).filter(lesson=>lesson.module_id===module.id);
+        if (!moduleLessons.length) { const empty=document.createElement('small');empty.textContent='Aún no hay lecciones en este módulo.';card.append(empty); }
+        moduleLessons.forEach(lesson=>{
+          const row=document.createElement('div');row.className='lesson-row';
+          const title=document.createElement('strong');title.textContent=lesson.title;
+          const detail=document.createElement('small');detail.textContent='Orden '+lesson.sort_order+' · '+(lesson.duration_minutes?lesson.duration_minutes+' min · ':'')+(lesson.youtube_video_id?'Video de YouTube':'Sin video')+(lesson.presentation_url?' · Material adjunto':'');
+          const state=document.createElement('div');state.className='content-status'+(lesson.is_published?'':' draft');state.textContent=lesson.is_published?'Lección publicada':'Lección en borrador';
+          row.append(title,detail,state);card.append(row);
+        });
+        adminContentList.append(card);
+      });
+    }
+
+    moduleForm.addEventListener('submit',async event=>{
+      event.preventDefault();
+      const button=document.getElementById('module-save');button.disabled=true;
+      const payload={course_id:moduleCourseSelect.value,title:document.getElementById('module-title').value.trim(),description:document.getElementById('module-description').value.trim()||null,sort_order:Number(document.getElementById('module-order').value||0),is_published:document.getElementById('module-published').checked};
+      try {
+        const {error}=await supabase.from('course_modules').insert(payload);
+        if(error) throw error;
+        moduleForm.reset();document.getElementById('module-order').value='1';
+        showAdminMessage('Módulo creado correctamente.');await loadContentManager();
+      } catch(error) { showAdminMessage(error.message||'No se pudo crear el módulo.','error'); }
+      finally { button.disabled=false; }
+    });
+
+    function getYouTubeId(value) {
+      const raw=(value||'').trim();
+      if(!raw) return null;
+      if(/^[A-Za-z0-9_-]{11}$/.test(raw)) return raw;
+      try {
+        const url=new URL(raw);
+        let id='';
+        if(url.hostname==='youtu.be') id=url.pathname.slice(1);
+        else if(url.hostname.endsWith('youtube.com')) id=url.searchParams.get('v')||url.pathname.split('/').filter(Boolean).pop()||'';
+        return /^[A-Za-z0-9_-]{11}$/.test(id)?id:null;
+      } catch(_) { return null; }
+    }
+
+    lessonForm.addEventListener('submit',async event=>{
+      event.preventDefault();
+      const button=document.getElementById('lesson-save');button.disabled=true;
+      const videoInput=document.getElementById('lesson-video').value;
+      const videoId=getYouTubeId(videoInput);
+      if(videoInput.trim()&&!videoId) { showAdminMessage('El enlace de YouTube no parece válido. Pega el enlace o el ID de un video.','error');button.disabled=false;return; }
+      const durationValue=document.getElementById('lesson-duration').value;
+      const payload={module_id:lessonModuleSelect.value,title:document.getElementById('lesson-title').value.trim(),description:document.getElementById('lesson-description').value.trim()||null,youtube_video_id:videoId,presentation_url:document.getElementById('lesson-presentation').value.trim()||null,sort_order:Number(document.getElementById('lesson-order').value||0),duration_minutes:durationValue?Number(durationValue):null,is_published:document.getElementById('lesson-published').checked};
+      try {
+        const {error}=await supabase.from('course_lessons').insert(payload);
+        if(error) throw error;
+        lessonForm.reset();document.getElementById('lesson-order').value='1';
+        showAdminMessage('Lección agregada correctamente.');await loadContentManager();
+      } catch(error) { showAdminMessage(error.message||'No se pudo agregar la lección.','error'); }
+      finally { button.disabled=false; }
+    });
+
     adminCourseForm.addEventListener('submit',async event=>{
       event.preventDefault();const saveButton=document.getElementById('course-save');saveButton.disabled=true;
       const courseId=document.getElementById('course-id').value;
