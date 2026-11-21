@@ -417,6 +417,13 @@
       <div class="dash-empty">Consultando los cursos disponibles…</div>
     </div>
   </section>
+  <section class="public-catalog" id="certificate-verification" hidden>
+    <div class="dash-section">
+      <div class="eyebrow">Validación académica</div>
+      <h2>Verificación de certificado</h2>
+      <p class="dash-muted" id="certificate-verification-result">Consultando código…</p>
+    </div>
+  </section>
   <footer>© VitroCorp EC · VitroCorp Academy</footer>
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.2';
@@ -2203,6 +2210,29 @@
         else if (submit.textContent === 'Procesando…') submit.textContent = 'Iniciar sesión';
       }
     });
+
+
+    const verificationCode=new URLSearchParams(window.location.search).get('verify');
+    if(verificationCode){
+      const panel=document.getElementById('certificate-verification');
+      const result=document.getElementById('certificate-verification-result');
+      panel.hidden=false;
+      try{
+        const {data,error}=await supabase.rpc('verify_academy_certificate',{p_code:verificationCode});
+        if(error)throw error;
+        const cert=Array.isArray(data)?data[0]:data;
+        if(!cert){result.textContent='No encontramos un certificado con ese código. Verifica que esté escrito correctamente.';}
+        else{
+          result.textContent='';
+          const state=document.createElement('strong');state.textContent=cert.status==='issued'?'CERTIFICADO VÁLIDO':'CERTIFICADO REVOCADO';
+          const student=document.createElement('p');student.textContent='Titular: '+cert.student_name;
+          const course=document.createElement('p');course.textContent='Curso: '+cert.course_title;
+          const date=document.createElement('p');date.textContent='Fecha de emisión: '+new Date(cert.issued_at).toLocaleDateString('es-EC');
+          const code=document.createElement('p');code.textContent='Código: '+cert.certificate_code;
+          result.append(state,student,course,date,code);
+        }
+      }catch(error){result.textContent='No fue posible verificar el certificado en este momento.';}
+    }
 
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData.session?.user) {
