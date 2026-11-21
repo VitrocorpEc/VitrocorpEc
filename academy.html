@@ -135,6 +135,15 @@
     .catalog-empty p{margin:0;color:#718078;font-size:.9rem;line-height:1.6}
     .catalog-empty button{margin-top:14px;border:1px solid #cfe2d4;border-radius:8px;background:#f4faf4;color:#245d3a;padding:9px 12px;font:700 .85rem 'DM Sans';cursor:pointer}
     .catalog-footnote{margin-top:22px;padding-top:15px;border-top:1px solid #e1e9e1;color:#8a958d;font-size:.8rem}
+    .enrollment-steps{margin-top:28px;padding:26px;background:#fff;border:1px solid #dce9df;border-radius:16px}
+    .enrollment-steps h2{font:700 1.25rem Syne,sans-serif;color:#214b37;margin:0 0 7px}
+    .enrollment-steps>p{margin:0;color:#718078;line-height:1.6;font-size:.9rem}
+    .enrollment-steps-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+    .enrollment-step{padding:16px;border:1px solid #e5ede5;border-radius:12px;background:#fbfdfb}
+    .enrollment-step b{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#edf8f0;color:#2d6a4f;font:700 .9rem Syne,sans-serif;margin-bottom:11px}
+    .enrollment-step strong{display:block;color:#214b37;font:700 .92rem Syne,sans-serif;margin-bottom:6px}
+    .enrollment-step span{display:block;color:#718078;font-size:.85rem;line-height:1.55}
+    @media(max-width:760px){.enrollment-steps-grid{grid-template-columns:1fr}}
     @media(max-width:760px){.catalog-hero{grid-template-columns:1fr;gap:26px}.catalog-hero-aside{max-width:100%}.catalog-heading{margin-top:34px}}
     @media(max-width:600px){.public-catalog{margin:14px auto 38px}.catalog-hero{padding:26px 22px;border-radius:18px}.catalog-hero h1{font-size:2.25rem}.catalog-hero-copy>p{font-size:.94rem}.catalog-empty{grid-template-columns:1fr}.catalog-grid{grid-template-columns:1fr}}
     .public-catalog[hidden]{display:none}
@@ -506,6 +515,15 @@
     <div class="catalog-grid" id="public-course-list" aria-live="polite">
       <div class="dash-empty">Consultando los cursos disponibles…</div>
     </div>
+    <section class="enrollment-steps" aria-labelledby="enrollment-steps-title">
+      <h2 id="enrollment-steps-title">¿Cómo funciona la inscripción?</h2>
+      <p>El proceso es sencillo y el acceso al curso se habilita después de revisar el comprobante de pago.</p>
+      <div class="enrollment-steps-grid">
+        <article class="enrollment-step"><b>01</b><strong>Explora el programa</strong><span>Revisa la descripción, el precio y el tiempo de acceso de cada curso publicado.</span></article>
+        <article class="enrollment-step"><b>02</b><strong>Crea tu cuenta o inicia sesión</strong><span>Utiliza tu correo para acceder a tu espacio personal de aprendizaje.</span></article>
+        <article class="enrollment-step"><b>03</b><strong>Solicita tu inscripción</strong><span>Selecciona el curso, realiza la transferencia y carga el comprobante. El equipo de VitroCorp revisará el pago y activará tu matrícula si todo está correcto.</span></article>
+      </div>
+    </section>
     <div class="catalog-footnote">VitroCorp Academy · Educación científica con enfoque práctico.</div>
   </section>
   <section class="public-catalog" id="certificate-verification" hidden>
@@ -554,7 +572,7 @@
       loginTab.setAttribute('aria-selected', String(!signup));
       signupTab.setAttribute('aria-selected', String(signup));
       title.textContent = signup ? 'Crear cuenta' : 'Iniciar sesión';
-      hint.textContent = signup ? 'Regístrate para acceder a tus cursos cuando estén disponibles.' : 'Ingresa con el correo y la contraseña de tu cuenta.';
+      hint.textContent = signup ? 'Crea tu cuenta para solicitar la inscripción. Si ya tienes una cuenta, selecciona Iniciar sesión.' : 'Ingresa con tu cuenta para solicitar una inscripción o consultar tus cursos.';
       nameWrap.hidden = !signup;
       nameInput.required = signup;
       submit.textContent = signup ? 'Crear mi cuenta' : 'Iniciar sesión';
@@ -632,6 +650,13 @@
     const publicCatalog = document.getElementById('public-catalog');
     const publicCourseList = document.getElementById('public-course-list');
 
+    function startEnrollmentAccess() {
+      setMode('signup');
+      document.getElementById('academy-access').scrollIntoView({behavior:'smooth',block:'start'});
+      nameInput.focus({preventScroll:true});
+      showMessage('Crea tu cuenta para continuar. Si ya tienes una cuenta, selecciona “Iniciar sesión”. Después podrás solicitar la inscripción y enviar tu comprobante; el acceso se activa tras la validación del pago.','success');
+    }
+
     async function loadPublicCatalog() {
       publicCourseList.replaceChildren();
       const { data, error } = await supabase
@@ -662,11 +687,7 @@
         const action = document.createElement('button');
         action.type = 'button';
         action.textContent = 'Crear cuenta en Academy';
-        action.addEventListener('click', () => {
-          setMode('signup');
-          document.getElementById('academy-access').scrollIntoView({behavior:'smooth',block:'start'});
-          nameInput.focus({preventScroll:true});
-        });
+        action.addEventListener('click', startEnrollmentAccess);
         content.append(heading,description,action);
         notice.append(mark,content);
         publicCourseList.append(notice);
@@ -730,11 +751,7 @@
         action.type = 'button';
         action.className = 'catalog-cta';
         action.textContent = 'Acceder para inscribirme';
-        action.addEventListener('click', () => {
-          document.getElementById('academy-access').scrollIntoView({behavior:'smooth',block:'start'});
-          document.getElementById('email').focus({preventScroll:true});
-          showMessage('Inicia sesión o crea una cuenta para solicitar la inscripción.', 'success');
-        });
+        action.addEventListener('click', startEnrollmentAccess);
         body.append(note, action);
         card.append(body);
         publicCourseList.append(card);
