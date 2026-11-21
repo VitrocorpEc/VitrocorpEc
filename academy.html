@@ -929,6 +929,28 @@
         document.getElementById('enrollment-simulation-notice').hidden = false;
         const demoCourse = {id:'d8397b59-f5a7-4dbf-a7d9-a24f34dfed03',title:'Curso de prueba — No publicar',short_description:'Curso de demostración para comprobar la experiencia del estudiante.'};
         displayedEnrollments = [{id:'simulated-enrollment',course_id:demoCourse.id,status:'active',starts_at:new Date(Date.now()-60000).toISOString(),expires_at:new Date(Date.now()+30*24*60*60*1000).toISOString(),courses:demoCourse,_simulation:true}];
+      } else {
+        // Mostrar una sola matrícula por curso, priorizando el acceso vigente sobre registros históricos.
+        const preferredEnrollments = new Map();
+        const enrollmentRank = enrollment => {
+          const now = Date.now();
+          const startsAt = enrollment.starts_at ? new Date(enrollment.starts_at).getTime() : 0;
+          const expiresAt = enrollment.expires_at ? new Date(enrollment.expires_at).getTime() : Infinity;
+          if (enrollment.status === 'active' && startsAt <= now && expiresAt > now) return 4;
+          if (enrollment.status === 'active' && startsAt > now) return 3;
+          if (enrollment.status === 'pending') return 2;
+          if (enrollment.status === 'expired' || (enrollment.status === 'active' && expiresAt <= now)) return 1;
+          if (enrollment.status === 'revoked') return 0;
+          return 1;
+        };
+        displayedEnrollments.forEach(enrollment => {
+          const key = enrollment.course_id || enrollment.id;
+          const existing = preferredEnrollments.get(key);
+          if (!existing || enrollmentRank(enrollment) > enrollmentRank(existing)) {
+            preferredEnrollments.set(key, enrollment);
+          }
+        });
+        displayedEnrollments = Array.from(preferredEnrollments.values());
       }
 
       if (profileResult.error) {
