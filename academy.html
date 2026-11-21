@@ -742,7 +742,7 @@
         const defaultDays = action === 'activate' ? 90 : 30;
         const rawDays = window.prompt('¿Por cuántos días? (1 a 3650)', String(defaultDays));
         if (rawDays === null) return;
-        if (!/^\\d+$/.test(rawDays.trim())) { showAdminMessage('Introduce un número entero de días.','error'); return; }
+        if (!/^\d+$/.test(rawDays.trim())) { showAdminMessage('Introduce un número entero de días.','error'); return; }
         days = Number(rawDays);
         if (!Number.isInteger(days) || days < 1 || days > 3650) { showAdminMessage('Los días deben estar entre 1 y 3650.','error'); return; }
       }
