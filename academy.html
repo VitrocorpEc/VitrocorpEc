@@ -744,6 +744,44 @@
       }
     }
 
+    async function loadAdminOverview() {
+      const setMetric=(id,value)=>{const node=document.getElementById(id);if(node)node.textContent=String(value);};
+      const renderQueue=(id,result,type)=>{
+        const list=document.getElementById(id);if(!list)return;list.replaceChildren();
+        if(result.error){const e=document.createElement('div');e.className='dash-empty';e.textContent='No se pudo consultar esta cola. Revisa los permisos.';list.append(e);return;}
+        const rows=result.data||[];
+        if(!rows.length){const e=document.createElement('div');e.className='dash-empty';e.textContent='No hay elementos pendientes de revisión.';list.append(e);return;}
+        rows.slice(0,8).forEach(row=>{
+          const item=document.createElement('div');item.className='dash-item';
+          const info=document.createElement('div');
+          const activity=type==='assignment'?row.lesson_assignments:row.lesson_assessments;
+          const lesson=activity?.course_lessons;const module=lesson?.course_modules;const course=module?.courses;
+          const title=document.createElement('strong');title.textContent=activity?.title||(type==='assignment'?'Entrega':'Evaluación');
+          const detail=document.createElement('small');detail.textContent=(course?.title||'Curso')+' · '+(lesson?.title||'Sesión')+' · Usuario '+row.user_id+' · '+new Date(row.submitted_at).toLocaleString('es-EC');
+          info.append(title,detail);item.append(info);list.append(item);
+        });
+        if(rows.length>8){const note=document.createElement('small');note.textContent='Mostrando 8 de '+rows.length+' pendientes.';list.append(note);}
+      };
+      ['admin-overview-assignments','admin-overview-assessments','admin-overview-enrollments','admin-overview-payments'].forEach(id=>setMetric(id,'…'));
+      const [assignments,assessments,payments,enrollments]=await Promise.all([
+        supabase.from('assignment_submissions').select('id,user_id,status,submitted_at,lesson_assignments(title,course_lessons(title,course_modules(title,courses(title))))').eq('status','submitted').order('submitted_at',{ascending:true}).limit(100),
+        supabase.from('assessment_attempts').select('id,user_id,status,submitted_at,lesson_assessments(title,course_lessons(title,course_modules(title,courses(title))))').eq('status','submitted').order('submitted_at',{ascending:true}).limit(100),
+        supabase.from('payment_submissions').select('id,status').in('status',['pending','under_review']),
+        supabase.rpc('admin_list_enrollments')
+      ]);
+      setMetric('admin-overview-assignments',assignments.error?'Error':(assignments.data||[]).length);
+      setMetric('admin-overview-assessments',assessments.error?'Error':(assessments.data||[]).length);
+      setMetric('admin-overview-payments',payments.error?'Error':(payments.data||[]).length);
+      setMetric('admin-overview-enrollments',enrollments.error?'Error':(enrollments.data||[]).length);
+      renderQueue('admin-overview-assignment-list',assignments,'assignment');
+      renderQueue('admin-overview-assessment-list',assessments,'assessment');
+    }
+    const adminOverviewRefresh=document.getElementById('admin-overview-refresh');
+    if(adminOverviewRefresh)adminOverviewRefresh.addEventListener('click',async()=>{
+      adminOverviewRefresh.disabled=true;
+      try{await loadAdminOverview();}finally{adminOverviewRefresh.disabled=false;}
+    });
+
     async function loadAdminPayments() {
       if(!adminPaymentList) return;
       adminPaymentList.replaceChildren();
