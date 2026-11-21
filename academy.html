@@ -969,12 +969,18 @@
     }
 
     const lessonContentSources={
-      'c56f59c2-dc51-46ad-9d23-ddad08e7674f':'sesion-1-fundamentos-micropropagacion-bioseguridad.md',
-      '56d5fd4d-2190-4373-9d5d-2322d8c2e02b':'sesion-2-procesos-clave-cultivo-in-vitro.md',
-      '6d067cd6-cc3c-4775-8533-04a4265b73d2':'sesion-3-del-laboratorio-al-mercado.md',
-      'c078f863-1ee6-4a83-ba57-547645fa16f3':'sesion-4-modelo-negocio-biotecnologico.md',
-      '29ca02df-2ccb-46f9-93ad-a421d76ea151':'sesion-5-comunicar-ciencia-sin-perder-rigor.md',
-      'fd454b6d-d45b-485a-8c29-e8b97a4763ac':'sesion-6-divulgacion-cientifica-motor-negocio.md'
+      'c56f59c2-dc51-46ad-9d23-ddad08e7674f':{folder:'bioemprendimiento',filename:'sesion-1-fundamentos-micropropagacion-bioseguridad.md'},
+      '56d5fd4d-2190-4373-9d5d-2322d8c2e02b':{folder:'bioemprendimiento',filename:'sesion-2-procesos-clave-cultivo-in-vitro.md'},
+      '6d067cd6-cc3c-4775-8533-04a4265b73d2':{folder:'bioemprendimiento',filename:'sesion-3-del-laboratorio-al-mercado.md'},
+      'c078f863-1ee6-4a83-ba57-547645fa16f3':{folder:'bioemprendimiento',filename:'sesion-4-modelo-negocio-biotecnologico.md'},
+      '29ca02df-2ccb-46f9-93ad-a421d76ea151':{folder:'bioemprendimiento',filename:'sesion-5-comunicar-ciencia-sin-perder-rigor.md'},
+      'fd454b6d-d45b-485a-8c29-e8b97a4763ac':{folder:'bioemprendimiento',filename:'sesion-6-divulgacion-cientifica-motor-negocio.md'},
+      'c825c7c3-7a4a-4548-b33b-13f23e7eb500':{folder:'canamo',filename:'sesion-1-matriz-cumplimiento-normativo-canamo.md'},
+      '0a45fb21-f375-4e8d-8b6e-07801cc89319':{folder:'canamo',filename:'sesion-2-mapa-licencias-trazabilidad-documental.md'},
+      '46a7439b-06dd-4da4-870a-43b92a1fadd2':{folder:'canamo',filename:'sesion-3-biologia-requerimientos-agronomicos-canamo.md'},
+      '5366264a-77c9-4f4d-b629-2e19eeaa7b03':{folder:'canamo',filename:'sesion-4-propagacion-poscosecha-canamo.md'},
+      '28a8fd72-dd19-4421-aa8f-9e633f5dd9a0':{folder:'canamo',filename:'sesion-5-procesamiento-aplicaciones-industriales-canamo.md'},
+      '15286e05-4aac-41ee-96fa-931787102932':{folder:'canamo',filename:'sesion-6-modelo-negocio-producto-canamo.md'}
     };
     function escapeLessonHtml(value) {
       return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -1017,8 +1023,9 @@
       return html.join('');
     }
     async function loadLessonReading(lesson) {
-      const filename=lessonContentSources[lesson.id];
-      if(!filename) return;
+      const source=lessonContentSources[lesson.id];
+      if(!source) return;
+      const {folder,filename}=source;
       const section=document.createElement('section');
       section.className='lesson-reading';
       const status=document.createElement('p');
@@ -1027,7 +1034,7 @@
       section.append(status);
       learningPlayer.append(section);
       try {
-        const url='https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/bioemprendimiento/'+filename;
+        const url='https://raw.githubusercontent.com/VitrocorpEc/VitroCorpEc/academy/student-learning-preview/academy/content/'+folder+'/'+filename;
         const response=await fetch(url,{cache:'no-store'});
         if(!response.ok) throw new Error('No se pudo obtener el material.');
         const markdown=await response.text();
@@ -1038,7 +1045,7 @@
         if(!activeLearningLesson||activeLearningLesson.id!==lesson.id) return;
         status.textContent='No se pudo cargar el material en línea. Puedes consultar la versión fuente en GitHub.';
         const link=document.createElement('a');
-        link.href='https://github.com/VitrocorpEc/VitroCorpEc/blob/academy/student-learning-preview/academy/content/bioemprendimiento/'+filename;
+        link.href='https://github.com/VitrocorpEc/VitroCorpEc/blob/academy/student-learning-preview/academy/content/bioemprendimiento/'+folder+'/'+filename;
         link.target='_blank';link.rel='noopener noreferrer';link.textContent='Abrir material de la sesión';
         section.append(link);
       }
