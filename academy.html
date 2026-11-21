@@ -128,6 +128,7 @@
     .learning-material{color:#2d6a4f;font-weight:600}
     .learning-note{color:#718078;font-size:.88rem;line-height:1.5}
     .lesson-completion{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}.lesson-completion button{border:0;border-radius:9px;background:#2d6a4f;color:#fff;padding:11px 15px;font:600 .9rem 'DM Sans';cursor:pointer}.lesson-completion button.completed{background:#edf8f0;color:#245d3a;border:1px solid #cfe2d4}.lesson-completion small{color:#2d6a4f;font-weight:600}
+    .course-progress{background:#fff;border:1px solid #dce9df;border-radius:12px;padding:16px;display:grid;gap:9px}.course-progress[hidden]{display:none}.course-progress-head{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#294d39;font-weight:700;font-size:.9rem}.course-progress-track{height:10px;background:#e8efe9;border-radius:99px;overflow:hidden}.course-progress-fill{height:100%;width:0;background:#40916c;border-radius:99px;transition:width .2s ease}.course-progress small{color:#718078;font-size:.82rem}
     @media(max-width:600px){.learning-lesson{align-items:flex-start;flex-direction:column}.learning-area{padding:14px}}
 </style>
 </head>
@@ -202,6 +203,7 @@
         </div>
         <div class="preview-notice" id="admin-preview-notice" hidden>Vista previa exclusiva de administración. Puedes revisar contenido en borrador sin publicar el curso ni crear matrículas. Esta vista no representa el acceso de un estudiante.</div>
         <div class="simulation-notice" id="student-simulation-notice" hidden>Estás viendo un aula de demostración. El módulo y la lección se muestran como ejemplo; esta prueba no comprueba permisos reales ni crea una matrícula.</div>
+        <div class="course-progress" id="simulation-course-progress" hidden><div class="course-progress-head"><span>Progreso del curso</span><span id="simulation-progress-percent">0%</span></div><div class="course-progress-track" role="progressbar" id="simulation-progress-bar" aria-label="Progreso del curso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="course-progress-fill" id="simulation-progress-fill"></div></div><small id="simulation-progress-detail">0 de 0 lecciones completadas</small></div>
         <div class="learning-modules" id="learning-modules"><div class="dash-empty">Selecciona un curso para consultar sus módulos.</div></div>
         <div class="learning-player" id="learning-player">
           <h3>Selecciona una lección</h3>
@@ -501,6 +503,21 @@
       return Boolean(progress[lessonId]);
     }
 
+    function updateSimulationCourseProgress(lessons) {
+      const progress=getSimulationProgress();
+      const total=(lessons||[]).length;
+      const completed=(lessons||[]).filter(lesson=>Boolean(progress[lesson.id])).length;
+      const percent=total?Math.round(completed/total*100):0;
+      const percentLabel=document.getElementById('simulation-progress-percent');
+      const bar=document.getElementById('simulation-progress-bar');
+      const fill=document.getElementById('simulation-progress-fill');
+      const detail=document.getElementById('simulation-progress-detail');
+      if(percentLabel) percentLabel.textContent=percent+'%';
+      if(bar) bar.setAttribute('aria-valuenow',String(percent));
+      if(fill) fill.style.width=percent+'%';
+      if(detail) detail.textContent=completed+' de '+total+' lecciones completadas';
+    }
+
     function playLesson(lesson, enrollmentSimulation=false) {
       learningPlayer.replaceChildren();
       const heading=document.createElement('h3');
@@ -558,10 +575,12 @@
           const done=Boolean(getSimulationProgress()[lesson.id]);
           setSimulationLessonCompleted(lesson.id,!done);
           refreshCompletion();
+          updateSimulationCourseProgress([lesson]);
         });
         completion.append(button,status);
         learningPlayer.append(completion);
         refreshCompletion();
+        updateSimulationCourseProgress([lesson]);
         const note=document.createElement('p');
         note.className='learning-note';
         note.textContent='Progreso de demostración guardado solo en este navegador; no se envía a Supabase.';
@@ -580,6 +599,7 @@
       courseLearning.hidden=false;
       document.getElementById('admin-preview-notice').hidden=!adminPreview;
       document.getElementById('student-simulation-notice').hidden=!enrollmentSimulation;
+      document.getElementById('simulation-course-progress').hidden=!enrollmentSimulation;
       document.getElementById('learning-back').textContent=adminPreview?'← Volver a administración':'← Volver a mis cursos';
       learningTitle.textContent=(title || 'Contenido del curso')+(adminPreview?' · Vista previa':'');
       showLearningMessage(learningModules,'Cargando módulos y lecciones…');
@@ -614,6 +634,7 @@
         showLearningMessage(learningModules,'No pudimos cargar las lecciones. Intenta nuevamente.');
         return;
       }
+      if(enrollmentSimulation) updateSimulationCourseProgress(lessons||[]);
       learningModules.replaceChildren();
       modules.forEach(module=>{
         const card=document.createElement('article');
