@@ -55,14 +55,19 @@ Deno.serve(async (req: Request) => {
     return response({ error: "Method not allowed" }, 405, origin);
   }
 
-  const contentLength = Number(req.headers.get("content-length") || "0");
-  if (contentLength > 1024) {
+  let rawBody: string;
+  try {
+    rawBody = await req.text();
+  } catch {
+    return response({ error: "Invalid request" }, 400, origin);
+  }
+  if (new TextEncoder().encode(rawBody).byteLength > 1024) {
     return response({ error: "Invalid request" }, 413, origin);
   }
 
   let body: { code?: unknown };
   try {
-    body = await req.json();
+    body = JSON.parse(rawBody);
   } catch {
     return response({ error: "Invalid request" }, 400, origin);
   }
