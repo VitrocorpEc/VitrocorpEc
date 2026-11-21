@@ -764,16 +764,17 @@
     }
 
     async function loadAdminAnalytics() {
+      // Todos los indicadores operativos excluyen cursos en borrador y contenido no publicado.
       const metrics=[
         ['admin-analytics-courses',()=>supabase.from('courses').select('id',{count:'exact',head:true}).eq('status','published')],
-        ['admin-analytics-lessons',()=>supabase.from('course_lessons').select('id',{count:'exact',head:true}).eq('is_published',true)],
-        ['admin-analytics-enrollments',()=>supabase.from('enrollments').select('id',{count:'exact',head:true}).eq('status','active')],
-        ['admin-analytics-completions',()=>supabase.from('lesson_progress').select('id',{count:'exact',head:true}).not('completed_at','is',null)],
-        ['admin-analytics-certificates',()=>supabase.from('academy_certificates').select('id',{count:'exact',head:true}).eq('status','issued')],
+        ['admin-analytics-lessons',()=>supabase.from('course_lessons').select('id,course_modules!inner(courses!inner(status))',{count:'exact',head:true}).eq('is_published',true).eq('course_modules.courses.status','published')],
+        ['admin-analytics-enrollments',()=>supabase.from('enrollments').select('id,courses!inner(status)',{count:'exact',head:true}).eq('status','active').eq('courses.status','published')],
+        ['admin-analytics-completions',()=>supabase.from('lesson_progress').select('id,course_lessons!inner(is_published,course_modules!inner(is_published,courses!inner(status)))',{count:'exact',head:true}).not('completed_at','is',null).eq('course_lessons.is_published',true).eq('course_lessons.course_modules.is_published',true).eq('course_lessons.course_modules.courses.status','published')],
+        ['admin-analytics-certificates',()=>supabase.from('academy_certificates').select('id,courses!inner(status)',{count:'exact',head:true}).eq('status','issued').eq('courses.status','published')],
         ['admin-analytics-reviews',async()=>{
           const pair=await Promise.all([
-            supabase.from('assignment_submissions').select('id',{count:'exact',head:true}).eq('status','reviewed'),
-            supabase.from('assessment_attempts').select('id',{count:'exact',head:true}).eq('status','reviewed')
+            supabase.from('assignment_submissions').select('id,lesson_assignments!inner(course_lessons!inner(course_modules!inner(courses!inner(status))))',{count:'exact',head:true}).eq('status','reviewed').eq('lesson_assignments.course_lessons.course_modules.courses.status','published'),
+            supabase.from('assessment_attempts').select('id,lesson_assessments!inner(course_lessons!inner(course_modules!inner(courses!inner(status))))',{count:'exact',head:true}).eq('status','reviewed').eq('lesson_assessments.course_lessons.course_modules.courses.status','published')
           ]);
           if(pair.some(x=>x.error))return {error:true,count:null};
           return {count:pair.reduce((sum,x)=>sum+(x.count||0),0)};
@@ -785,7 +786,7 @@
       }));
       results.forEach(({id,value})=>{const node=document.getElementById(id);if(node)node.textContent=value===null?'—':String(value);});
       const updated=document.getElementById('admin-analytics-updated');
-      if(updated)updated.textContent='Última actualización: '+new Date().toLocaleString('es-EC')+'. Un guion indica que no fue posible consultar ese indicador.';
+      if(updated)updated.textContent='Última actualización: '+new Date().toLocaleString('es-EC')+'. Se cuentan únicamente cursos publicados y sus actividades publicadas; un guion indica que no fue posible consultar ese indicador.';
     }
 
     async function loadAdminOverview() {
