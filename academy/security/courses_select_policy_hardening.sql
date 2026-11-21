@@ -27,6 +27,8 @@ create policy "Students can view their enrolled courses"
       where e.course_id = courses.id
         and e.user_id = (select auth.uid())
         and e.status = 'active'
+        and (e.starts_at is null or e.starts_at <= now())
+        and (e.expires_at is null or e.expires_at > now())
     )
   );
 
@@ -37,5 +39,5 @@ commit;
 -- 2. Anonymous users can read only published courses.
 -- 3. Authenticated users cannot read draft courses, even with an active enrollment.
 -- 4. Authenticated users can read published courses.
--- 5. Revoked/expired/non-active enrollments do not grant access.
+-- 5. Revoked, not-yet-started, expired, or otherwise non-active enrollments do not grant access.
 -- 6. Confirm course enrollment/payment flows still work.
