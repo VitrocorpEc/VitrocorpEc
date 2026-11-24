@@ -923,7 +923,6 @@
         if(error) throw error;
         showMessage('Solicitud creada. Revisa los datos bancarios y carga tu comprobante en “Mis pagos e inscripciones”.','success');
         await loadStudentPayments();
-      await loadStudentCertificates();
       } catch(error) {
         showMessage(error.message||'No se pudo crear la solicitud de pago.','error');
       } finally {
@@ -2381,6 +2380,7 @@
       }
       await loadStudentPayments();
       await loadStudentNotifications();
+      await loadStudentCertificates();
       const { data: adminStatus, error: adminStatusError } = await supabase.rpc('is_current_user_admin');
       const adminDashboard = document.getElementById('admin-dashboard');
       if (!adminStatusError && adminStatus === true) {
